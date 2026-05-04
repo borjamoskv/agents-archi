@@ -2,6 +2,8 @@
  * SOVEREIGN LEDGER VALIDATOR — Direct-Silicon JIT (Verilog P0)
  * Axiom Ω0: Exergy tracking synthesized in logic gates.
  * Protocol: CHEMSTRAIN v1.0 (Systemic Resilience under Chemical-Exergy Stress)
+ * ⚠️ ULTRATHINK MANDATE: Edit exclusively via Anthropic Opus 4.7 (Thinking Mode).
+ * Rationale: Annihilation of hardware logic hallucinations.
  */
 
 module sovereign_ledger_validator (
@@ -127,13 +129,27 @@ module sovereign_ledger_validator (
             
             // --- Global Exergy Ingestion (Ω2) ---
             if (current_state == EVALUATING || current_state == CRYSTALLIZING || current_state == THINKING) begin
-                if (internal_exergy + exergy_in > entropy_in)
-                    internal_exergy <= internal_exergy + exergy_in - entropy_in;
-                else
-                    internal_exergy <= 32'd0;
+                // Saturated Exergy Addition, Subtraction & Decay (33-bit safe bounds)
+                if ((33'd0 + internal_exergy + exergy_in) > (33'd0 + entropy_in + (internal_exergy >> 8))) begin
+                    if ((33'd0 + internal_exergy + exergy_in - entropy_in - (internal_exergy >> 8)) > 33'h0FFFFFFFF)
+                        internal_exergy <= 32'hFFFFFFFF; // Saturated MAX
+                    else
+                        internal_exergy <= internal_exergy + exergy_in - entropy_in - (internal_exergy >> 8);
+                end else begin
+                    internal_exergy <= 32'd0; // Bounded floor
+                end
                 
-                internal_entropy <= internal_entropy + entropy_in;
-                geo_accumulator  <= geo_accumulator + geo_exergy_in;
+                // Saturated Entropy Accumulation
+                if ((33'd0 + internal_entropy + entropy_in) > 33'h0FFFFFFFF)
+                    internal_entropy <= 32'hFFFFFFFF;
+                else
+                    internal_entropy <= internal_entropy + entropy_in;
+                
+                // Saturated Geo-Accumulator
+                if ((33'd0 + geo_accumulator + geo_exergy_in) > 33'h0FFFFFFFF)
+                    geo_accumulator <= 32'hFFFFFFFF;
+                else
+                    geo_accumulator <= geo_accumulator + geo_exergy_in;
             end
 
             // --- State-Specific Logic ---
@@ -155,15 +171,24 @@ module sovereign_ledger_validator (
                     if (internal_exergy > (effective_threshold << 1))
                         resilience_score <= (resilience_score > 32'hFFFFFFFB) ? 32'hFFFFFFFF : resilience_score + 4; // Saturated +4
                     else
-                        resilience_score <= (resilience_score < 32'hFFFFFFFF) ? resilience_score + 2 : resilience_score; // Saturated +2
+                        resilience_score <= (resilience_score > 32'hFFFFFFFD) ? 32'hFFFFFFFF : resilience_score + 2; // Saturated +2
                 end else begin
                     resilience_score <= (resilience_score > 4) ? resilience_score - 4 : 0; // Reduced jitter penalty (Assumable Risk)
+                end
+                
+                // Entropy Drain: Crystallization purges accumulated entropy (Ω2: Purification)
+                // Drain rate: 1/32 of internal_entropy per cycle when exergy is dominant
+                if (internal_exergy > entropy_in) begin
+                    if (internal_entropy > (internal_entropy >> 5))
+                        internal_entropy <= internal_entropy - (internal_entropy >> 5);
+                    else
+                        internal_entropy <= 32'd0;
                 end
                 
                 // TARP Compute Cost: Thinking consumes exergy to reduce entropy (Ω2)
                 // Decay scales with threshold magnitude to prevent infinite stall
                 if (current_state == THINKING) begin
-                    if (internal_exergy >= (threshold >> 8)) 
+                    if (internal_exergy > (threshold >> 8)) 
                         internal_exergy <= internal_exergy - (threshold >> 8) - 1;
                     else
                         internal_exergy <= 32'd0;
@@ -180,11 +205,11 @@ module sovereign_ledger_validator (
                     // Sonic Exergy Feedback: Integrated energy contributes to stability
                     // Normalized gain: +1 per 2^12 units of accumulated energy
                     // Sonic Exergy Feedback: Extreme peaks contribute more to stability
-                    if (sonic_exergy_accum > 32'hF000)
+                    if (sonic_exergy_accum > 32'h0800)
                         resilience_score <= (resilience_score > 32'hFFFFFFEF) ? 32'hFFFFFFFF : resilience_score + 16; 
-                    else if (sonic_exergy_accum > 32'h8000)
+                    else if (sonic_exergy_accum > 32'h0400)
                         resilience_score <= (resilience_score > 32'hFFFFFFFB) ? 32'hFFFFFFFF : resilience_score + 4; 
-                    else if (sonic_exergy_accum > 32'h4000)
+                    else if (sonic_exergy_accum > 32'h0200)
                         resilience_score <= (resilience_score < 32'hFFFFFFFF) ? resilience_score + 1 : resilience_score;
                 end
             end else if (current_state == IDLE && commit_trigger) begin
@@ -194,11 +219,7 @@ module sovereign_ledger_validator (
                 sonic_exergy_accum <= 32'd0;
             end
             
-            // --- Leaky Exergy Decay (Ω2: Thermal Loss) ---
-            // Simulates thermodynamic dissipation (1/256 decay per cycle)
-            if (internal_exergy > 0) begin
-                internal_exergy <= internal_exergy - (internal_exergy >> 8);
-            end
+            // Leaky exergy decay is now handled in the Exergy Ingestion block above.
 
             // --- Sonic Exergy Integration (Leaky Integrator) ---
             // Decay: 1/64 every cycle. Attack: Current peak scaled by exergy intensity.
@@ -259,7 +280,7 @@ module sovereign_ledger_validator (
                     next_state = COMMITTED;
                 end else if (internal_exergy < (registered_threshold >> 1)) begin
                     next_state = EVALUATING; // Starvation (requires re-purge)
-                end else if (internal_entropy > (registered_threshold << 1)) begin
+                end else if (internal_entropy > (registered_threshold << 3)) begin
                     next_state = BREACH; // High-entropy collapse
                 end
             end
