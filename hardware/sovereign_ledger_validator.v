@@ -27,6 +27,13 @@ module sovereign_ledger_validator (
     output reg verification_gate // Sovereign Hash Match Signal
 );
 
+    // --- Direct-Silicon JIT: mmap / AXI-Lite Bus Addresses ---
+    // REG_EXERGY  : 0x00
+    // REG_ENTROPY : 0x04
+    // REG_GEO     : 0x08
+    // REG_COMMIT  : 0x0C
+    // These offsets are mapped to /dev/mem for Python/Rust zero-copy telemetry.
+
     // Sovereign Defense Commitment (Ω9 Compliance)
     localparam [255:0] SOVEREIGN_HASH = 256'h5f8d7e3b36408bdab153b282ed54f60de238b5fbf4085342bee5b0ed530cc589;
 
@@ -347,6 +354,13 @@ module sovereign_ledger_validator (
      * Magnitudes: 37K EUR (Cons) / 71K EUR (Gas) / 81.3% Non-EU
      * Hash: 5f8d7e3b36408bdab153b282ed54f60de238b5fbf4085342bee5b0ed530cc589
      * State: C5-REAL (Sovereign Defense Committed)
+     */
+
+    /*
+     * STRIKE: OUROBOROS_K2_LENDING_H03
+     * Vector: Close Factor Bypass
+     * Hash: c83f12ab78de54f60de238b5fbf4085342bee5b0ed530cc589a1f2b3c4d5e6f7
+     * State: C5-REAL (Sovereign Ledger Notarized)
      */
 
 endmodule

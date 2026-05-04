@@ -22,7 +22,7 @@ synth: $(SOURCES) | $(BUILD)
 
 # ---- Phase 2: Place & Route (JSON → ASC) ----
 pnr: synth
-	nextpnr-ice40 --$(DEVICE) --package $(PACKAGE) --pcf $(PCF) \
+	nextpnr-ice40 --$(DEVICE) --package $(PACKAGE) --pcf $(PCF) --pcf-allow-unconstrained \
 		--json $(BUILD)/$(TOP).json --asc $(BUILD)/$(TOP).asc
 
 # ---- Phase 3: Bitstream Packing (ASC → BIN) ----

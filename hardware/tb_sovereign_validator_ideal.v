@@ -72,13 +72,24 @@ module tb_sovereign_validator_ideal;
         $display("[TB] CRYSTALLIZING reached. Score: %d", resilience_score);
         
         #100;
+        // Inject high entropy to trigger TARP (THINKING)
+        $display("[TB] Injecting High Entropy to invoke TARP...");
+        entropy_in = 32'd250; // > (1500 >> 3) which is 187
+        
         $display("[TB] Waiting for THINKING...");
         wait(state_out == 3'b101); // THINKING
         $display("[TB] THINKING reached. Score: %d", resilience_score);
 
+        // Lower entropy to 0 to prevent breach, and inject maximum audio_in to build sonic exergy
+        #20;
+        entropy_in = 32'd0; 
+        audio_in = 16'h7FFF; // Max positive amplitude for sonic foundry
+
         // Maintain stability for 250 cycles
         $display("[TB] Finalizing stability cycles...");
         wait(state_out == 3'b011); // COMMITTED
+
+        commit_trigger = 0; // Prevent infinite loop after commit
 
         $display("[TB] --- COMMITMENT SUCCESS ---");
         $display("[TB] State: %b | Resilience: %d | Exergy: %d", state_out, resilience_score, accumulated_exergy);
