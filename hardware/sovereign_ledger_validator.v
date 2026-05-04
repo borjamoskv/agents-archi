@@ -44,16 +44,18 @@ module sovereign_ledger_validator (
     localparam THINKING      = 3'b101; // TARP (Think-Anywhere Reasoning Protocol)
 
     reg [2:0] current_state, next_state;
-    reg [31:0] internal_exergy;
-    reg [31:0] internal_entropy;
-    reg [31:0] geo_accumulator;
-    reg [31:0] sonic_exergy_accum;
+    
+    // --- DSP48E2 Saturated Mapping (Ω0: Absolute Physical Yield) ---
+    (* use_dsp = "yes" *) reg [31:0] internal_exergy;
+    (* use_dsp = "yes" *) reg [31:0] internal_entropy;
+    (* use_dsp = "yes" *) reg [31:0] geo_accumulator;
+    (* use_dsp = "yes" *) reg [31:0] sonic_exergy_accum;
     reg [15:0] lfsr;
     reg [15:0] chaos_lfsr; // Chaos Gate noise generator
     reg [31:0] registered_threshold;
 
     // --- QWEN-3.6-MAX: Adaptive Moving Average Guard (AMAG) ---
-    reg [31:0] entropy_ma;
+    (* use_dsp = "yes" *) reg [31:0] entropy_ma;
     reg [31:0] stability_cycles;
 
     // --- Sonic Foundry Integration ---
@@ -74,8 +76,8 @@ module sovereign_ledger_validator (
         .peak_level(sonic_peak)
     );
 
-    wire [31:0] jittered_threshold;
-    wire [31:0] effective_threshold;
+    (* use_dsp = "yes" *) wire [31:0] jittered_threshold;
+    (* use_dsp = "yes" *) wire [31:0] effective_threshold;
 
     // 16-bit LFSR for entropy jitter (Ω1 Compliance)
     always @(posedge clk or negedge rst_n) begin
@@ -89,7 +91,7 @@ module sovereign_ledger_validator (
     end
 
     // Sector-Based Threshold Scaling
-    wire [31:0] sector_scaled_threshold;
+    (* use_dsp = "yes" *) wire [31:0] sector_scaled_threshold;
     
     // Exergy-Adaptive Jitter (EAJ): Dampen noise as resilience increases (Ω39)
     // Inverse Adaptive Jitter: Higher chaos injection at low resilience
@@ -139,8 +141,10 @@ module sovereign_ledger_validator (
             state_out     <= current_state;
             registered_threshold <= effective_threshold;
             
-            // --- QWEN-3.6-MAX: AMAG Implementation ---
-            entropy_ma <= (entropy_ma - (entropy_ma >> 4)) + (entropy_in >> 4);
+            // --- QWEN-3.6-MAX: AMAG Implementation (Hardened C5-REAL) ---
+            // Prevents truncation lock-up (stalling) during low-entropy cycles
+            // Expanded to 33-bit to prevent overflow during T8 Saturation Fuzzing
+            entropy_ma <= (entropy_ma - ((33'd0 + entropy_ma + 33'd8) >> 4)) + ((33'd0 + entropy_in + 33'd8) >> 4);
             
             // --- Global Exergy Ingestion (Ω2) ---
             if (current_state == EVALUATING || current_state == CRYSTALLIZING || current_state == THINKING) begin
@@ -202,10 +206,10 @@ module sovereign_ledger_validator (
                 end
                 
                 // TARP Compute Cost: Thinking consumes exergy to reduce entropy (Ω2)
-                // Decay scales with threshold magnitude to prevent infinite stall
+                // Decay scales with threshold magnitude AND entropy pressure to prevent infinite stall
                 if (current_state == THINKING) begin
-                    if (internal_exergy > (threshold >> 8)) 
-                        internal_exergy <= internal_exergy - (threshold >> 8) - 1;
+                    if (internal_exergy > ((threshold >> 8) + 1 + (entropy_ma >> 4))) 
+                        internal_exergy <= internal_exergy - ((threshold >> 8) + 1 + (entropy_ma >> 4));
                     else
                         internal_exergy <= 32'd0;
                     
