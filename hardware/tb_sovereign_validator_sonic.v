@@ -23,9 +23,10 @@ module tb_sovereign_validator_sonic;
     wire [31:0] resilience_score;
     wire verification_gate;
 
-    // Buffer for HEX ingestion
+    // Buffers for HEX ingestion
     reg [15:0] audio_mem [0:65535];
-    integer i;
+    reg [31:0] oracle_mem [0:1023]; // Spectral Metadata (Exergy | Entropy)
+    integer i, chunk_ptr;
 
     // Instantiate Validator
     sovereign_ledger_validator uut (
@@ -54,6 +55,8 @@ module tb_sovereign_validator_sonic;
         // Initialize
         $display("[TB] Loading Silicon Artifact: audio_silicon_ingest.hex");
         $readmemh("audio_silicon_ingest.hex", audio_mem);
+        $display("[TB] Loading Oracle Metadata: oracle_exergy.mem");
+        $readmemh("oracle_exergy.mem", oracle_mem);
 
         clk = 0;
         rst_n = 0;
@@ -85,8 +88,17 @@ module tb_sovereign_validator_sonic;
         entropy_in = 32'd300; // Trigger HET (threshold >> 3 = 250)
         
         // Loop through ingested samples (Extended for stability verification)
+        chunk_ptr = 0;
         for (i = 0; i < 16384; i = i + 1) begin
             audio_in = audio_mem[i];
+            
+            // Update Oracle metrics every 1024 samples (matching bridge chunk size)
+            if (i % 1024 == 0) begin
+                exergy_in  = oracle_mem[chunk_ptr][31:16];
+                entropy_in = oracle_mem[chunk_ptr][15:0];
+                chunk_ptr = chunk_ptr + 1;
+            end
+            
             #10;
             if (ledger_commit) begin
                 $display("[TB] >>> LEDGER COMMIT DETECTED AT SAMPLE %d <<<", i);

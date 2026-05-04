@@ -119,22 +119,25 @@ module sovereign_ledger_validator (
             sonic_exergy_accum <= 32'd0;
             verification_gate  <= 1'b0;
             chaos_lfsr         <= 16'hDEAD; // Initial chaos seed
-            registered_threshold <= 32'd0;
+            registered_threshold <= 32'd1000; // Safe baseline threshold post-reset
         end else begin
             current_state <= next_state;
             state_out     <= current_state;
             registered_threshold <= effective_threshold;
             
-            if (current_state == EVALUATING) begin
-                internal_entropy <= internal_entropy + entropy_in;
-                geo_accumulator  <= geo_accumulator + geo_exergy_in;
-                
-                // Exergy Net Yield calculation (Ω2)
+            // --- Global Exergy Ingestion (Ω2) ---
+            if (current_state == EVALUATING || current_state == CRYSTALLIZING || current_state == THINKING) begin
                 if (internal_exergy + exergy_in > entropy_in)
                     internal_exergy <= internal_exergy + exergy_in - entropy_in;
                 else
                     internal_exergy <= 32'd0;
                 
+                internal_entropy <= internal_entropy + entropy_in;
+                geo_accumulator  <= geo_accumulator + geo_exergy_in;
+            end
+
+            // --- State-Specific Logic ---
+            if (current_state == EVALUATING) begin
                 // Accumulate resilience score during CHEMSTRAIN operations
                 if (chemstrain_mode) begin
                     // Dynamic Purification: 4x exergy density requirement (Ω2.1)
@@ -199,7 +202,11 @@ module sovereign_ledger_validator (
 
             // --- Sonic Exergy Integration (Leaky Integrator) ---
             // Decay: 1/64 every cycle. Attack: Current peak scaled by exergy intensity.
-            sonic_exergy_accum <= sonic_exergy_accum - (sonic_exergy_accum >> 6) + {16'd0, sonic_peak};
+            // Saturated Integration (Ω2.2): Prevent overflow corruption
+            if (sonic_exergy_accum > 32'hF0000000)
+                sonic_exergy_accum <= 32'hFFFFFFFF;
+            else
+                sonic_exergy_accum <= sonic_exergy_accum - (sonic_exergy_accum >> 6) + {16'd0, sonic_peak};
             
             accumulated_exergy <= internal_exergy;
             ledger_commit      <= (current_state == COMMITTED);
