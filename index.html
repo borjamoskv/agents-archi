@@ -6,6 +6,7 @@
     <title>agents.archi — The Architecture of Agent Security</title>
     <meta name="description" content="The first Agent Security Authority. Formally verify autonomous agent behavior before the first catastrophic failure." />
     <meta name="theme-color" content="#0A0A0A" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -19,6 +20,7 @@
         <a href="/" class="nav-logo" id="nav-logo">
           <span class="logo-mark">⬡</span>
           <span class="logo-text">agents<span class="logo-dot">.</span>archi</span>
+          <span class="nav-status-badge"><span class="status-pulse"></span> Live</span>
         </a>
         <div class="nav-links">
           <a href="#threat-vectors" class="nav-link" id="nav-taxonomy">Taxonomy</a>
@@ -32,6 +34,7 @@
     <!-- Hero -->
     <section id="hero" class="hero">
       <div class="hero-grid-bg"></div>
+      <div class="hero-noise"></div>
       <div class="hero-glow"></div>
       <div class="hero-content">
         <div class="hero-badge" id="hero-badge">
@@ -109,16 +112,27 @@
   <span class="kw">deny:</span> shell_exec(*)
 }</code></pre>
             </div>
-          </div>
           <div class="pillar" id="pillar-verify">
             <div class="pillar-icon">
               <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
-                <circle cx="24" cy="24" r="18" />
-                <path d="M16 24l5 5 11-11" />
+                <path d="M12 24l8 8 16-16" />
+                <circle cx="24" cy="24" r="20" />
               </svg>
             </div>
             <h3>Verify</h3>
             <p>Compile specs to <strong>Z3 SMT assertions</strong>. Mathematically prove that invariants hold under all possible execution traces — or produce a counterexample.</p>
+            <div class="pillar-terminal">
+              <div class="terminal-header">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="terminal-title">z3-prove --agent payment-bot</span>
+              </div>
+              <div class="terminal-body">
+                <div class="line"><span class="cmd">></span> loading invariants...</div>
+                <div class="line"><span class="cmd">></span> translating to SMT-LIB2...</div>
+                <div class="line"><span class="cmd">></span> checking satisfiability...</div>
+                <div class="line success"><span class="cmd">></span> UNSAT (Property Holds)</div>
+              </div>
+            </div>
             <div class="pillar-badge">
               <span class="verified-badge">✓ Formally Verified</span>
               <span class="verified-detail">All 12 invariants proven · 0 counterexamples</span>
@@ -135,17 +149,17 @@
             <div class="scorecard-preview">
               <div class="score-bar">
                 <span class="score-label">Threat Coverage</span>
-                <div class="score-track"><div class="score-fill" style="--fill: 87%"></div></div>
+                <div class="score-track"><div class="score-fill" data-fill="87"></div></div>
                 <span class="score-pct">87%</span>
               </div>
               <div class="score-bar">
                 <span class="score-label">Formal Proofs</span>
-                <div class="score-track"><div class="score-fill" style="--fill: 100%"></div></div>
+                <div class="score-track"><div class="score-fill" data-fill="100"></div></div>
                 <span class="score-pct">100%</span>
               </div>
               <div class="score-bar">
                 <span class="score-label">Composition Safety</span>
-                <div class="score-track"><div class="score-fill" style="--fill: 72%"></div></div>
+                <div class="score-track"><div class="score-fill" data-fill="72"></div></div>
                 <span class="score-pct">72%</span>
               </div>
             </div>
@@ -192,6 +206,61 @@
               <span class="bounty-platform">Immunefi</span>
               <span class="bounty-method">Integration Test PoC</span>
             </div>
+          </div>
+          <div class="bounty-card" id="bounty-firedancer">
+            <div class="bounty-severity critical">Critical</div>
+            <h4>Firedancer V1</h4>
+            <p class="bounty-vuln">Networking Stack OOB</p>
+            <p class="bounty-desc">Out-of-bounds read in the C-based networking stack of the Solana validator, enabling remote node crashes or info leak.</p>
+            <div class="bounty-meta">
+              <span class="bounty-platform">Immunefi</span>
+              <span class="bounty-method">C-Forensics + Fuzzer</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- The Lab — Live Metrics -->
+    <section id="lab" class="section section-gradient">
+      <div class="lab-scanline"></div>
+      <div class="section-inner">
+        <div class="section-header">
+          <span class="section-tag">The Lab</span>
+          <h2 id="lab-title">Real-time Analysis.<br /><span class="text-accent">Global Threat Intel.</span></h2>
+          <p class="section-desc">Monitoring the agentic landscape for emergent vulnerabilities and zero-day exploits.</p>
+        </div>
+        <div class="lab-grid">
+          <div class="lab-card">
+            <div class="lab-card-header">
+              <span class="lab-card-title">Verification Throughput</span>
+              <span class="lab-card-value" id="lab-throughput">0 <small>inv/sec</small></span>
+            </div>
+            <div class="lab-chart" id="lab-chart">
+              <div class="bar-group">
+                <div class="bar" data-h="40"></div>
+                <div class="bar" data-h="60"></div>
+                <div class="bar" data-h="45"></div>
+                <div class="bar" data-h="80"></div>
+                <div class="bar" data-h="55"></div>
+                <div class="bar" data-h="90"></div>
+                <div class="bar" data-h="70"></div>
+              </div>
+            </div>
+          </div>
+          <div class="lab-card">
+            <div class="lab-card-header">
+              <span class="lab-card-title">Total Capital at Risk</span>
+              <span class="lab-card-value">$420M+</span>
+            </div>
+            <p class="lab-card-desc">Aggregated TVL across audited agentic protocols and DAOs.</p>
+          </div>
+          <div class="lab-card">
+            <div class="lab-card-header">
+              <span class="lab-card-title">Proof Complexity</span>
+              <span class="lab-card-value">O(2<sup>n</sup>)</span>
+            </div>
+            <p class="lab-card-desc">Worst-case symbolic execution complexity handled by our solver clusters.</p>
           </div>
         </div>
       </div>

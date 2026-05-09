@@ -180,20 +180,60 @@ function initScoreBars() {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.querySelectorAll('.score-fill').forEach(fill => {
-          fill.style.width = fill.style.getPropertyValue('--fill');
+          fill.style.width = `${fill.dataset.fill}%`;
         });
         observer.unobserve(entry.target);
       }
     });
   }, { threshold: 0.3 });
 
-  document.querySelectorAll('.scorecard-preview').forEach(el => {
-    // Start with 0 width
-    el.querySelectorAll('.score-fill').forEach(fill => {
-      fill.style.width = '0%';
+  document.querySelectorAll('.scorecard-preview').forEach(el => observer.observe(el));
+}
+
+// ── Lab Metrics Logic ──
+function initLabMetrics() {
+  const throughputEl = document.getElementById('lab-throughput');
+  const bars = document.querySelectorAll('#lab-chart .bar');
+  if (!throughputEl || bars.length === 0) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // Animate throughput
+        let val = 0;
+        const target = 1242;
+        const tick = () => {
+          val += Math.floor(Math.random() * 50) + 20;
+          if (val >= target) {
+            throughputEl.innerHTML = `1.2k <small>inv/sec</small>`;
+          } else {
+            throughputEl.innerHTML = `${(val / 1000).toFixed(1)}k <small>inv/sec</small>`;
+            requestAnimationFrame(tick);
+          }
+        };
+        requestAnimationFrame(tick);
+
+        // Animate bars
+        bars.forEach((bar, i) => {
+          setTimeout(() => {
+            bar.style.height = `${bar.dataset.h}%`;
+          }, i * 100);
+        });
+
+        // Start random jitter
+        setInterval(() => {
+          const randomBar = bars[Math.floor(Math.random() * bars.length)];
+          const baseH = parseInt(randomBar.dataset.h, 10);
+          const jitter = (Math.random() - 0.5) * 15;
+          randomBar.style.height = `${Math.max(20, Math.min(100, baseH + jitter))}%`;
+        }, 800);
+
+        observer.unobserve(entry.target);
+      }
     });
-    observer.observe(el);
-  });
+  }, { threshold: 0.2 });
+
+  observer.observe(document.getElementById('lab'));
 }
 
 // ── Initialize ──
@@ -204,4 +244,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initNavScroll();
   initSmoothScroll();
   initScoreBars();
+  initLabMetrics();
 });
