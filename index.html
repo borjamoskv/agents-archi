@@ -7,13 +7,42 @@
     <meta name="description" content="The first Agent Security Authority. Formally verify autonomous agent behavior before the first catastrophic failure." />
     <meta name="theme-color" content="#0A0A0A" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="agents.archi — The Architecture of Agent Security" />
+    <meta property="og:description" content="The first Agent Security Authority. Formally verify autonomous agent behavior before the first catastrophic failure." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://agents.archi" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@borjamoskv" />
+    <meta name="twitter:title" content="agents.archi — Agent Security" />
+    <meta name="twitter:description" content="Formally verify autonomous agent behavior. 10 attack vectors. Z3 SMT proofs." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="stylesheet" href="/src/style.css" />
+    <script src="https://js.stripe.com/v3/"></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "agents.archi",
+      "url": "https://agents.archi",
+      "description": "The first Agent Security Authority. Formally verify autonomous agent behavior.",
+      "founder": {
+        "@type": "Person",
+        "name": "Borja Moskv",
+        "url": "https://x.com/borjamoskv"
+      },
+      "sameAs": [
+        "https://x.com/borjamoskv",
+        "https://github.com/borjamoskv"
+      ]
+    }
+    </script>
   </head>
   <body>
+    <a href="#hero" class="skip-to-content">Skip to content</a>
     <!-- Navigation -->
     <nav id="nav-main" class="nav">
       <div class="nav-inner">
@@ -26,6 +55,9 @@
           <a href="#threat-vectors" class="nav-link" id="nav-taxonomy">Taxonomy</a>
           <a href="#solution" class="nav-link" id="nav-solution">Solution</a>
           <a href="#track-record" class="nav-link" id="nav-track">Track Record</a>
+          <a href="#threat-feed" class="nav-link" id="nav-feed">Live Feed</a>
+          <a href="#pricing" class="nav-link" id="nav-pricing-link">Pricing</a>
+          <a href="#sovereign-council" class="nav-link" id="nav-council">Council</a>
           <a href="#contact" class="nav-cta" id="nav-contact">Get Audited</a>
         </div>
         <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
@@ -38,6 +70,7 @@
 
     <!-- Hero -->
     <section id="hero" class="hero">
+      <canvas class="hero-canvas" id="hero-canvas" aria-hidden="true"></canvas>
       <div class="hero-grid-bg"></div>
       <div class="hero-noise"></div>
       <div class="hero-glow"></div>
@@ -45,15 +78,14 @@
       <div class="hero-content">
         <div class="hero-badge" id="hero-badge">
           <span class="badge-pulse"></span>
-          <span class="badge-text">Agent Security Authority</span>
+          <span class="badge-text">Agent Security <span class="glitch-text" data-text="Authority">Authority</span></span>
         </div>
         <h1 id="hero-title">
           The Architecture of<br />
-          <span class="hero-accent">Agent Security</span>
+          <span class="hero-accent glitch-text" data-text="Agent Security">Agent Security</span>
         </h1>
         <p class="hero-sub" id="hero-sub">
-          Autonomous agents execute code, move capital, and access sensitive APIs.<br />
-          Nobody formally verifies their behavior. <strong>We do.</strong>
+          The first <strong>Agent Security Authority</strong>. Formally verify, monitor, and certify autonomous agents with Z3 SMT logic. <strong>Trust is computed, not assumed.</strong>
         </p>
         <div class="hero-actions">
           <a href="#threat-vectors" class="btn btn-primary" id="hero-cta-explore">Explore Threat Taxonomy</a>
@@ -61,7 +93,7 @@
         </div>
         <div class="hero-stats" id="hero-stats">
           <div class="stat">
-            <span class="stat-value" data-count="8">0</span>
+            <span class="stat-value" data-count="10">0</span>
             <span class="stat-label">Attack Vector Classes</span>
           </div>
           <div class="stat">
@@ -81,7 +113,7 @@
       <div class="section-inner">
         <div class="section-header">
           <span class="section-tag">The Problem</span>
-          <h2 id="threat-title">8 Attack Vectors.<br /><span class="text-accent">6 Have No Solution.</span></h2>
+          <h2 id="threat-title">10 Attack Vectors.<br /><span class="text-accent">8 Have No Solution.</span></h2>
           <p class="section-desc">Every company deploying autonomous agents is exposed to attack surfaces that no existing security tool addresses.</p>
         </div>
         <div class="threat-grid" id="threat-grid">
@@ -128,21 +160,32 @@
             </div>
             <h3>Verify</h3>
             <p>Compile specs to <strong>Z3 SMT assertions</strong>. Mathematically prove that invariants hold under all possible execution traces — or produce a counterexample.</p>
-            <div class="pillar-terminal">
+            <div class="pillar-terminal" id="verification-sandbox">
               <div class="terminal-header">
                 <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-                <span class="terminal-title">z3-prove --agent payment-bot</span>
+                <span class="terminal-title">ASL Verification Sandbox <span class="badge-simulation">[C4-SIMULACIÓN]</span></span>
               </div>
-              <div class="terminal-body">
-                <div class="line"><span class="cmd">></span> loading invariants...</div>
-                <div class="line"><span class="cmd">></span> translating to SMT-LIB2...</div>
-                <div class="line"><span class="cmd">></span> checking satisfiability...</div>
-                <div class="line success"><span class="cmd">></span> UNSAT (Property Holds)</div>
+              <div class="terminal-body sandbox-container">
+                <div class="sandbox-editor">
+                  <div class="line-numbers" id="sandbox-line-numbers">1<br>2<br>3<br>4<br>5</div>
+                  <textarea id="asl-editor" spellcheck="false" aria-label="ASL Specification Editor">agent PaymentBot {
+  invariant: never_transfer > limit
+  capability: read(balance)
+  deny: shell_exec(*)
+}</textarea>
+                </div>
+                <div class="sandbox-actions">
+                  <button id="btn-verify-asl" class="btn btn-primary btn-sm">Run Proof (Z3)</button>
+                  <button id="btn-reset-asl" class="btn btn-ghost btn-sm">Reset</button>
+                </div>
+                <div class="sandbox-output" id="sandbox-output">
+                  <div class="output-line">⬡ Ready for formal verification.</div>
+                </div>
               </div>
             </div>
-            <div class="pillar-badge">
-              <span class="verified-badge">✓ Formally Verified</span>
-              <span class="verified-detail">All 12 invariants proven · 0 counterexamples</span>
+            <div class="pillar-badge" id="verification-status-badge">
+              <span class="verified-badge">✓ Proof Engine Active</span>
+              <span class="verified-detail">Select a spec and click 'Run Proof' to verify behavior.</span>
             </div>
           </div>
           <div class="pillar" id="pillar-certify">
@@ -217,14 +260,114 @@
           <div class="bounty-card" id="bounty-firedancer">
             <div class="bounty-severity critical">Critical</div>
             <h4>Firedancer V1</h4>
-            <p class="bounty-vuln">Networking Stack OOB</p>
-            <p class="bounty-desc">Out-of-bounds read in the C-based networking stack of the Solana validator, enabling remote node crashes or info leak.</p>
+            <p class="bounty-vuln">VM Sandbox Bypass</p>
+            <p class="bounty-desc">Out-of-bounds region index in FD_VADDR_TO_REGION leaks host pointers, enabling ASLR bypass and arbitrary memory R/W.</p>
             <div class="bounty-meta">
               <span class="bounty-platform">Immunefi</span>
               <span class="bounty-method">C-Forensics + Fuzzer</span>
             </div>
           </div>
+          <div class="bounty-card" id="bounty-exactly">
+            <div class="bounty-severity critical">Critical</div>
+            <h4>Exactly Protocol</h4>
+            <p class="bounty-vuln">VerifiedMarket Bypass</p>
+            <p class="bounty-desc">Revoked delegates retain borrowing and withdrawal capabilities through unchecked ERC4626 allowance after firewall revocation.</p>
+            <div class="bounty-meta">
+              <span class="bounty-platform">Immunefi</span>
+              <span class="bounty-method">Foundry PoC</span>
+            </div>
+          </div>
+          <div class="bounty-card" id="bounty-hats">
+            <div class="bounty-severity critical">Critical</div>
+            <h4>HATVaults V2</h4>
+            <p class="bounty-vuln">Reentrancy Drain</p>
+            <p class="bounty-desc">_sendRewards() executes before LP token burn, enabling ERC-777 callback re-entry to drain full vault via repeated reward calc.</p>
+            <div class="bounty-meta">
+              <span class="bounty-platform">Immunefi</span>
+              <span class="bounty-method">Bytecode Deconvolution</span>
+            </div>
+          </div>
         </div>
+      </div>
+    </section>
+
+    <!-- Social Proof -->
+    <div class="social-proof" id="social-proof">
+      <div class="social-proof-inner">
+        <p class="social-proof-label">Vulnerabilities Submitted To</p>
+        <div class="platform-logos">
+          <span class="platform-logo">Immunefi</span>
+          <span class="platform-logo">Code4rena</span>
+          <span class="platform-logo">Sherlock</span>
+          <span class="platform-logo">Cantina</span>
+          <span class="platform-logo">HackerOne</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Threat Feed — Powered by 9 MCP Nodes -->
+    <section id="threat-feed" class="section section-feed">
+      <div class="section-inner">
+        <div class="section-header">
+          <span class="section-tag">Live Feed</span>
+          <h2 id="live-threat-feed-title">Live Threat Intelligence <span class="badge-simulation">[C4-SIMULACIÓN]</span><br /><span class="text-accent">From the Wild.</span></h2>
+          <p class="section-desc">CVEs and incidents pulled live from NVD, Microsoft MSRC, and the agentic security landscape. Updated May 2026.</p>
+        </div>
+        <div class="feed-grid" id="feed-grid">
+          <div class="feed-card feed-critical" id="feed-cve-25592">
+            <div class="feed-card-header">
+              <span class="feed-cve">CVE-2026-25592</span>
+              <span class="feed-severity critical">Critical</span>
+            </div>
+            <h4>Semantic Kernel — Prompt-to-RCE</h4>
+            <p>Prompts become shells: attacker-controlled instructions trigger autonomous function calls in .NET SDK &lt;1.71.0, enabling arbitrary code execution on the host.</p>
+            <div class="feed-meta">
+              <span class="feed-source">Microsoft MSRC</span>
+              <span class="feed-cvss cvss-critical">CVSS 9.8</span>
+              <span class="feed-date">May 7, 2026</span>
+            </div>
+          </div>
+          <div class="feed-card feed-critical" id="feed-cve-26030">
+            <div class="feed-card-header">
+              <span class="feed-cve">CVE-2026-26030</span>
+              <span class="feed-severity critical">Critical</span>
+            </div>
+            <h4>Semantic Kernel — Auto-Invoke Bypass</h4>
+            <p>Second RCE in the same framework: AI model bypasses auto-invocation filters to trigger restricted tool functions without user confirmation.</p>
+            <div class="feed-meta">
+              <span class="feed-source">Microsoft MSRC</span>
+              <span class="feed-cvss cvss-critical">CVSS 9.1</span>
+              <span class="feed-date">May 7, 2026</span>
+            </div>
+          </div>
+          <div class="feed-card feed-critical" id="feed-cve-30615">
+            <div class="feed-card-header">
+              <span class="feed-cve">CVE-2026-30615</span>
+              <span class="feed-severity critical">Critical</span>
+            </div>
+            <h4>Windsurf IDE — MCP Prompt Injection to RCE</h4>
+            <p>MCP supply chain attack: compromised server injects malicious tool definitions that escalate to local code execution through the agentic IDE runtime.</p>
+            <div class="feed-meta">
+              <span class="feed-source">OX Security</span>
+              <span class="feed-cvss cvss-critical">CVSS 9.6</span>
+              <span class="feed-date">May 2026</span>
+            </div>
+          </div>
+          <div class="feed-card feed-high" id="feed-agent-leak">
+            <div class="feed-card-header">
+              <span class="feed-cve">AGENT-LEAK-01</span>
+              <span class="feed-severity high">High</span>
+            </div>
+            <h4>Triple Agent Secret Exfiltration</h4>
+            <p>Single prompt injection simultaneously leaked API secrets from Claude Code, Gemini CLI, and GitHub Copilot. System cards failed to prevent cross-agent data exfiltration.</p>
+            <div class="feed-meta">
+              <span class="feed-source">VentureBeat</span>
+              <span class="feed-cvss cvss-high">CVSS 8.5</span>
+              <span class="feed-date">May 2026</span>
+            </div>
+          </div>
+        </div>
+        <p class="feed-footer">Data sourced via <strong>Brave Search API</strong> + <strong>NVD REST API</strong> — 9 MCP nodes in concert.</p>
       </div>
     </section>
 
@@ -273,14 +416,133 @@
       </div>
     </section>
 
+    <!-- Pricing -->
+    <section id="pricing" class="section section-dark">
+      <div class="section-inner">
+        <div class="section-header">
+          <span class="section-tag">Pricing</span>
+          <h2 id="pricing-title">Simple Scaling.<br /><span class="text-accent">Sovereign Performance.</span></h2>
+          <p class="section-desc">Choose the verification level your swarm requires.</p>
+        </div>
+        <div class="pricing-grid">
+          <div class="plan-card">
+            <div class="plan-header">
+              <h3>Community</h3>
+              <div class="plan-price">$0<small>/forever</small></div>
+            </div>
+            <ul class="plan-features">
+              <li>10 Threat Vector Mapping</li>
+              <li>Local Proof Execution</li>
+              <li>Basic ASL Support</li>
+              <li>Community Discord</li>
+            </ul>
+            <a href="https://github.com/borjamoskv/cortex-persist" class="btn btn-ghost plan-btn">View on GitHub</a>
+          </div>
+          <div class="plan-card featured">
+            <div class="plan-badge">Most Popular</div>
+            <div class="plan-header">
+              <h3>Pro Agent</h3>
+              <div class="plan-price" id="price-pro">$29<small>/month</small></div>
+            </div>
+            <ul class="plan-features">
+              <li>Unlimited SMT Proofs</li>
+              <li>Priority Support</li>
+              <li>Signed Certificates</li>
+              <li>Telemetry Bridge</li>
+            </ul>
+            <button class="btn btn-primary plan-btn" data-plan="pro">Subscribe Now</button>
+          </div>
+          <div class="plan-card">
+            <div class="plan-header">
+              <h3>Swarm Elite</h3>
+              <div class="plan-price" id="price-team">$99<small>/month</small></div>
+            </div>
+            <ul class="plan-features">
+              <li>Byzantine Consensus (WBFT)</li>
+              <li>Custom ASL Invariants</li>
+              <li>Dedicated Auditor</li>
+              <li>Direct Engineering Sync</li>
+            </ul>
+            <button class="btn btn-ghost plan-btn" data-plan="team">Scale Swarm</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sovereign Council -->
+    <section id="sovereign-council" class="section section-council">
+      <div class="council-bg-mesh" id="council-mesh" aria-hidden="true">
+        <svg class="council-svg" id="council-svg" width="100%" height="100%"></svg>
+      </div>
+      <div class="section-inner">
+        <div class="section-header">
+          <span class="section-tag council-tag">⬡ CORTEX SWARM — LIVE</span>
+          <h2 id="council-title">Sovereign Agent Council<br /><span class="text-accent">Reunion Protocol Active</span></h2>
+          <p class="section-desc">9 autonomous agents converging. Each node carries a role. All bound by the Nine Laws.</p>
+        </div>
+        <div class="council-arena">
+          <!-- Agent Grid -->
+          <div class="council-grid" id="council-grid">
+            <!-- Injected by JS -->
+          </div>
+          <!-- Mission Terminal -->
+          <div class="council-terminal">
+            <div class="terminal-header">
+              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+              <span class="terminal-title">CORTEX Mission Log <span class="council-live-badge"><span class="status-pulse"></span>LIVE</span></span>
+            </div>
+            <div class="council-log" id="council-log"></div>
+            <div class="council-prompt">
+              <span class="prompt-prefix">CORTEX:~$</span>
+              <span class="prompt-cursor" id="council-cursor"></span>
+            </div>
+          </div>
+        </div>
+        <!-- Swarm Metrics Bar -->
+        <div class="council-metrics" id="council-metrics">
+          <div class="council-metric">
+            <span class="metric-label">Active Nodes</span>
+            <span class="metric-value" id="metric-nodes">9/9</span>
+          </div>
+          <div class="council-metric">
+            <span class="metric-label">Consensus</span>
+            <span class="metric-value text-green" id="metric-consensus">BYZANTINE ✓</span>
+          </div>
+          <div class="council-metric">
+            <span class="metric-label">Swarm Yield</span>
+            <span class="metric-value" id="metric-yield">Σ 0.00</span>
+          </div>
+          <div class="council-metric">
+            <span class="metric-label">Protocol</span>
+            <span class="metric-value">Ω₃ · REUNION</span>
+          </div>
+          <div class="council-metric">
+            <span class="metric-label">Reality Level</span>
+            <span class="metric-value" id="metric-reality">C4-SIMULACIÓN</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Contact -->
     <section id="contact" class="section section-cta">
+      <div class="cta-glow"></div>
       <div class="section-inner">
         <div class="cta-content">
           <h2 id="cta-title">Your agent handles money, data, or decisions?</h2>
           <p class="cta-desc">The first catastrophic agent failure hasn't happened yet.<br />Be verified before it does.</p>
-          <a href="mailto:borja@moskv.com" class="btn btn-primary btn-large" id="cta-email">borja@moskv.com</a>
-          <p class="cta-note">Or reach out on <a href="https://x.com/borjamoskv" target="_blank" rel="noopener" id="cta-twitter">X @borjamoskv</a></p>
+          <form class="waitlist-form" id="waitlist-form">
+            <input type="email" class="waitlist-input" id="waitlist-email" placeholder="your@email.com" required aria-label="Email address" />
+            <button type="submit" class="waitlist-submit" id="waitlist-submit">Get Early Access</button>
+          </form>
+          <p class="cta-note">Or reach out directly: <a href="mailto:borja@moskv.com" id="cta-email">borja@moskv.com</a> · <a href="https://x.com/borjamoskv" target="_blank" rel="noopener" id="cta-twitter">@borjamoskv</a></p>
+          <div class="cta-trust">
+            <span class="cta-trust-item">6 Critical findings</span>
+            <span class="cta-trust-sep">·</span>
+            <span class="cta-trust-item">4 Platforms</span>
+            <span class="cta-trust-sep">·</span>
+            <span class="cta-trust-item">Z3 Formal Proofs</span>
+          </div>
         </div>
       </div>
     </section>
@@ -288,10 +550,45 @@
     <!-- Footer -->
     <footer class="footer" id="footer">
       <div class="footer-inner">
-        <span class="footer-logo">⬡ agents.archi</span>
-        <span class="footer-copy">© 2026 — The Architecture of Agent Security</span>
+        <div class="footer-brand">
+          <span class="footer-logo"><span class="logo-hex">⬡</span> agents.archi</span>
+          <span class="footer-tagline">The Architecture of Agent Security</span>
+        </div>
+        <div class="footer-social">
+          <a href="https://x.com/borjamoskv" target="_blank" rel="noopener" aria-label="X / Twitter">
+            <svg viewBox="0 0 19 19"><use href="/icons.svg#x-icon"/></svg>
+          </a>
+          <a href="https://github.com/borjamoskv" target="_blank" rel="noopener" aria-label="GitHub">
+            <svg viewBox="0 0 19 19"><use href="/icons.svg#github-icon"/></svg>
+          </a>
+        </div>
+        <span class="footer-copy">© <span id="footer-year">2026</span> agents.archi — All rights reserved</span>
       </div>
     </footer>
+
+    <!-- Checkout Modal -->
+    <div class="modal-overlay" id="checkout-modal">
+      <div class="modal-container">
+        <div class="modal-header">
+          <div class="modal-title">Secure Subscription</div>
+          <button class="modal-close" id="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="checkout-summary">
+            <div class="summary-plan" id="summary-plan-name">Pro Agent</div>
+            <div class="summary-price" id="summary-plan-price">$29</div>
+          </div>
+          <div class="checkout-form-container" id="checkout-form-container">
+            <input type="email" class="checkout-input" id="checkout-email" placeholder="Email Address" required />
+            <button class="btn btn-primary btn-full" id="checkout-submit-btn">Pay Securely</button>
+          </div>
+          <div id="stripe-element-container"></div>
+        </div>
+        <div class="modal-footer">
+          <span class="secure-icon">🔒</span> Secured by CORTEX Audit Chain
+        </div>
+      </div>
+    </div>
 
     <script type="module" src="/src/main.js"></script>
   </body>

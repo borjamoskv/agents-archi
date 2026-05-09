@@ -1,0 +1,15 @@
+{
+  "publicKey": "pk_test_51P2cXXXXXXXXXXXXXXXXXXXXXXXX",
+  "plans": {
+    "pro": {
+      "id": "price_1P2cXXXXXXXXXXXXXXXXXXXX",
+      "amount": 29,
+      "currency": "usd"
+    },
+    "team": {
+      "id": "price_1P2cYYYYYYYYYYYYYYYYYYYY",
+      "amount": 99,
+      "currency": "usd"
+    }
+  }
+}
