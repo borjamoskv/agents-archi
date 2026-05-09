@@ -154,6 +154,18 @@ function animateCounters() {
 }
 
 // ── Nav Scroll Effect ──
+function initNavScroll() {
+  const nav = document.getElementById('nav-main');
+  if (!nav) return;
+
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        nav.classList.toggle('scrolled', window.scrollY > 40);
+        ticking = false;
+      });
+      ticking = true;
     }
   });
 }
