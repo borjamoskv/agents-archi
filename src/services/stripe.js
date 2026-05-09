@@ -120,7 +120,7 @@ export function initStripeCheckout() {
       const data = await response.json();
 
       if (!response.ok || !data.url) {
-        throw new Error(data.error || `Server error ${response.status}`);
+        throw new Error(data.error || 'Server error ' + response.status);
       }
 
       // C5-REAL: validate redirect target is Stripe before navigation
