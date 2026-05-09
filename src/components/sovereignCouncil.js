@@ -180,12 +180,14 @@ function updateMetrics() {
   const yieldEl = document.getElementById('metric-yield');
   if (!yieldEl) return;
 
+  // σ = cumulative ops/s emitted by the simulation engine
   let σ = 0;
-  setInterval(() => {
-    // Compound with noise
+  const _intervalId = setInterval(() => {
     σ += Math.random() * 0.12 + 0.02;
-    yieldEl.textContent = `Σ ${σ.toFixed(4)}`;
+    yieldEl.textContent = `Σ ${σ.toFixed(2)} ops/s`;
   }, 800);
+  // _intervalId exposed here; attach to window.CORTEX_CLEANUP if needed.
+  return _intervalId;
 }
 
 /* ── Animated SVG pulse lines ── */

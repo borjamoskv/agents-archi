@@ -2,7 +2,8 @@
    LEGIØN-1000 — Sovereign Swarm Visualization Engine
    Harmonic Homeostasis Ω₁₆ × Genesis Synthesis Ω₆₄
    ───────────────────────────────────────────────────────────
-   C5-REAL: Live telemetry from MOSKV-10k-RS engine.
+   C4-SIM + C5-HYBRID: Canvas physics engine (always) ×
+   live telemetry modulation when WS backend is connected.
    ═══════════════════════════════════════════════════════════ */
 
 // ── Harmonic Intervals (Ω₁₆ Protocol) ──

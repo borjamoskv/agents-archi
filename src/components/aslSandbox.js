@@ -67,6 +67,8 @@ export function initASLSandbox() {
 
     await new Promise(r => setTimeout(r, 600));
 
+    // C4-DEMO: verification via string heuristic (allow_all / deny keyword presence).
+    // Production implementation replaces this with a real Z3 SMT solver API call.
     const hasUnsafe = code.toLowerCase().includes('allow_all') || !code.toLowerCase().includes('deny');
 
     if (hasUnsafe) {
@@ -81,7 +83,7 @@ export function initASLSandbox() {
         document.createTextNode('⬡ Counterexample found: Path [Tool:shell_exec] enables exfiltration.')
       );
       output.appendChild(resultLine);
-      setStatusBadge('error', '✕ Verification Failed', 'text-error', 'Critical vulnerability found in specification.');
+      setStatusBadge('error', '✕ Verification Failed', 'text-error', 'Demo check: keyword heuristic detected unsafe pattern.');
     } else {
       const resultLine = createOutputLine('', 'success');
       const cmd = document.createElement('span');
@@ -94,11 +96,11 @@ export function initASLSandbox() {
         document.createTextNode('⬡ All 4 capabilities formally verified against 3 invariants.')
       );
       output.appendChild(resultLine);
-      setStatusBadge('success', '✓ Spec Verified', 'text-success', 'Mathematically proven safe under CORTEX-9 constraints.');
+      setStatusBadge('success', '✓ Spec Verified (Demo)', 'text-success', 'Demo check passed. Production uses Z3 SMT solver for formal verification.');
     }
 
     output.scrollTop = output.scrollHeight;
     btnVerify.disabled = false;
-    btnVerify.textContent = 'Run Proof (Z3)';
+    btnVerify.textContent = 'Run Demo Proof';
   });
 }
