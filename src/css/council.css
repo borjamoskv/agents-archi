@@ -116,9 +116,9 @@
   transform: scaleX(1);
 }
 
-.agent-card.speaking {
-  border-color: rgba(43, 59, 229, 0.9) !important;
-  box-shadow: 0 0 32px rgba(43, 59, 229, 0.3) !important;
+.council-grid .agent-card.speaking {
+  border-color: rgba(43, 59, 229, 0.9);
+  box-shadow: 0 0 32px rgba(43, 59, 229, 0.3);
   animation: card-pulse 1.4s ease-in-out;
 }
 

@@ -14,21 +14,22 @@ export function initWaitlistForm() {
 
     const value = email.value.trim();
     if (!value) return;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return;
 
     // Visual feedback
     const originalText = submit.textContent;
     submit.textContent = '✓ Registered';
-    submit.style.background = '#34D399';
+    submit.classList.add('btn-success');
     email.value = '';
     email.disabled = true;
     submit.disabled = true;
 
     // Open mailto as fallback
-    window.location.href = `mailto:borja@moskv.com?subject=agents.archi Early Access&body=Requesting early access for: ${value}`;
+    window.location.href = `mailto:borja@moskv.com?subject=${encodeURIComponent('agents.archi Early Access')}&body=${encodeURIComponent('Requesting early access for: ' + value)}`;
 
     setTimeout(() => {
       submit.textContent = originalText;
-      submit.style.background = '';
+      submit.classList.remove('btn-success');
       email.disabled = false;
       submit.disabled = false;
     }, 3000);
