@@ -154,19 +154,29 @@ function animateCounters() {
 }
 
 // ── Nav Scroll Effect ──
-function initNavScroll() {
-  const nav = document.getElementById('nav-main');
-  if (!nav) return;
-
-  let ticking = false;
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      requestAnimationFrame(() => {
-        nav.classList.toggle('scrolled', window.scrollY > 40);
-        ticking = false;
-      });
-      ticking = true;
     }
+  });
+}
+
+// ── Mobile Menu Toggle ──
+function initMobileMenu() {
+  const toggle = document.getElementById('nav-toggle');
+  const navLinks = document.getElementById('nav-links');
+  if (!toggle || !navLinks) return;
+
+  toggle.addEventListener('click', () => {
+    toggle.classList.toggle('active');
+    navLinks.classList.toggle('active');
+    document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+  });
+
+  // Close menu when a link is clicked
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      toggle.classList.remove('active');
+      navLinks.classList.remove('active');
+      document.body.style.overflow = '';
+    });
   });
 }
 
@@ -251,6 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollReveal();
   animateCounters();
   initNavScroll();
+  initMobileMenu();
   initSmoothScroll();
   initScoreBars();
   initLabMetrics();
