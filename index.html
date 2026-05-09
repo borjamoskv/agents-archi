@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>agents.archi — The Architecture of Agent Security</title>
+    <meta name="description" content="The first Agent Security Authority. Formally verify autonomous agent behavior before the first catastrophic failure." />
+    <meta name="theme-color" content="#0A0A0A" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav id="nav-main" class="nav">
+      <div class="nav-inner">
+        <a href="/" class="nav-logo" id="nav-logo">
+          <span class="logo-mark">⬡</span>
+          <span class="logo-text">agents<span class="logo-dot">.</span>archi</span>
+        </a>
+        <div class="nav-links">
+          <a href="#threat-vectors" class="nav-link" id="nav-taxonomy">Taxonomy</a>
+          <a href="#solution" class="nav-link" id="nav-solution">Solution</a>
+          <a href="#track-record" class="nav-link" id="nav-track">Track Record</a>
+          <a href="#contact" class="nav-cta" id="nav-contact">Get Audited</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <section id="hero" class="hero">
+      <div class="hero-grid-bg"></div>
+      <div class="hero-glow"></div>
+      <div class="hero-content">
+        <div class="hero-badge" id="hero-badge">
+          <span class="badge-pulse"></span>
+          <span class="badge-text">Agent Security Authority</span>
+        </div>
+        <h1 id="hero-title">
+          The Architecture of<br />
+          <span class="hero-accent">Agent Security</span>
+        </h1>
+        <p class="hero-sub" id="hero-sub">
+          Autonomous agents execute code, move capital, and access sensitive APIs.<br />
+          Nobody formally verifies their behavior. <strong>We do.</strong>
+        </p>
+        <div class="hero-actions">
+          <a href="#threat-vectors" class="btn btn-primary" id="hero-cta-explore">Explore Threat Taxonomy</a>
+          <a href="#contact" class="btn btn-ghost" id="hero-cta-audit">Request Audit →</a>
+        </div>
+        <div class="hero-stats" id="hero-stats">
+          <div class="stat">
+            <span class="stat-value" data-count="8">0</span>
+            <span class="stat-label">Attack Vector Classes</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value" data-count="0">0</span>
+            <span class="stat-label">Agents Verified</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">Z3</span>
+            <span class="stat-label">Formal Verification Engine</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Problem — Threat Vectors -->
+    <section id="threat-vectors" class="section section-dark">
+      <div class="section-inner">
+        <div class="section-header">
+          <span class="section-tag">The Problem</span>
+          <h2 id="threat-title">8 Attack Vectors.<br /><span class="text-accent">6 Have No Solution.</span></h2>
+          <p class="section-desc">Every company deploying autonomous agents is exposed to attack surfaces that no existing security tool addresses.</p>
+        </div>
+        <div class="threat-grid" id="threat-grid">
+          <!-- Threat cards injected by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Solution -->
+    <section id="solution" class="section section-gradient">
+      <div class="section-inner">
+        <div class="section-header">
+          <span class="section-tag">The Solution</span>
+          <h2 id="solution-title">Specify. Verify. Certify.</h2>
+          <p class="section-desc">A formal verification pipeline purpose-built for autonomous agents.</p>
+        </div>
+        <div class="pillars" id="pillars">
+          <div class="pillar" id="pillar-specify">
+            <div class="pillar-icon">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="8" y="6" width="32" height="36" rx="2" />
+                <line x1="14" y1="14" x2="34" y2="14" />
+                <line x1="14" y1="20" x2="28" y2="20" />
+                <line x1="14" y1="26" x2="32" y2="26" />
+                <line x1="14" y1="32" x2="22" y2="32" />
+              </svg>
+            </div>
+            <h3>Specify</h3>
+            <p>Define agent behavior with the <strong>Agent Specification Language (ASL)</strong> — invariants, capabilities, and deny rules in a machine-verifiable format.</p>
+            <div class="pillar-code">
+              <pre><code><span class="kw">agent</span> PaymentBot {
+  <span class="kw">invariant:</span> never_transfer &gt; limit
+  <span class="kw">capability:</span> read(balance)
+  <span class="kw">deny:</span> shell_exec(*)
+}</code></pre>
+            </div>
+          </div>
+          <div class="pillar" id="pillar-verify">
+            <div class="pillar-icon">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="24" cy="24" r="18" />
+                <path d="M16 24l5 5 11-11" />
+              </svg>
+            </div>
+            <h3>Verify</h3>
+            <p>Compile specs to <strong>Z3 SMT assertions</strong>. Mathematically prove that invariants hold under all possible execution traces — or produce a counterexample.</p>
+            <div class="pillar-badge">
+              <span class="verified-badge">✓ Formally Verified</span>
+              <span class="verified-detail">All 12 invariants proven · 0 counterexamples</span>
+            </div>
+          </div>
+          <div class="pillar" id="pillar-certify">
+            <div class="pillar-icon">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M24 4l6 12h13l-10.5 8 4 13L24 29l-12.5 8 4-13L5 16h13z" />
+              </svg>
+            </div>
+            <h3>Certify</h3>
+            <p>Receive an <strong>agents.archi Security Scorecard</strong> — a cryptographically signed certificate of your agent's threat model coverage and verification status.</p>
+            <div class="scorecard-preview">
+              <div class="score-bar">
+                <span class="score-label">Threat Coverage</span>
+                <div class="score-track"><div class="score-fill" style="--fill: 87%"></div></div>
+                <span class="score-pct">87%</span>
+              </div>
+              <div class="score-bar">
+                <span class="score-label">Formal Proofs</span>
+                <div class="score-track"><div class="score-fill" style="--fill: 100%"></div></div>
+                <span class="score-pct">100%</span>
+              </div>
+              <div class="score-bar">
+                <span class="score-label">Composition Safety</span>
+                <div class="score-track"><div class="score-fill" style="--fill: 72%"></div></div>
+                <span class="score-pct">72%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Track Record -->
+    <section id="track-record" class="section section-dark">
+      <div class="section-inner">
+        <div class="section-header">
+          <span class="section-tag">Track Record</span>
+          <h2 id="track-title">Adversarial Mindset,<br /><span class="text-accent">Proven Results.</span></h2>
+          <p class="section-desc">Security audit findings submitted to leading bounty platforms.</p>
+        </div>
+        <div class="bounty-grid" id="bounty-grid">
+          <div class="bounty-card" id="bounty-k2">
+            <div class="bounty-severity critical">Critical</div>
+            <h4>K2 Lending</h4>
+            <p class="bounty-vuln">Close Factor Bypass</p>
+            <p class="bounty-desc">Iterative liquidation drains 100% of collateral through O(n) batched calls, bypassing the 50% close factor restriction.</p>
+            <div class="bounty-meta">
+              <span class="bounty-platform">Code4rena</span>
+              <span class="bounty-method">Z3 Formal Proof</span>
+            </div>
+          </div>
+          <div class="bounty-card" id="bounty-bitflow">
+            <div class="bounty-severity critical">Critical</div>
+            <h4>BitFlow DLMM</h4>
+            <p class="bounty-vuln">Zero-Share Truncation</p>
+            <p class="bounty-desc">Arithmetic truncation in LP share calculation allows first depositor to steal subsequent deposits via share inflation.</p>
+            <div class="bounty-meta">
+              <span class="bounty-platform">Immunefi</span>
+              <span class="bounty-method">Anvil-Lang + Clarinet PoC</span>
+            </div>
+          </div>
+          <div class="bounty-card" id="bounty-folks">
+            <div class="bounty-severity high">High</div>
+            <h4>Folks Finance</h4>
+            <p class="bounty-vuln">NTT Bridge Decimal Mismatch</p>
+            <p class="bounty-desc">Cross-chain decimal normalization flaw enables minting inflation through untrim transfer amount logic error.</p>
+            <div class="bounty-meta">
+              <span class="bounty-platform">Immunefi</span>
+              <span class="bounty-method">Integration Test PoC</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="section section-cta">
+      <div class="section-inner">
+        <div class="cta-content">
+          <h2 id="cta-title">Your agent handles money, data, or decisions?</h2>
+          <p class="cta-desc">The first catastrophic agent failure hasn't happened yet.<br />Be verified before it does.</p>
+          <a href="mailto:borja@moskv.com" class="btn btn-primary btn-large" id="cta-email">borja@moskv.com</a>
+          <p class="cta-note">Or reach out on <a href="https://x.com/borjamoskv" target="_blank" rel="noopener" id="cta-twitter">X @borjamoskv</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+      <div class="footer-inner">
+        <span class="footer-logo">⬡ agents.archi</span>
+        <span class="footer-copy">© 2026 — The Architecture of Agent Security</span>
+      </div>
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
