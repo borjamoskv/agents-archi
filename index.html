@@ -55,6 +55,7 @@
           <a href="#threat-vectors" class="nav-link" id="nav-taxonomy">Taxonomy</a>
           <a href="#solution" class="nav-link" id="nav-solution">Solution</a>
           <a href="#track-record" class="nav-link" id="nav-track">Track Record</a>
+          <a href="#certification" class="nav-link" id="nav-cert">Trust</a>
           <a href="#threat-feed" class="nav-link" id="nav-feed">Live Feed</a>
           <a href="#pricing" class="nav-link" id="nav-pricing-link">Pricing</a>
           <a href="#sovereign-council" class="nav-link" id="nav-council">Council</a>
@@ -304,6 +305,218 @@
         </div>
       </div>
     </div>
+
+    <!-- Institutional Certification Portal -->
+    <section id="certification" class="section section-certification">
+      <div class="section-inner">
+        <div class="section-header">
+          <span class="section-tag">Cryptographic Trust Infrastructure</span>
+          <h2 id="cert-title">Every Decision.<br /><span class="text-accent">Cryptographically Sealed.</span></h2>
+          <p class="section-desc">Your agents handle capital, data, and decisions. Our verification pipeline ensures every state mutation is validated, signed, and immutable — from proposal to persistence.</p>
+        </div>
+
+        <div class="cert-grid">
+          <!-- Merkle Tree Visualization -->
+          <div class="cert-panel" id="merkle-panel">
+            <div class="cert-panel-header">
+              <div class="cert-panel-title">
+                <span class="cert-panel-icon">⬡</span>
+                <span class="cert-panel-label">Audit Chain — Merkle Tree</span>
+              </div>
+              <span class="cert-status-pill pill-green"><span class="pill-dot"></span>Verified</span>
+            </div>
+            <div class="merkle-canvas-wrap">
+              <canvas id="merkle-canvas" class="merkle-canvas" aria-hidden="true"></canvas>
+              <div class="merkle-fade"></div>
+            </div>
+            <div class="merkle-footer">
+              <span class="merkle-hash" id="merkle-root-hash">root: 0x3a7f2c1b9e4d6a8f5c0b2e7d1a3f9c6b</span>
+              <span class="merkle-depth">Depth: 5 · 31 Nodes</span>
+            </div>
+          </div>
+
+          <!-- SAGA Write-Path Pipeline -->
+          <div class="cert-panel" id="saga-panel">
+            <div class="cert-panel-header">
+              <div class="cert-panel-title">
+                <span class="cert-panel-icon">⛓</span>
+                <span class="cert-panel-label">Write-Path Contract (SAGA)</span>
+              </div>
+              <span class="cert-status-pill pill-accent">7-Step Guard</span>
+            </div>
+            <div class="saga-pipeline" id="saga-pipeline">
+              <div class="saga-step" id="saga-1">
+                <div class="saga-step-connector">
+                  <div class="saga-step-node">1</div>
+                  <div class="saga-step-line"></div>
+                </div>
+                <div class="saga-step-content">
+                  <div class="saga-step-name">Guard Validation <span class="saga-tag tag-det">Deterministic</span></div>
+                  <div class="saga-step-desc">Sanity & logic check. Invalid proposals rejected before any state mutation.</div>
+                </div>
+              </div>
+              <div class="saga-step" id="saga-2">
+                <div class="saga-step-connector">
+                  <div class="saga-step-node">2</div>
+                  <div class="saga-step-line"></div>
+                </div>
+                <div class="saga-step-content">
+                  <div class="saga-step-name">Taint Signature <span class="saga-tag tag-cry">Cryptographic</span></div>
+                  <div class="saga-step-desc">CORTEX-TAINT attribution token — SHA3-256 of payload + agent identity.</div>
+                </div>
+              </div>
+              <div class="saga-step" id="saga-3">
+                <div class="saga-step-connector">
+                  <div class="saga-step-node">3</div>
+                  <div class="saga-step-line"></div>
+                </div>
+                <div class="saga-step-content">
+                  <div class="saga-step-name">Schema Validation <span class="saga-tag tag-det">Deterministic</span></div>
+                  <div class="saga-step-desc">Typed interface enforcement — no stochastic output mutates persistent state.</div>
+                </div>
+              </div>
+              <div class="saga-step" id="saga-4">
+                <div class="saga-step-connector">
+                  <div class="saga-step-node">4</div>
+                  <div class="saga-step-line"></div>
+                </div>
+                <div class="saga-step-content">
+                  <div class="saga-step-name">Encryption Layer <span class="saga-tag tag-cry">Cryptographic</span></div>
+                  <div class="saga-step-desc">Sensitive payloads encrypted at rest via OS-native keyring vault.</div>
+                </div>
+              </div>
+              <div class="saga-step" id="saga-5">
+                <div class="saga-step-connector">
+                  <div class="saga-step-node">5</div>
+                  <div class="saga-step-line"></div>
+                </div>
+                <div class="saga-step-content">
+                  <div class="saga-step-name">Ledger Emission <span class="saga-tag tag-imm">Immutable</span></div>
+                  <div class="saga-step-desc">Cryptographic hash-chain append. Every action tamper-evident forever.</div>
+                </div>
+              </div>
+              <div class="saga-step" id="saga-6">
+                <div class="saga-step-connector">
+                  <div class="saga-step-node">6</div>
+                  <div class="saga-step-line"></div>
+                </div>
+                <div class="saga-step-content">
+                  <div class="saga-step-name">Persistence <span class="saga-tag tag-imm">Immutable</span></div>
+                  <div class="saga-step-desc">SQLite atomic write with pre-captured ROLLBACK snapshot.</div>
+                </div>
+              </div>
+              <div class="saga-step" id="saga-7">
+                <div class="saga-step-connector">
+                  <div class="saga-step-node">7</div>
+                  <div class="saga-step-line"></div>
+                </div>
+                <div class="saga-step-content">
+                  <div class="saga-step-name">Index &amp; Side Effects <span class="saga-tag tag-det">Deterministic</span></div>
+                  <div class="saga-step-desc">Vector/KV index updates. All compensating functions idempotent.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Certificate Preview -->
+        <div class="cert-certificate" id="cert-preview">
+          <div class="cert-watermark">VERIFIED</div>
+          <div class="cert-seal">
+            <div class="cert-seal-ring"></div>
+            <div class="cert-seal-ring"></div>
+            <div class="cert-seal-core">⬡</div>
+          </div>
+          <div class="cert-card-title">Agent Security Certificate</div>
+          <div class="cert-card-sub">Cryptographically Signed Verification Report</div>
+          <div class="cert-fields">
+            <div class="cert-field">
+              <span class="cert-field-label">Agent</span>
+              <span class="cert-field-value">PaymentBot v3.1</span>
+            </div>
+            <div class="cert-field">
+              <span class="cert-field-label">Verification Level</span>
+              <span class="cert-field-value">Z3 SMT — Full Coverage</span>
+            </div>
+            <div class="cert-field">
+              <span class="cert-field-label">Threat Coverage</span>
+              <span class="cert-field-value mono">10/10 Vectors Mapped</span>
+            </div>
+            <div class="cert-field">
+              <span class="cert-field-label">Certificate ID</span>
+              <span class="cert-field-value mono">CERT-2026-0510-AA7F</span>
+            </div>
+            <div class="cert-field">
+              <span class="cert-field-label">Valid From</span>
+              <span class="cert-field-value">May 10, 2026</span>
+            </div>
+            <div class="cert-field">
+              <span class="cert-field-label">Issued By</span>
+              <span class="cert-field-value">agents.archi Authority</span>
+            </div>
+          </div>
+          <div class="cert-divider"></div>
+          <div class="cert-signature">
+            <div class="cert-sig-block">
+              <span class="cert-sig-hash">Ed25519: 7a3f2c1b9e4d...8f5c0b2e7d1a</span>
+              <span class="cert-sig-label">Digital Signature (Ed25519)</span>
+            </div>
+            <div class="cert-verified-stamp">✓ Tamper-Evident</div>
+          </div>
+        </div>
+
+        <!-- Trust Metrics -->
+        <div class="trust-metrics" id="trust-metrics" style="margin-top: var(--space-xl);">
+          <div class="trust-metric">
+            <div class="trust-metric-value" data-count="7" data-suffix="-Step">0</div>
+            <div class="trust-metric-label">SAGA Validation Pipeline</div>
+            <div class="trust-metric-sub">Every write guarded</div>
+          </div>
+          <div class="trust-metric">
+            <div class="trust-metric-value" data-count="100" data-suffix="%">0</div>
+            <div class="trust-metric-label">Audit Chain Integrity</div>
+            <div class="trust-metric-sub">SHA3-256 Hash Chain</div>
+          </div>
+          <div class="trust-metric">
+            <div class="trust-metric-value" data-prefix="&lt;" data-count="8" data-suffix="ms">0</div>
+            <div class="trust-metric-label">Verification Latency</div>
+            <div class="trust-metric-sub">60fps target maintained</div>
+          </div>
+          <div class="trust-metric">
+            <div class="trust-metric-value" data-count="0" data-suffix=" breaches">0</div>
+            <div class="trust-metric-label">Trust Boundary Violations</div>
+            <div class="trust-metric-sub">Zero tolerance enforced</div>
+          </div>
+        </div>
+
+        <!-- Standards Compliance -->
+        <div class="cert-standards">
+          <div class="cert-standards-label">Evidence-Support Framework Alignment</div>
+          <div class="cert-standards-list">
+            <div class="cert-standard-item">
+              <span class="cert-standard-icon">🇪🇺</span>
+              <span class="cert-standard-name">EU AI Act Art.12</span>
+            </div>
+            <div class="cert-standard-item">
+              <span class="cert-standard-icon">🔐</span>
+              <span class="cert-standard-name">Ed25519 + SHA3-256</span>
+            </div>
+            <div class="cert-standard-item">
+              <span class="cert-standard-icon">⛓</span>
+              <span class="cert-standard-name">Merkle Audit Chain</span>
+            </div>
+            <div class="cert-standard-item">
+              <span class="cert-standard-icon">🛡</span>
+              <span class="cert-standard-name">Byzantine Tolerance</span>
+            </div>
+            <div class="cert-standard-item">
+              <span class="cert-standard-icon">📋</span>
+              <span class="cert-standard-name">SOC 2 Evidence Path</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- Live Threat Feed — Powered by 9 MCP Nodes -->
     <section id="threat-feed" class="section section-feed">

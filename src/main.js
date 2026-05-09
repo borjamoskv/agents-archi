@@ -9,6 +9,7 @@ import { renderLiveFeed } from './components/liveFeed.js';
 import { initASLSandbox } from './components/aslSandbox.js';
 import { initWaitlistForm } from './components/waitlist.js';
 import { initSovereignCouncil } from './components/sovereignCouncil.js';
+import { initCertificationPortal } from './components/certificationPortal.js';
 import { initLegionSwarm } from './components/legionSwarm.js';
 import { loadStripeConfig, initStripeCheckout } from './services/stripe.js';
 import { connectTelemetry } from './services/telemetry.js';
@@ -61,6 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initTypingCursor();
   initFooterYear();
   initSovereignCouncil();
+  initCertificationPortal();
   initLegionSwarm();
   connectTelemetry();
 });
