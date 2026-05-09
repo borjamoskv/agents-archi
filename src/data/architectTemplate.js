@@ -2,7 +2,7 @@
    agents.archi — Architect's Sovereign Helper Template v1.0
    ═══════════════════════════════════════════════════════════
    
-   Borja Moskv — The Architect's personal agent roster.
+   Antigravity — The Architect's sovereign helper roster.
    Each helper is categorized by domain and can be filtered,
    extended, and deployed from this single source of truth.
    

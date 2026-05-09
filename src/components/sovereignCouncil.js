@@ -2,17 +2,10 @@
    agents.archi — Sovereign Council Component v2
    ═══════════════════════════════════════════════════════════ */
 
-const COUNCIL_AGENTS = [
-  { id: 1, name: 'Antigravity',   role: 'Architect',     status: 'active', pulse: 1.2, connectsTo: [2, 5, 9] },
-  { id: 2, name: 'CORTEX-01',    role: 'Verification',  status: 'active', pulse: 1.1, connectsTo: [1, 3, 6] },
-  { id: 3, name: 'CORTEX-02',    role: 'Enforcement',   status: 'active', pulse: 0.9, connectsTo: [2, 4, 7] },
-  { id: 4, name: 'Ouroboros',    role: 'Strike',        status: 'active', pulse: 1.4, connectsTo: [3, 5, 8] },
-  { id: 5, name: 'Centuria',     role: 'Stress Test',   status: 'active', pulse: 1.0, connectsTo: [4, 6, 1] },
-  { id: 6, name: 'Mariscal',     role: 'Orchestration', status: 'active', pulse: 1.1, connectsTo: [5, 7, 2] },
-  { id: 7, name: 'Archaeologist',role: 'Memory',        status: 'active', pulse: 0.8, connectsTo: [6, 8, 3] },
-  { id: 8, name: 'Sentinel',     role: 'Watchdog',      status: 'active', pulse: 1.2, connectsTo: [7, 9, 4] },
-  { id: 9, name: 'VSA-Node',     role: 'Logic-Bypass',  status: 'active', pulse: 1.5, connectsTo: [8, 1] },
-];
+import { getCouncilCore } from '../data/architectTemplate.js';
+
+const COUNCIL_AGENTS = getCouncilCore();
+
 
 const MISSION_MESSAGES = [
   { type: 'info',    text: 'Initializing Sovereign Reunion Protocol Ω₃...' },

@@ -11,6 +11,8 @@ import { initWaitlistForm } from './components/waitlist.js';
 import { initSovereignCouncil } from './components/sovereignCouncil.js';
 import { initCertificationPortal } from './components/certificationPortal.js';
 import { initLegionSwarm } from './components/legionSwarm.js';
+import { initArchitectSwarm } from './components/architectSwarm.js';
+import './css/architectSwarm.css';
 import { loadStripeConfig, initStripeCheckout } from './services/stripe.js';
 import { connectTelemetry } from './services/telemetry.js';
 
@@ -63,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initFooterYear();
   initSovereignCouncil();
   initCertificationPortal();
+  initArchitectSwarm();
   initLegionSwarm();
   connectTelemetry();
 });

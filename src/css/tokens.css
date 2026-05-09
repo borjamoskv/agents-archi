@@ -31,7 +31,7 @@
   --text-accent: var(--accent-bright);
 
   /* Typography */
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
   --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
 
   /* Spacing */

@@ -7,9 +7,26 @@ export async function renderLiveFeed() {
   if (!grid) return;
 
   try {
-    const response = await fetch('/api/threats.json');
-    if (!response.ok) throw new Error('Feed failed');
-    const threats = await response.json();
+    const response = await fetch('/ouroboros.jsonl');
+    if (!response.ok) throw new Error('Ouroboros feed failed, falling back to static');
+    
+    const text = await response.text();
+    const lines = text.split('\n').filter(l => l.trim().length > 0);
+    const threats = lines.map(l => JSON.parse(l)).reverse().slice(0, 4).map((t, i) => {
+      // Mapping Ouroboros schema to the visual feed schema
+      return {
+        id: t.id || `OB-${t.target_id || i}`,
+        cve: t.id || `AGENT-STRIKE-${t.target_id || i}`,
+        severity: (t.severity || 'high').toLowerCase(),
+        title: t.title,
+        desc: `Target: ${t.target_name || t.target || 'Unknown'}. Status: ${t.status}. ${t.poc_verified ? 'PoC Verified [C5-REAL]' : ''}`,
+        source: t.platform || 'Unknown',
+        cvss: t.confidence || 'C5-REAL',
+        date: new Date(t.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      };
+    });
+
+    if (threats.length === 0) throw new Error('Empty feed');
 
     grid.innerHTML = ''; 
 
@@ -81,7 +98,8 @@ export async function renderLiveFeed() {
     
     grid.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-  } catch {
-    // Feed unavailable — hardcoded fallbacks rendered by threats.js
+  } catch (err) {
+    console.error(err);
+    // Feed unavailable — hardcoded fallbacks rendered by static HTML
   }
 }
