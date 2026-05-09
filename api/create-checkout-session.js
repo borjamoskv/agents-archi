@@ -8,10 +8,6 @@
 
 import Stripe from 'stripe';
 
-/** Vercel Node.js runtime config */
-export const config = {
-  runtime: 'nodejs20.x',
-};
 
 export default async function handler(req, res) {
   // ── Method guard ──────────────────────────────────────────

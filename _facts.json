@@ -1,0 +1,20 @@
+[
+  {
+    "project": "agents-archi",
+    "content": "Modularized frontend codebase: split into components, css, data, services, ui. main.js acts as pure entry point.",
+    "fact_type": "decision",
+    "tags": ["architecture", "refactoring", "frontend"]
+  },
+  {
+    "project": "agents-archi",
+    "content": "Frontend uses Vite, Vanilla JS, and Vanilla CSS. Zero frameworks.",
+    "fact_type": "knowledge",
+    "tags": ["stack", "frontend"]
+  },
+  {
+    "project": "agents-archi",
+    "content": "Refactoring milestone completed. Frontend is highly modular and passes production build.",
+    "fact_type": "ghost",
+    "tags": ["status", "milestone"]
+  }
+]

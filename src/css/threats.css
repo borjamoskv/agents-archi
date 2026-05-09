@@ -74,5 +74,39 @@
 .threat-status.unsolved { color: var(--critical); background: var(--critical-bg); }
 .threat-status.partial { color: var(--high); background: var(--high-bg); }
 
-.threat-card h4 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.01em; }
-.threat-card p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
+
+.threat-card h4 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.01em; }
+
+/* Short descriptor — bold mid-layer between title and body */
+.threat-card .threat-short-desc {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+/* Full description — secondary copy */
+.threat-card .threat-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin-bottom: 0;
+}
+
+/* Monospace index badge — dim, top-left of header */
+.threat-index {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.2);
+  letter-spacing: 0.05em;
+  margin-right: auto;
+  margin-left: 0;
+}
+
+.threat-card-header {
+  gap: var(--space-xs, 6px);
+}

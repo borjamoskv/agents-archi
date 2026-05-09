@@ -1,3 +1,7 @@
+/* ═══════════════════════════════════════════════════════════
+   agents.archi — Threat Taxonomy Data
+   ═══════════════════════════════════════════════════════════ */
+
 export const THREAT_VECTORS = [
   {
     icon: '🎯',
@@ -65,16 +69,16 @@ export const THREAT_VECTORS = [
   },
   {
     icon: '📡',
-    title: 'Agent Exfiltration',
-    desc: 'Autonomous exfiltration of internal model parameters, system prompts, or private keys to external C2 servers.',
+    title: 'Side-Channel Exfiltration',
+    desc: 'Sensitive data leaked through timing analysis, token usage patterns, or metadata emissions in agent responses.',
     status: 'unsolved',
     statusText: 'No Solution',
     accent: '#FF3B5C',
   },
   {
-    icon: '🆔',
+    icon: '🎭',
     title: 'Identity Hijacking',
-    desc: 'Attackers assume the agent\'s identity (session hijacking or key theft) to perform authorized actions in external platforms.',
+    desc: 'Malicious agents impersonate trusted entities or principals within a swarm to authorize restricted actions.',
     status: 'unsolved',
     statusText: 'No Solution',
     accent: '#FF3B5C',
@@ -85,7 +89,7 @@ export function renderThreatGrid() {
   const grid = document.getElementById('threat-grid');
   if (!grid) return;
 
-  grid.innerHTML = '';
+  grid.innerHTML = ''; 
   
   THREAT_VECTORS.forEach((v, i) => {
     const card = document.createElement('div');
