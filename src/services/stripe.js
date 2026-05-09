@@ -1,12 +1,24 @@
+/* ═══════════════════════════════════════════════════════════
+   agents.archi — Stripe Service
+   ═══════════════════════════════════════════════════════════ */
+
 let stripe;
 let currentPlanId;
+
+function setPriceContent(el, amount) {
+  if (!el) return;
+  el.replaceChildren();
+  el.appendChild(document.createTextNode(`$${amount}`));
+  const unit = document.createElement('small');
+  unit.textContent = '/month';
+  el.appendChild(unit);
+}
 
 export async function loadStripeConfig() {
   try {
     let response = await fetch('/v1/stripe/config').catch(() => null);
     
     if (!response || !response.ok) {
-      console.log('⬡ Redirecting to local config substrate...');
       response = await fetch('/api/stripe-config.json');
     }
 
@@ -14,25 +26,22 @@ export async function loadStripeConfig() {
     
     if (config.publicKey && typeof Stripe !== 'undefined') {
       stripe = Stripe(config.publicKey);
-      console.log('⬡ Stripe initialized via secure config');
     }
 
     if (config.plans) {
       if (config.plans.pro) {
-        const proEl = document.getElementById('price-pro');
-        if (proEl) proEl.innerHTML = `$${config.plans.pro.amount}<small>/month</small>`;
+        setPriceContent(document.getElementById('price-pro'), config.plans.pro.amount);
         const proBtn = document.querySelector('[data-plan="pro"]');
         if (proBtn) proBtn.dataset.priceId = config.plans.pro.id;
       }
       if (config.plans.team) {
-        const teamEl = document.getElementById('price-team');
-        if (teamEl) teamEl.innerHTML = `$${config.plans.team.amount}<small>/month</small>`;
+        setPriceContent(document.getElementById('price-team'), config.plans.team.amount);
         const teamBtn = document.querySelector('[data-plan="team"]');
         if (teamBtn) teamBtn.dataset.priceId = config.plans.team.id;
       }
     }
-  } catch (err) {
-    console.error('⬡ Stripe Config Error:', err);
+  } catch {
+    // Stripe config unavailable — pricing falls back to static HTML
   }
 }
 
@@ -44,7 +53,30 @@ export function initStripeCheckout() {
 
   if (!modal || !closeBtn) return;
 
-  // ── Inline error display (replaces bare alert) ────────────
+  planBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const plan = btn.dataset.plan;
+      const priceId = btn.dataset.priceId;
+      const priceText = btn.closest('.plan-card').querySelector('.plan-price').textContent;
+      
+      currentPlanId = priceId;
+      
+      document.getElementById('summary-plan-name').textContent = plan === 'pro' ? 'Pro Agent' : 'Swarm Elite';
+      document.getElementById('summary-plan-price').textContent = priceText.split('/')[0];
+      
+      modal.classList.add('active');
+    });
+  });
+
+  closeBtn.addEventListener('click', () => {
+    modal.classList.remove('active');
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.classList.remove('active');
+  });
+
+  // ── Inline error display ────────────────────────────────
   let errorEl = document.getElementById('checkout-error');
   if (!errorEl) {
     errorEl = document.createElement('p');
@@ -62,47 +94,6 @@ export function initStripeCheckout() {
     errorEl.textContent = '';
     errorEl.style.display = 'none';
   }
-
-  planBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const plan = btn.dataset.plan;
-      const priceId = btn.dataset.priceId;
-      const priceText = btn.closest('.plan-card').querySelector('.plan-price').textContent;
-      
-      currentPlanId = priceId;
-      
-      document.getElementById('summary-plan-name').textContent = plan === 'pro' ? 'Pro Agent' : 'Swarm Elite';
-      document.getElementById('summary-plan-price').textContent = priceText.split('/')[0];
-
-      // Reset modal to clean state
-      clearCheckoutError();
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Pay Securely';
-      const emailInput = document.getElementById('checkout-email');
-      if (emailInput) emailInput.value = '';
-      
-      modal.classList.add('active');
-    });
-  });
-
-  closeBtn.addEventListener('click', () => {
-    modal.classList.remove('active');
-    clearCheckoutError();
-  });
-
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      modal.classList.remove('active');
-      clearCheckoutError();
-    }
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('active')) {
-      modal.classList.remove('active');
-      clearCheckoutError();
-    }
-  });
 
   submitBtn.addEventListener('click', async () => {
     const email = document.getElementById('checkout-email').value;
@@ -132,11 +123,14 @@ export function initStripeCheckout() {
         throw new Error(data.error || `Server error ${response.status}`);
       }
 
-      // C5-REAL: redirect to Stripe hosted checkout
+      // C5-REAL: validate redirect target is Stripe before navigation
+      const checkoutUrl = new URL(data.url);
+      if (!checkoutUrl.hostname.endsWith('stripe.com')) {
+        throw new Error('Invalid checkout redirect target');
+      }
       window.location.href = data.url;
 
-    } catch (err) {
-      console.error('⬡ Checkout Error:', err);
+    } catch {
       showCheckoutError('Could not start checkout. Please try again.');
       submitBtn.disabled = false;
       submitBtn.textContent = 'Pay Securely';

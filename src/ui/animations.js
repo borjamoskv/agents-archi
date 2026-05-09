@@ -1,3 +1,7 @@
+/* ═══════════════════════════════════════════════════════════
+   agents.archi — Animations UI Logic
+   ═══════════════════════════════════════════════════════════ */
+
 export function initScrollReveal() {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -14,9 +18,7 @@ export function initScrollReveal() {
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
   document.querySelectorAll('.pillar, .bounty-card, .feed-card').forEach((el, i) => {
-    if (!el.classList.contains('reveal')) {
-      el.classList.add('reveal');
-    }
+    el.classList.add('reveal');
     el.style.transitionDelay = `${i * 100}ms`;
     observer.observe(el);
   });
@@ -71,21 +73,25 @@ export function initLabMetrics() {
   const bars = document.querySelectorAll('#lab-chart .bar');
   if (!throughputEl || bars.length === 0) return;
 
-  let jitterInterval = null;
-  let hasAnimated = false;
-
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (entry.isIntersecting && !hasAnimated) {
-        hasAnimated = true;
+      if (entry.isIntersecting) {
         let val = 0;
         const target = 1242;
         const tick = () => {
           val += Math.floor(Math.random() * 50) + 20;
           if (val >= target) {
-            throughputEl.innerHTML = `1.2k <small>inv/sec</small>`;
+            throughputEl.replaceChildren();
+            throughputEl.appendChild(document.createTextNode('1.2k '));
+            const u = document.createElement('small');
+            u.textContent = 'inv/sec';
+            throughputEl.appendChild(u);
           } else {
-            throughputEl.innerHTML = `${(val / 1000).toFixed(1)}k <small>inv/sec</small>`;
+            throughputEl.replaceChildren();
+            throughputEl.appendChild(document.createTextNode(`${(val / 1000).toFixed(1)}k `));
+            const u = document.createElement('small');
+            u.textContent = 'inv/sec';
+            throughputEl.appendChild(u);
             requestAnimationFrame(tick);
           }
         };
@@ -96,65 +102,55 @@ export function initLabMetrics() {
             bar.style.height = `${bar.dataset.h}%`;
           }, i * 100);
         });
-      }
 
-      if (entry.isIntersecting && !jitterInterval) {
-        jitterInterval = setInterval(() => {
+        setInterval(() => {
           const randomBar = bars[Math.floor(Math.random() * bars.length)];
+          if (!randomBar) return;
           const baseH = parseInt(randomBar.dataset.h, 10);
           const jitter = (Math.random() - 0.5) * 15;
           randomBar.style.height = `${Math.max(20, Math.min(100, baseH + jitter))}%`;
         }, 800);
-      } else if (!entry.isIntersecting && jitterInterval) {
-        clearInterval(jitterInterval);
-        jitterInterval = null;
+
+        observer.unobserve(entry.target);
       }
     });
   }, { threshold: 0.2 });
 
   const labSection = document.getElementById('lab');
   if (labSection) observer.observe(labSection);
-
-  window.addEventListener('pagehide', () => {
-    if (jitterInterval) {
-      clearInterval(jitterInterval);
-      jitterInterval = null;
-    }
-  });
 }
 
 export function initTerminalAnimation() {
-  const terminal = document.querySelector('.pillar-terminal');
-  if (!terminal) return;
-
-  const lines = terminal.querySelectorAll('.terminal-body .line');
-  lines.forEach(line => {
-    line.style.animationPlayState = 'paused';
-  });
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        lines.forEach(line => {
-          line.style.animationPlayState = 'running';
-        });
-        observer.unobserve(entry.target);
-      }
+  const terminals = document.querySelectorAll('.pillar-terminal');
+  
+  terminals.forEach(terminal => {
+    const lines = terminal.querySelectorAll('.terminal-body .line');
+    lines.forEach(line => {
+      line.style.animationPlayState = 'paused';
     });
-  }, { threshold: 0.4 });
 
-  observer.observe(terminal);
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          lines.forEach(line => {
+            line.style.animationPlayState = 'running';
+          });
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+
+    observer.observe(terminal);
+  });
 }
 
 export function initTypingCursor() {
-  const heroSub = document.getElementById('hero-sub');
-  if (!heroSub) return;
-  
-  const cursor = document.createElement('span');
-  cursor.className = 'typing-cursor';
-  heroSub.appendChild(cursor);
-  
-  setTimeout(() => cursor.remove(), 4000);
+  const cursor = document.getElementById('council-cursor');
+  if (!cursor) return;
+
+  setInterval(() => {
+    cursor.style.opacity = cursor.style.opacity === '0' ? '1' : '0';
+  }, 500);
 }
 
 export function initFooterYear() {

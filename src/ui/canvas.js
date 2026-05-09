@@ -1,3 +1,7 @@
+/* ═══════════════════════════════════════════════════════════
+   agents.archi — Canvas UI Logic
+   ═══════════════════════════════════════════════════════════ */
+
 export function initHeroInteractive() {
   const hero = document.getElementById('hero');
   const glow = document.getElementById('hero-interactive-glow');
@@ -26,11 +30,11 @@ export function initParticleGrid() {
 
   const ctx = canvas.getContext('2d');
   let particles = [];
-  let animationId = null;
-  let paused = false;
+  let animationId;
 
   function resize() {
     const hero = document.getElementById('hero');
+    if (!hero) return;
     const dpr = window.devicePixelRatio || 1;
     const w = hero.offsetWidth;
     const h = hero.offsetHeight;
@@ -43,10 +47,10 @@ export function initParticleGrid() {
 
   function createParticles() {
     particles = [];
-    const w = canvas.width / (window.devicePixelRatio || 1);
-    const h = canvas.height / (window.devicePixelRatio || 1);
-    let count = Math.floor((w * h) / 18000);
-    if (window.innerWidth < 768) count = Math.floor(count / 2.5);
+    const dpr = window.devicePixelRatio || 1;
+    const w = canvas.width / dpr;
+    const h = canvas.height / dpr;
+    const count = Math.floor((w * h) / 18000);
     for (let i = 0; i < count; i++) {
       particles.push({
         x: Math.random() * w,
@@ -59,13 +63,10 @@ export function initParticleGrid() {
   }
 
   function draw() {
-    if (paused) {
-      animationId = null;
-      return;
-    }
-
     const dpr = window.devicePixelRatio || 1;
-    ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+    const w = canvas.width / dpr;
+    const h = canvas.height / dpr;
+    ctx.clearRect(0, 0, w, h);
 
     const maxDist = 120;
     const maxDist2 = maxDist * maxDist;
@@ -97,10 +98,8 @@ export function initParticleGrid() {
       p.x += p.vx;
       p.y += p.vy;
 
-      const logicalW = canvas.width / (window.devicePixelRatio || 1);
-      const logicalH = canvas.height / (window.devicePixelRatio || 1);
-      if (p.x < 0 || p.x > logicalW) p.vx *= -1;
-      if (p.y < 0 || p.y > logicalH) p.vy *= -1;
+      if (p.x < 0 || p.x > w) p.vx *= -1;
+      if (p.y < 0 || p.y > h) p.vy *= -1;
     }
 
     animationId = requestAnimationFrame(draw);
@@ -110,30 +109,22 @@ export function initParticleGrid() {
   createParticles();
   draw();
 
-  let resizeTimer;
   window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      resize();
-      createParticles();
-    }, 150);
+    resize();
+    createParticles();
   });
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        paused = false;
         if (!animationId) draw();
       } else {
-        paused = true;
-        if (animationId) {
-          cancelAnimationFrame(animationId);
-          animationId = null;
-        }
+        cancelAnimationFrame(animationId);
+        animationId = null;
       }
     });
   }, { threshold: 0 });
 
-  observer.observe(document.getElementById('hero'));
+  const heroSection = document.getElementById('hero');
+  if (heroSection) observer.observe(heroSection);
 }
-

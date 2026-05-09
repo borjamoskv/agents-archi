@@ -1,3 +1,7 @@
+/* ═══════════════════════════════════════════════════════════
+   agents.archi — Waitlist Form Component
+   ═══════════════════════════════════════════════════════════ */
+
 export function initWaitlistForm() {
   const form = document.getElementById('waitlist-form');
   if (!form) return;
@@ -11,6 +15,7 @@ export function initWaitlistForm() {
     const value = email.value.trim();
     if (!value) return;
 
+    // Visual feedback
     const originalText = submit.textContent;
     submit.textContent = '✓ Registered';
     submit.style.background = '#34D399';
@@ -18,7 +23,8 @@ export function initWaitlistForm() {
     email.disabled = true;
     submit.disabled = true;
 
-    window.location.href = `mailto:borja@moskv.com?subject=${encodeURIComponent('agents.archi Early Access')}&body=${encodeURIComponent('Requesting early access for: ' + value)}`;
+    // Open mailto as fallback
+    window.location.href = `mailto:borja@moskv.com?subject=agents.archi Early Access&body=Requesting early access for: ${value}`;
 
     setTimeout(() => {
       submit.textContent = originalText;

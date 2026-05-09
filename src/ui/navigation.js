@@ -1,3 +1,7 @@
+/* ═══════════════════════════════════════════════════════════
+   agents.archi — Navigation UI Logic
+   ═══════════════════════════════════════════════════════════ */
+
 export function initNavScroll() {
   const nav = document.getElementById('nav-main');
   if (!nav) return;
@@ -11,7 +15,7 @@ export function initNavScroll() {
       });
       ticking = true;
     }
-  }, { passive: true });
+  });
 }
 
 export function initMobileMenu() {
@@ -47,13 +51,14 @@ export function initSmoothScroll() {
 }
 
 export function initActiveNavTracking() {
-  const sections = ['threat-vectors', 'solution', 'track-record', 'threat-feed', 'pricing'];
+  const sections = ['threat-vectors', 'solution', 'track-record', 'threat-feed', 'pricing', 'sovereign-council'];
   const navLinks = {
     'threat-vectors': document.getElementById('nav-taxonomy'),
     'solution': document.getElementById('nav-solution'),
     'track-record': document.getElementById('nav-track'),
     'threat-feed': document.getElementById('nav-feed'),
     'pricing': document.getElementById('nav-pricing-link'),
+    'sovereign-council': document.getElementById('nav-council'),
   };
 
   let activeSections = new Set();
@@ -88,19 +93,12 @@ export function initActiveNavTracking() {
 }
 
 export function initBackToTop() {
-  const btn = document.createElement('button');
-  btn.className = 'back-to-top';
-  btn.setAttribute('aria-label', 'Back to top');
-  btn.innerHTML = '↑';
-  document.body.appendChild(btn);
+  const btn = document.getElementById('back-to-top');
+  if (!btn) return;
 
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 600) {
-      btn.classList.add('visible');
-    } else {
-      btn.classList.remove('visible');
-    }
-  }, { passive: true });
+    btn.classList.toggle('visible', window.scrollY > 500);
+  });
 
   btn.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -112,17 +110,10 @@ export function initScrollProgress() {
   bar.className = 'scroll-progress';
   document.body.appendChild(bar);
 
-  let ticking = false;
   window.addEventListener('scroll', () => {
-    if (!ticking) {
-      requestAnimationFrame(() => {
-        const scrollTop = window.scrollY;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-        bar.style.width = `${pct}%`;
-        ticking = false;
-      });
-      ticking = true;
-    }
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    bar.style.width = `${pct}%`;
   }, { passive: true });
 }
