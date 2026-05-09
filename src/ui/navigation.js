@@ -9,13 +9,13 @@ export function initNavScroll() {
   let ticking = false;
   window.addEventListener('scroll', () => {
     if (!ticking) {
-      requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
         nav.classList.toggle('scrolled', window.scrollY > 40);
         ticking = false;
       });
       ticking = true;
     }
-  });
+  }, { passive: true });
 }
 
 export function initMobileMenu() {
@@ -96,9 +96,16 @@ export function initBackToTop() {
   const btn = document.getElementById('back-to-top');
   if (!btn) return;
 
+  let ticking = false;
   window.addEventListener('scroll', () => {
-    btn.classList.toggle('visible', window.scrollY > 500);
-  });
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        btn.classList.toggle('visible', window.scrollY > 500);
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
 
   btn.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -110,10 +117,20 @@ export function initScrollProgress() {
   bar.className = 'scroll-progress';
   document.body.appendChild(bar);
 
+  let docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  window.addEventListener('resize', () => {
+    docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  }, { passive: true });
+
+  let ticking = false;
   window.addEventListener('scroll', () => {
-    const scrollTop = window.scrollY;
-    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-    bar.style.width = `${pct}%`;
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        const pct = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
+        bar.style.width = `${pct}%`;
+        ticking = false;
+      });
+      ticking = true;
+    }
   }, { passive: true });
 }
