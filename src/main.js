@@ -86,7 +86,8 @@ function renderThreatGrid() {
     card.style.transitionDelay = `${i * 60}ms`;
     
     card.innerHTML = `
-      <div class="threat-card-header">
+      <div class="hero-glow"></div>
+      <div class="hero-interactive-glow" id="hero-interactive-glow"></div>-header">
         <span class="threat-icon">${v.icon}</span>
         <span class="threat-status ${v.status}">${v.statusText}</span>
       </div>
@@ -267,6 +268,29 @@ function initLabMetrics() {
   observer.observe(document.getElementById('lab'));
 }
 
+// ── Hero Interactive Glow ──
+function initHeroInteractive() {
+  const hero = document.getElementById('hero');
+  const glow = document.getElementById('hero-interactive-glow');
+  if (!hero || !glow) return;
+
+  hero.addEventListener('mousemove', (e) => {
+    const rect = hero.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    requestAnimationFrame(() => {
+      glow.style.left = `${x - 300}px`;
+      glow.style.top = `${y - 300}px`;
+      glow.style.opacity = '0.6';
+    });
+  });
+
+  hero.addEventListener('mouseleave', () => {
+    glow.style.opacity = '0';
+  });
+}
+
 // ── Initialize ──
 document.addEventListener('DOMContentLoaded', () => {
   renderThreatGrid();
@@ -274,6 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
   animateCounters();
   initNavScroll();
   initMobileMenu();
+  initHeroInteractive();
   initSmoothScroll();
   initScoreBars();
   initLabMetrics();
