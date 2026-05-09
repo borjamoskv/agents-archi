@@ -77,16 +77,25 @@ function renderThreatGrid() {
   const grid = document.getElementById('threat-grid');
   if (!grid) return;
 
-  grid.innerHTML = THREAT_VECTORS.map((v, i) => `
-    <div class="threat-card reveal" style="--card-accent: ${v.accent}; transition-delay: ${i * 60}ms">
+  grid.innerHTML = ''; // Clear existing
+  
+  THREAT_VECTORS.forEach((v, i) => {
+    const card = document.createElement('div');
+    card.className = 'threat-card reveal';
+    card.style.setProperty('--card-accent', v.accent);
+    card.style.transitionDelay = `${i * 60}ms`;
+    
+    card.innerHTML = `
       <div class="threat-card-header">
         <span class="threat-icon">${v.icon}</span>
         <span class="threat-status ${v.status}">${v.statusText}</span>
       </div>
       <h4>${v.title}</h4>
       <p>${v.desc}</p>
-    </div>
-  `).join('');
+    `;
+    
+    grid.appendChild(card);
+  });
 }
 
 // ── Scroll Reveal Observer ──
