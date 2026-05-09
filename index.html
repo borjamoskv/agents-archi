@@ -471,14 +471,15 @@
 
     <!-- Sovereign Council -->
     <section id="sovereign-council" class="section section-council">
+      <canvas class="legion-canvas" id="legion-canvas" aria-hidden="true"></canvas>
       <div class="council-bg-mesh" id="council-mesh" aria-hidden="true">
         <svg class="council-svg" id="council-svg" width="100%" height="100%"></svg>
       </div>
       <div class="section-inner">
         <div class="section-header">
-          <span class="section-tag council-tag">⬡ CORTEX SWARM — LIVE</span>
+          <span class="section-tag council-tag">⬡ LEGIØN-1 — 1000 NODES LIVE</span>
           <h2 id="council-title">Sovereign Agent Council<br /><span class="text-accent">Reunion Protocol Active</span></h2>
-          <p class="section-desc">9 autonomous agents converging. Each node carries a role. All bound by the Nine Laws.</p>
+          <p class="section-desc">9 commanders. 1000 autonomous nodes converging. Harmonic Homeostasis Ω₁₆ active. All bound by the Nine Laws.</p>
         </div>
         <div class="council-arena">
           <!-- Agent Grid -->
@@ -502,7 +503,7 @@
         <div class="council-metrics" id="council-metrics">
           <div class="council-metric">
             <span class="metric-label">Active Nodes</span>
-            <span class="metric-value" id="metric-nodes">9/9</span>
+            <span class="metric-value" id="metric-nodes">0/1000</span>
           </div>
           <div class="council-metric">
             <span class="metric-label">Consensus</span>
@@ -514,11 +515,37 @@
           </div>
           <div class="council-metric">
             <span class="metric-label">Protocol</span>
-            <span class="metric-value">Ω₃ · REUNION</span>
+            <span class="metric-value">Ω₁₆ · HOMEOSTASIS</span>
           </div>
           <div class="council-metric">
             <span class="metric-label">Reality Level</span>
             <span class="metric-value" id="metric-reality">C4-SIMULACIÓN</span>
+          </div>
+        </div>
+        <!-- Genesis Synthesis Oscilloscope -->
+        <div class="legion-oscilloscope" id="legion-oscilloscope">
+          <div class="oscilloscope-header">
+            <span class="oscilloscope-label">⬡ GENESIS SYNTHESIS Ω₆₄ — Additive Harmonic Waveform</span>
+            <span class="osc-state osc-stable" id="harmonic-state">STABLE</span>
+          </div>
+          <canvas class="oscilloscope-canvas" id="oscilloscope-canvas" aria-hidden="true"></canvas>
+          <div class="oscilloscope-metrics">
+            <span class="osc-metric">
+              <span class="osc-metric-label">Entropy</span>
+              <span class="osc-metric-value" id="entropy-value">0.0000</span>
+            </span>
+            <span class="osc-metric">
+              <span class="osc-metric-label">Consonance</span>
+              <span class="osc-metric-value" id="consonance-value">1:1 Unison</span>
+            </span>
+            <span class="osc-metric">
+              <span class="osc-metric-label">Active Nodes</span>
+              <span class="osc-metric-value" id="legion-node-count">0 / 1000</span>
+            </span>
+            <span class="osc-metric">
+              <span class="osc-metric-label">Connections</span>
+              <span class="osc-metric-value" id="legion-conn-count">0</span>
+            </span>
           </div>
         </div>
       </div>

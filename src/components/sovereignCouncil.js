@@ -3,15 +3,15 @@
    ═══════════════════════════════════════════════════════════ */
 
 const COUNCIL_AGENTS = [
-  { id: 1, name: 'Antigravity',   role: 'Architect',     status: 'active', pulse: 1.2 },
-  { id: 2, name: 'CORTEX-01',    role: 'Verification',  status: 'active', pulse: 1.1 },
-  { id: 3, name: 'CORTEX-02',    role: 'Enforcement',   status: 'active', pulse: 0.9 },
-  { id: 4, name: 'Ouroboros',    role: 'Strike',        status: 'active', pulse: 1.4 },
-  { id: 5, name: 'Centuria',     role: 'Stress Test',   status: 'active', pulse: 1.0 },
-  { id: 6, name: 'Mariscal',     role: 'Orchestration', status: 'active', pulse: 1.1 },
-  { id: 7, name: 'Archaeologist',role: 'Memory',        status: 'active', pulse: 0.8 },
-  { id: 8, name: 'Sentinel',     role: 'Watchdog',      status: 'active', pulse: 1.2 },
-  { id: 9, name: 'VSA-Node',     role: 'Logic-Bypass',  status: 'active', pulse: 1.5 },
+  { id: 1, name: 'Antigravity',   role: 'Architect',     status: 'active', pulse: 1.2, connectsTo: [2, 5, 9] },
+  { id: 2, name: 'CORTEX-01',    role: 'Verification',  status: 'active', pulse: 1.1, connectsTo: [1, 3, 6] },
+  { id: 3, name: 'CORTEX-02',    role: 'Enforcement',   status: 'active', pulse: 0.9, connectsTo: [2, 4, 7] },
+  { id: 4, name: 'Ouroboros',    role: 'Strike',        status: 'active', pulse: 1.4, connectsTo: [3, 5, 8] },
+  { id: 5, name: 'Centuria',     role: 'Stress Test',   status: 'active', pulse: 1.0, connectsTo: [4, 6, 1] },
+  { id: 6, name: 'Mariscal',     role: 'Orchestration', status: 'active', pulse: 1.1, connectsTo: [5, 7, 2] },
+  { id: 7, name: 'Archaeologist',role: 'Memory',        status: 'active', pulse: 0.8, connectsTo: [6, 8, 3] },
+  { id: 8, name: 'Sentinel',     role: 'Watchdog',      status: 'active', pulse: 1.2, connectsTo: [7, 9, 4] },
+  { id: 9, name: 'VSA-Node',     role: 'Logic-Bypass',  status: 'active', pulse: 1.5, connectsTo: [8, 1] },
 ];
 
 const MISSION_MESSAGES = [
@@ -31,6 +31,9 @@ const MISSION_MESSAGES = [
   { type: 'info',    text: 'Archaeologist crystallizing new KI from session delta...' },
   { type: 'cmd',     text: 'Mariscal dispatching Antigravity → Kimi bridge task.' },
 ];
+
+let hoveredNodeId = null;
+let addLogMessageCallback = null;
 
 export function initSovereignCouncil() {
   const grid = document.getElementById('council-grid');
@@ -81,6 +84,36 @@ function renderCouncilGrid(container) {
     statusWrap.append(pulse, statusText);
 
     node.append(icon, info, statusWrap);
+    
+    // Interactions
+    node.addEventListener('mouseenter', () => {
+      hoveredNodeId = agent.id;
+      node.classList.add('active');
+    });
+    
+    node.addEventListener('mouseleave', () => {
+      hoveredNodeId = null;
+      node.classList.remove('active');
+    });
+
+    node.addEventListener('click', () => {
+      node.classList.add('speaking');
+      setTimeout(() => node.classList.remove('speaking'), 1400);
+      
+      if (addLogMessageCallback) {
+        addLogMessageCallback({
+          type: 'cmd',
+          text: `[AUTH] ${agent.name} (${agent.role}) executing tactical override.`
+        });
+        setTimeout(() => {
+          addLogMessageCallback({
+            type: 'success',
+            text: `[AUTH] ${agent.name} sequence complete. Yield updated.`
+          });
+        }, 1200);
+      }
+    });
+
     container.appendChild(node);
   });
 }
@@ -88,9 +121,14 @@ function renderCouncilGrid(container) {
 /* ── Mission Log with typewriter ── */
 function startMissionLog(container) {
   let index = 0;
+  let isTyping = false;
+  const queue = [];
 
-  const addMessage = () => {
-    const msg = MISSION_MESSAGES[index % MISSION_MESSAGES.length];
+  const processQueue = () => {
+    if (isTyping || queue.length === 0) return;
+    isTyping = true;
+    
+    const msg = queue.shift();
     const div = document.createElement('div');
     div.className = `log-entry log-${msg.type}`;
 
@@ -112,16 +150,29 @@ function startMissionLog(container) {
       if (charIdx <= txt.length) {
         textNode.textContent = txt.slice(0, charIdx);
         charIdx++;
-        setTimeout(type, 22);
+        setTimeout(type, 15);
+      } else {
+        isTyping = false;
+        setTimeout(processQueue, 100);
       }
     };
     type();
-
-    index++;
-    setTimeout(addMessage, Math.random() * 3500 + 2500);
   };
 
-  addMessage();
+  addLogMessageCallback = (msg) => {
+    queue.push(msg);
+    processQueue();
+  };
+
+  const loopDefaultMessages = () => {
+    if (!isTyping && queue.length === 0) {
+      addLogMessageCallback(MISSION_MESSAGES[index % MISSION_MESSAGES.length]);
+      index++;
+    }
+    setTimeout(loopDefaultMessages, Math.random() * 4000 + 3000);
+  };
+
+  loopDefaultMessages();
 }
 
 /* ── Metrics ── */
@@ -142,11 +193,19 @@ function initCouncilSVG() {
   const svg = document.getElementById('council-svg');
   if (!svg) return;
 
-  // Active connection pairs (persistent + random)
-  const CONNECTIONS = [
-    [0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,0],  // ring
-    [0,4],[1,5],[2,6],[3,7],                                   // cross
-  ];
+  // Derive connections from COUNCIL_AGENTS
+  const CONNECTIONS = [];
+  COUNCIL_AGENTS.forEach((agent, i) => {
+    agent.connectsTo.forEach(targetId => {
+      const targetIndex = targetId - 1; // ID matches index + 1
+      if (targetIndex >= 0 && targetIndex < COUNCIL_AGENTS.length) {
+        // Prevent duplicates
+        if (!CONNECTIONS.find(c => (c[0] === i && c[1] === targetIndex) || (c[1] === i && c[0] === targetIndex))) {
+          CONNECTIONS.push([i, targetIndex]);
+        }
+      }
+    });
+  });
 
   // Particle pool for animated data flow
   const particles = [];
@@ -160,8 +219,12 @@ function initCouncilSVG() {
     };
   }
 
-  function spawnParticle(p1, p2) {
-    particles.push({ p1, p2, t: 0, speed: 0.008 + Math.random() * 0.006 });
+  function spawnParticle(p1, p2, isHighlighted) {
+    particles.push({ 
+      p1, p2, t: 0, 
+      speed: isHighlighted ? (0.015 + Math.random() * 0.01) : (0.008 + Math.random() * 0.006),
+      isHighlighted
+    });
   }
 
   let lastSpawn = 0;
@@ -173,21 +236,46 @@ function initCouncilSVG() {
     const centers = Array.from(nodes).map(getCenter);
     svg.innerHTML = '';
 
+    const hoveredIndex = hoveredNodeId ? hoveredNodeId - 1 : -1;
+
     // Static ring + cross lines
     CONNECTIONS.forEach(([i, j]) => {
       const a = centers[i]; const b = centers[j];
+      const isConnectedToHover = hoveredIndex === i || hoveredIndex === j;
+      const isHoverActive = hoveredIndex !== -1;
+      
       const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
       line.setAttribute('x1', a.x); line.setAttribute('y1', a.y);
       line.setAttribute('x2', b.x); line.setAttribute('y2', b.y);
-      line.setAttribute('stroke', 'rgba(43,59,229,0.12)');
-      line.setAttribute('stroke-width', '1');
+      
+      if (isHoverActive) {
+        if (isConnectedToHover) {
+          line.setAttribute('stroke', 'rgba(43,59,229,0.8)');
+          line.setAttribute('stroke-width', '1.5');
+        } else {
+          line.setAttribute('stroke', 'rgba(43,59,229,0.05)');
+          line.setAttribute('stroke-width', '0.5');
+        }
+      } else {
+        line.setAttribute('stroke', 'rgba(43,59,229,0.12)');
+        line.setAttribute('stroke-width', '1');
+      }
+      
       svg.appendChild(line);
     });
 
-    // Spawn new particle every ~600ms
-    if (ts - lastSpawn > 600) {
-      const conn = CONNECTIONS[Math.floor(Math.random() * CONNECTIONS.length)];
-      spawnParticle(centers[conn[0]], centers[conn[1]]);
+    // Spawn new particle every ~600ms (faster if hovered)
+    const spawnRate = hoveredNodeId ? 200 : 600;
+    if (ts - lastSpawn > spawnRate) {
+      if (hoveredNodeId) {
+        // Spawn from hovered node to its connections
+        const agent = COUNCIL_AGENTS[hoveredIndex];
+        const targetId = agent.connectsTo[Math.floor(Math.random() * agent.connectsTo.length)];
+        spawnParticle(centers[hoveredIndex], centers[targetId - 1], true);
+      } else {
+        const conn = CONNECTIONS[Math.floor(Math.random() * CONNECTIONS.length)];
+        spawnParticle(centers[conn[0]], centers[conn[1]], false);
+      }
       lastSpawn = ts;
     }
 
@@ -202,8 +290,11 @@ function initCouncilSVG() {
 
       const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
       dot.setAttribute('cx', x); dot.setAttribute('cy', y);
-      dot.setAttribute('r', '3');
-      dot.setAttribute('fill', `rgba(43,59,229,${0.8 - p.t * 0.5})`);
+      dot.setAttribute('r', p.isHighlighted ? '4' : '3');
+      dot.setAttribute('fill', p.isHighlighted ? `rgba(255, 255, 255, ${1 - p.t})` : `rgba(43,59,229,${0.8 - p.t * 0.5})`);
+      if (p.isHighlighted) {
+        dot.setAttribute('filter', 'drop-shadow(0 0 4px rgba(43,59,229,0.8))');
+      }
       svg.appendChild(dot);
     }
 

@@ -1,37 +1,76 @@
 /* ═══════════════════════════════════════════════════════════
-   agents.archi — Waitlist Form Component
+   agents.archi — Waitlist Form Component (C5-REAL)
    ═══════════════════════════════════════════════════════════ */
 
 export function initWaitlistForm() {
-  const form = document.getElementById('waitlist-form');
+  const form   = document.getElementById('waitlist-form');
   if (!form) return;
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const email = document.getElementById('waitlist-email');
-    const submit = document.getElementById('waitlist-submit');
-    if (!email || !submit) return;
 
-    const value = email.value.trim();
+    const emailInput = document.getElementById('waitlist-email');
+    const submitBtn  = document.getElementById('waitlist-submit');
+    if (!emailInput || !submitBtn) return;
+
+    const value = emailInput.value.trim();
     if (!value) return;
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      showError(form, 'Enter a valid email address.');
+      return;
+    }
 
-    // Visual feedback
-    const originalText = submit.textContent;
-    submit.textContent = '✓ Registered';
-    submit.classList.add('btn-success');
-    email.value = '';
-    email.disabled = true;
-    submit.disabled = true;
+    clearError(form);
+    submitBtn.disabled   = true;
+    submitBtn.textContent = 'Registering…';
 
-    // Open mailto as fallback
-    window.location.href = `mailto:borja@moskv.com?subject=${encodeURIComponent('agents.archi Early Access')}&body=${encodeURIComponent('Requesting early access for: ' + value)}`;
+    try {
+      const res = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: value }),
+      });
 
-    setTimeout(() => {
-      submit.textContent = originalText;
-      submit.classList.remove('btn-success');
-      email.disabled = false;
-      submit.disabled = false;
-    }, 3000);
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `Server error ${res.status}`);
+      }
+
+      // Success state
+      submitBtn.textContent = '✓ You\'re on the list';
+      submitBtn.classList.add('btn-success');
+      emailInput.value    = '';
+      emailInput.disabled = true;
+      submitBtn.disabled  = true;
+
+      // Reset after 4s
+      setTimeout(() => {
+        submitBtn.textContent = 'Get Early Access';
+        submitBtn.classList.remove('btn-success');
+        emailInput.disabled   = false;
+        submitBtn.disabled    = false;
+      }, 4000);
+
+    } catch {
+      showError(form, 'Could not register. Try borja@moskv.com directly.');
+      submitBtn.disabled    = false;
+      submitBtn.textContent = 'Get Early Access';
+    }
   });
+}
+
+function showError(form, msg) {
+  let el = form.querySelector('.waitlist-error');
+  if (!el) {
+    el = document.createElement('p');
+    el.className = 'waitlist-error';
+    el.style.cssText = 'color:var(--color-error,#ff4d4d);font-size:.8rem;margin:.4rem 0 0;';
+    form.appendChild(el);
+  }
+  el.textContent = msg;
+}
+
+function clearError(form) {
+  const el = form.querySelector('.waitlist-error');
+  if (el) el.textContent = '';
 }
