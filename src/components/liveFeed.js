@@ -19,23 +19,54 @@ export async function renderLiveFeed() {
       card.id = `feed-${t.id}`;
       card.style.transitionDelay = `${i * 80}ms`;
 
-      card.innerHTML = `
-        <div class="feed-card-header">
-          <div class="feed-header-left">
-            <span class="feed-cve">${t.cve}</span>
-            ${i === 0 ? '<span class="feed-badge-new">NEW</span>' : ''}
-          </div>
-          <span class="feed-severity ${t.severity}">${t.severity.toUpperCase()}</span>
-        </div>
-        <h4>${t.title}</h4>
-        <p>${t.desc}</p>
-        <div class="feed-meta">
-          <span class="feed-source">${t.source}</span>
-          ${t.cvss ? `<span class="feed-cvss cvss-${t.severity}">${t.cvss}</span>` : ''}
-          <span class="feed-date">${t.date}</span>
-        </div>
-      `;
+      // ── Header ──
+      const header = document.createElement('div');
+      header.className = 'feed-card-header';
 
+      const headerLeft = document.createElement('div');
+      headerLeft.className = 'feed-header-left';
+      const cve = document.createElement('span');
+      cve.className = 'feed-cve';
+      cve.textContent = t.cve;
+      headerLeft.appendChild(cve);
+      if (i === 0) {
+        const badge = document.createElement('span');
+        badge.className = 'feed-badge-new';
+        badge.textContent = 'NEW';
+        headerLeft.appendChild(badge);
+      }
+
+      const severity = document.createElement('span');
+      severity.className = `feed-severity ${t.severity}`;
+      severity.textContent = t.severity.toUpperCase();
+
+      header.append(headerLeft, severity);
+
+      // ── Body ──
+      const title = document.createElement('h4');
+      title.textContent = t.title;
+      const desc = document.createElement('p');
+      desc.textContent = t.desc;
+
+      // ── Meta ──
+      const meta = document.createElement('div');
+      meta.className = 'feed-meta';
+      const source = document.createElement('span');
+      source.className = 'feed-source';
+      source.textContent = t.source;
+      meta.appendChild(source);
+      if (t.cvss) {
+        const cvss = document.createElement('span');
+        cvss.className = `feed-cvss cvss-${t.severity}`;
+        cvss.textContent = t.cvss;
+        meta.appendChild(cvss);
+      }
+      const date = document.createElement('span');
+      date.className = 'feed-date';
+      date.textContent = t.date;
+      meta.appendChild(date);
+
+      card.append(header, title, desc, meta);
       grid.appendChild(card);
     });
 
@@ -50,7 +81,7 @@ export async function renderLiveFeed() {
     
     grid.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-  } catch (err) {
-    console.warn('⬡ Using hardcoded threat fallbacks:', err);
+  } catch {
+    // Feed unavailable — hardcoded fallbacks rendered by threats.js
   }
 }

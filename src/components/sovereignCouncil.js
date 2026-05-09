@@ -1,22 +1,40 @@
 /* ═══════════════════════════════════════════════════════════
-   agents.archi — Sovereign Council Component
+   agents.archi — Sovereign Council Component v2
    ═══════════════════════════════════════════════════════════ */
 
 const COUNCIL_AGENTS = [
-  { id: 1, name: 'Antigravity', role: 'Architect', status: 'active', pulse: 1.2 },
-  { id: 2, name: 'CORTEX-01', role: 'Verification', status: 'active', pulse: 1.1 },
-  { id: 3, name: 'CORTEX-02', role: 'Enforcement', status: 'active', pulse: 0.9 },
-  { id: 4, name: 'Ouroboros', role: 'Strike', status: 'active', pulse: 1.4 },
-  { id: 5, name: 'Centuria', role: 'Stress Test', status: 'active', pulse: 1.0 },
-  { id: 6, name: 'Mariscal', role: 'Orchestration', status: 'active', pulse: 1.1 },
-  { id: 7, name: 'Archaeologist', role: 'Memory', status: 'active', pulse: 0.8 },
-  { id: 8, name: 'Sentinel', role: 'Watchdog', status: 'active', pulse: 1.2 },
-  { id: 9, name: 'VSA-Node', role: 'Logic-Bypass', status: 'active', pulse: 1.5 },
+  { id: 1, name: 'Antigravity',   role: 'Architect',     status: 'active', pulse: 1.2 },
+  { id: 2, name: 'CORTEX-01',    role: 'Verification',  status: 'active', pulse: 1.1 },
+  { id: 3, name: 'CORTEX-02',    role: 'Enforcement',   status: 'active', pulse: 0.9 },
+  { id: 4, name: 'Ouroboros',    role: 'Strike',        status: 'active', pulse: 1.4 },
+  { id: 5, name: 'Centuria',     role: 'Stress Test',   status: 'active', pulse: 1.0 },
+  { id: 6, name: 'Mariscal',     role: 'Orchestration', status: 'active', pulse: 1.1 },
+  { id: 7, name: 'Archaeologist',role: 'Memory',        status: 'active', pulse: 0.8 },
+  { id: 8, name: 'Sentinel',     role: 'Watchdog',      status: 'active', pulse: 1.2 },
+  { id: 9, name: 'VSA-Node',     role: 'Logic-Bypass',  status: 'active', pulse: 1.5 },
+];
+
+const MISSION_MESSAGES = [
+  { type: 'info',    text: 'Initializing Sovereign Reunion Protocol Ω₃...' },
+  { type: 'cmd',     text: 'LEGIØN-1 heartbeat confirmed. Δt = 0.003s.' },
+  { type: 'success', text: 'Byzantine Consensus achieved across 9 nodes.' },
+  { type: 'warn',    text: 'Threat Vector [V09] attempting exfiltration bypass.' },
+  { type: 'info',    text: 'Antigravity deploying SMT counter-measure...' },
+  { type: 'success', text: 'Invariant proof complete. Zero-entropy maintained.' },
+  { type: 'cmd',     text: 'Ouroboros Strike: target acquired — K2 Lending.' },
+  { type: 'success', text: 'Critical finding verified. Bounty payload dispatched.' },
+  { type: 'warn',    text: 'MCP supply-chain probe detected on node CORTEX-02.' },
+  { type: 'info',    text: 'Sentinel issuing isolation order for compromised tool.' },
+  { type: 'success', text: 'Isolation complete. Swarm integrity at 100%.' },
+  { type: 'cmd',     text: 'Centuria executing 200-thread stress test on ASL engine.' },
+  { type: 'success', text: 'ASL engine: 200/200 invariants held. C5-REAL confirmed.' },
+  { type: 'info',    text: 'Archaeologist crystallizing new KI from session delta...' },
+  { type: 'cmd',     text: 'Mariscal dispatching Antigravity → Kimi bridge task.' },
 ];
 
 export function initSovereignCouncil() {
   const grid = document.getElementById('council-grid');
-  const log = document.getElementById('council-log');
+  const log  = document.getElementById('council-log');
   if (!grid || !log) return;
 
   renderCouncilGrid(grid);
@@ -25,101 +43,174 @@ export function initSovereignCouncil() {
   initCouncilSVG();
 }
 
+/* ── Grid ── */
 function renderCouncilGrid(container) {
   container.innerHTML = '';
   COUNCIL_AGENTS.forEach((agent, i) => {
     const node = document.createElement('div');
     node.className = 'council-node reveal';
-    node.style.transitionDelay = `${i * 100}ms`;
+    node.style.transitionDelay = `${i * 80}ms`;
     node.id = `node-${agent.id}`;
-    
-    node.innerHTML = `
-      <div class="node-icon">⬡</div>
-      <div class="node-info">
-        <div class="node-name">${agent.name}</div>
-        <div class="node-role">${agent.role}</div>
-      </div>
-      <div class="node-status">
-        <span class="status-pulse" style="animation-duration: ${agent.pulse}s"></span>
-        <span class="status-text">${agent.status.toUpperCase()}</span>
-      </div>
-    `;
-    
+
+    const icon = document.createElement('div');
+    icon.className = 'node-icon';
+    icon.textContent = '⬡';
+
+    const info = document.createElement('div');
+    info.className = 'node-info';
+
+    const nameEl = document.createElement('div');
+    nameEl.className = 'node-name';
+    nameEl.textContent = agent.name;
+
+    const roleEl = document.createElement('div');
+    roleEl.className = 'node-role';
+    roleEl.textContent = agent.role;
+    info.append(nameEl, roleEl);
+
+    const statusWrap = document.createElement('div');
+    statusWrap.className = 'node-status';
+
+    const pulse = document.createElement('span');
+    pulse.className = 'status-pulse';
+    pulse.style.animationDuration = `${agent.pulse}s`;
+
+    const statusText = document.createElement('span');
+    statusText.className = 'status-text';
+    statusText.textContent = agent.status.toUpperCase();
+    statusWrap.append(pulse, statusText);
+
+    node.append(icon, info, statusWrap);
     container.appendChild(node);
   });
 }
 
+/* ── Mission Log with typewriter ── */
 function startMissionLog(container) {
-  const messages = [
-    { type: 'info', text: 'Initializing Sovereign Reunion Protocol Ω₃...' },
-    { type: 'cmd', text: 'LEGIØN-1 node heartbeat detected.' },
-    { type: 'success', text: 'Byzantine Consensus achieved across 9 nodes.' },
-    { type: 'warn', text: 'Threat Vector [V09] attempting exfiltration bypass.' },
-    { type: 'info', text: 'Antigravity deploying counter-measures...' },
-    { type: 'success', text: 'Sovereign Guard active. Zero-entropy maintained.' },
-  ];
-
   let index = 0;
+
   const addMessage = () => {
-    const msg = messages[index % messages.length];
+    const msg = MISSION_MESSAGES[index % MISSION_MESSAGES.length];
     const div = document.createElement('div');
     div.className = `log-entry log-${msg.type}`;
-    div.innerHTML = `<span class="log-time">[${new Date().toLocaleTimeString()}]</span> ${msg.text}`;
+
+    const ts = document.createElement('span');
+    ts.className = 'log-time';
+    ts.textContent = `[${new Date().toLocaleTimeString()}]`;
+    div.appendChild(ts);
+    div.appendChild(document.createTextNode(' '));
+
+    const textNode = document.createElement('span');
+    div.appendChild(textNode);
     container.appendChild(div);
     container.scrollTop = container.scrollHeight;
-    
+
+    // Typewriter
+    let charIdx = 0;
+    const txt = msg.text;
+    const type = () => {
+      if (charIdx <= txt.length) {
+        textNode.textContent = txt.slice(0, charIdx);
+        charIdx++;
+        setTimeout(type, 22);
+      }
+    };
+    type();
+
     index++;
-    setTimeout(addMessage, Math.random() * 3000 + 2000);
+    setTimeout(addMessage, Math.random() * 3500 + 2500);
   };
 
   addMessage();
 }
 
+/* ── Metrics ── */
 function updateMetrics() {
   const yieldEl = document.getElementById('metric-yield');
   if (!yieldEl) return;
 
-  let currentYield = 0;
+  let σ = 0;
   setInterval(() => {
-    currentYield += Math.random() * 0.05;
-    yieldEl.textContent = `Σ ${currentYield.toFixed(4)}`;
-  }, 1000);
+    // Compound with noise
+    σ += Math.random() * 0.12 + 0.02;
+    yieldEl.textContent = `Σ ${σ.toFixed(4)}`;
+  }, 800);
 }
 
+/* ── Animated SVG pulse lines ── */
 function initCouncilSVG() {
   const svg = document.getElementById('council-svg');
   if (!svg) return;
 
-  // Simple reactive lines between nodes (visual only)
-  function updateLines() {
-    svg.innerHTML = '';
-    const rect = svg.getBoundingClientRect();
-    const nodes = document.querySelectorAll('.council-node');
-    
-    const nodeCenters = Array.from(nodes).map(node => {
-      const r = node.getBoundingClientRect();
-      return {
-        x: r.left - rect.left + r.width / 2,
-        y: r.top - rect.top + r.height / 2
-      };
-    });
+  // Active connection pairs (persistent + random)
+  const CONNECTIONS = [
+    [0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,0],  // ring
+    [0,4],[1,5],[2,6],[3,7],                                   // cross
+  ];
 
-    for (let i = 0; i < nodeCenters.length; i++) {
-      for (let j = i + 1; j < nodeCenters.length; j++) {
-        if (Math.random() > 0.6) {
-          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-          line.setAttribute('x1', nodeCenters[i].x);
-          line.setAttribute('y1', nodeCenters[i].y);
-          line.setAttribute('x2', nodeCenters[j].x);
-          line.setAttribute('y2', nodeCenters[j].y);
-          line.setAttribute('stroke', 'rgba(43, 59, 229, 0.1)');
-          line.setAttribute('stroke-width', '1');
-          svg.appendChild(line);
-        }
-      }
-    }
+  // Particle pool for animated data flow
+  const particles = [];
+
+  function getCenter(node) {
+    const svgRect = svg.getBoundingClientRect();
+    const r = node.getBoundingClientRect();
+    return {
+      x: r.left - svgRect.left + r.width / 2,
+      y: r.top  - svgRect.top  + r.height / 2,
+    };
   }
 
-  window.addEventListener('resize', updateLines);
-  setTimeout(updateLines, 500);
+  function spawnParticle(p1, p2) {
+    particles.push({ p1, p2, t: 0, speed: 0.008 + Math.random() * 0.006 });
+  }
+
+  let lastSpawn = 0;
+
+  function frame(ts) {
+    const nodes = document.querySelectorAll('.council-node');
+    if (nodes.length < 9) { requestAnimationFrame(frame); return; }
+
+    const centers = Array.from(nodes).map(getCenter);
+    svg.innerHTML = '';
+
+    // Static ring + cross lines
+    CONNECTIONS.forEach(([i, j]) => {
+      const a = centers[i]; const b = centers[j];
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', a.x); line.setAttribute('y1', a.y);
+      line.setAttribute('x2', b.x); line.setAttribute('y2', b.y);
+      line.setAttribute('stroke', 'rgba(43,59,229,0.12)');
+      line.setAttribute('stroke-width', '1');
+      svg.appendChild(line);
+    });
+
+    // Spawn new particle every ~600ms
+    if (ts - lastSpawn > 600) {
+      const conn = CONNECTIONS[Math.floor(Math.random() * CONNECTIONS.length)];
+      spawnParticle(centers[conn[0]], centers[conn[1]]);
+      lastSpawn = ts;
+    }
+
+    // Draw + advance particles
+    for (let k = particles.length - 1; k >= 0; k--) {
+      const p = particles[k];
+      p.t += p.speed;
+      if (p.t >= 1) { particles.splice(k, 1); continue; }
+
+      const x = p.p1.x + (p.p2.x - p.p1.x) * p.t;
+      const y = p.p1.y + (p.p2.y - p.p1.y) * p.t;
+
+      const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      dot.setAttribute('cx', x); dot.setAttribute('cy', y);
+      dot.setAttribute('r', '3');
+      dot.setAttribute('fill', `rgba(43,59,229,${0.8 - p.t * 0.5})`);
+      svg.appendChild(dot);
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  // Start after nodes are in DOM
+  setTimeout(() => requestAnimationFrame(frame), 600);
+  window.addEventListener('resize', () => particles.length = 0);
 }
