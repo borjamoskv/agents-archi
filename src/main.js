@@ -86,8 +86,7 @@ function renderThreatGrid() {
     card.style.transitionDelay = `${i * 60}ms`;
     
     card.innerHTML = `
-      <div class="hero-glow"></div>
-      <div class="hero-interactive-glow" id="hero-interactive-glow"></div>-header">
+      <div class="threat-card-header">
         <span class="threat-icon">${v.icon}</span>
         <span class="threat-status ${v.status}">${v.statusText}</span>
       </div>
