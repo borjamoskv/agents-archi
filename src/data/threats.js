@@ -89,7 +89,7 @@ export function renderThreatGrid() {
   const grid = document.getElementById('threat-grid');
   if (!grid) return;
 
-  grid.innerHTML = ''; 
+  grid.innerHTML = '';
   
   THREAT_VECTORS.forEach((v, i) => {
     const card = document.createElement('div');
@@ -103,18 +103,25 @@ export function renderThreatGrid() {
     const iconSpan = document.createElement('span');
     iconSpan.className = 'threat-icon';
     iconSpan.textContent = v.icon;
+
+    // Index badge — monospace, dim
+    const indexSpan = document.createElement('span');
+    indexSpan.className = 'threat-index';
+    indexSpan.textContent = `#${String(i + 1).padStart(2, '0')}`;
     
     const statusSpan = document.createElement('span');
     statusSpan.className = `threat-status ${v.status}`;
     statusSpan.textContent = v.statusText;
     
     header.appendChild(iconSpan);
+    header.appendChild(indexSpan);
     header.appendChild(statusSpan);
     
     const title = document.createElement('h4');
     title.textContent = v.title;
     
     const desc = document.createElement('p');
+    desc.className = 'threat-desc';
     desc.textContent = v.desc;
     
     card.appendChild(header);
@@ -124,3 +131,4 @@ export function renderThreatGrid() {
     grid.appendChild(card);
   });
 }
+

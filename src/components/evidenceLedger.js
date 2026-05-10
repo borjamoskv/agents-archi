@@ -1,10 +1,11 @@
 /* ═══════════════════════════════════════════════════════════
-   agents.archi — Certification Portal Component
+   agents.archi — Evidence Ledger Component
    Merkle Tree Canvas + SAGA Pipeline Animation
    ═══════════════════════════════════════════════════════════ */
+import { REPORTS } from './auditReport.js';
 
 // ── Merkle Tree Canvas ──
-function drawMerkleTree(canvas) {
+function drawEvidenceTree(canvas) {
   const ctx = canvas.getContext('2d');
   const dpr = window.devicePixelRatio || 1;
   let w, h, nodes, frame;
@@ -25,8 +26,8 @@ function drawMerkleTree(canvas) {
 
   function buildTree() {
     nodes = [];
-    const levels = 5;
-    const padding = 40;
+    const levels = 7;
+    const padding = 60;
     const levelH = (h - padding * 2) / (levels - 1);
 
     for (let level = 0; level < levels; level++) {
@@ -35,12 +36,22 @@ function drawMerkleTree(canvas) {
       const availW = w - padding * 2;
       for (let i = 0; i < count; i++) {
         const x = padding + (availW / (count + 1)) * (i + 1);
-        const hash = genHash(8);
+        
+        let hash;
+        if (level === 0) {
+          const reportKeys = Object.keys(REPORTS);
+          const randomReport = REPORTS[reportKeys[Math.floor(Math.random() * reportKeys.length)]];
+          hash = randomReport?.merkleRoot?.slice(2, 10) ?? genHash(8);
+        } else {
+          hash = genHash(8);
+        }
+
         const parentIdx = level > 0 ? Math.floor(nodes.length - count - Math.floor(i / 2) + (count / 2) - 1) : -1;
         nodes.push({ x, y, level, hash, parentIdx, glow: 0, verified: false });
       }
     }
   }
+
 
   function genHash(len) {
     const chars = '0123456789abcdef';
@@ -58,20 +69,20 @@ function drawMerkleTree(canvas) {
       if (node.parentIdx < 0) continue;
       const parent = nodes[node.parentIdx];
       if (!parent) continue;
-      const alpha = node.verified ? 0.4 : 0.1;
+      const alpha = node.verified ? 0.6 : 0.08;
       ctx.beginPath();
       ctx.moveTo(node.x, node.y);
       ctx.lineTo(parent.x, parent.y);
       const grad = ctx.createLinearGradient(node.x, node.y, parent.x, parent.y);
       if (node.verified) {
         grad.addColorStop(0, `rgba(${greenRGB},${alpha})`);
-        grad.addColorStop(1, `rgba(${greenRGB},${alpha * 0.5})`);
+        grad.addColorStop(1, `rgba(${greenRGB},${alpha * 0.2})`);
       } else {
         grad.addColorStop(0, `rgba(${accentRGB},${alpha})`);
-        grad.addColorStop(1, `rgba(${accentRGB},${alpha * 0.5})`);
+        grad.addColorStop(1, `rgba(${accentRGB},0)`);
       }
       ctx.strokeStyle = grad;
-      ctx.lineWidth = 1;
+      ctx.lineWidth = node.verified ? 1.5 : 0.5;
       ctx.stroke();
     }
 
@@ -79,39 +90,56 @@ function drawMerkleTree(canvas) {
     const t = Date.now() / 1000;
     for (let i = 0; i < nodes.length; i++) {
       const n = nodes[i];
-      const radius = n.level === 0 ? 14 : n.level < 3 ? 10 : 7;
+      const radius = n.level === 0 ? 12 : n.level < 4 ? 6 : 3;
 
       // Glow decay
-      n.glow = Math.max(0, n.glow - 0.02);
+      n.glow = Math.max(0, n.glow - 0.015);
 
       // Node circle
       ctx.beginPath();
       ctx.arc(n.x, n.y, radius, 0, Math.PI * 2);
       if (n.verified) {
-        ctx.fillStyle = `rgba(${greenRGB}, 0.15)`;
-        ctx.strokeStyle = `rgba(${greenRGB}, ${0.5 + n.glow * 0.5})`;
+        ctx.fillStyle = `rgba(${greenRGB}, ${0.2 + n.glow * 0.4})`;
+        ctx.strokeStyle = `rgba(${greenRGB}, ${0.8 + n.glow * 0.2})`;
       } else {
-        ctx.fillStyle = `rgba(${accentRGB}, 0.08)`;
-        ctx.strokeStyle = `rgba(${accentRGB}, ${0.3 + n.glow * 0.7})`;
+        ctx.fillStyle = `rgba(${accentRGB}, 0.05)`;
+        ctx.strokeStyle = `rgba(${accentRGB}, ${0.1 + n.glow * 0.7})`;
       }
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = 1;
       ctx.fill();
       ctx.stroke();
+
+      // Forensic scanlines on root
+      if (n.level === 0) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, radius, 0, Math.PI * 2);
+        ctx.clip();
+        ctx.strokeStyle = `rgba(255,255,255,0.1)`;
+        ctx.lineWidth = 0.5;
+        for (let j = -radius; j < radius; j += 2) {
+          ctx.beginPath();
+          ctx.moveTo(n.x - radius, n.y + j + (t * 10 % 2));
+          ctx.lineTo(n.x + radius, n.y + j + (t * 10 % 2));
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
 
       // Glow ring
       if (n.glow > 0) {
         ctx.beginPath();
-        ctx.arc(n.x, n.y, radius + 8 * n.glow, 0, Math.PI * 2);
+        ctx.arc(n.x, n.y, radius + 12 * n.glow, 0, Math.PI * 2);
         const rgb = n.verified ? greenRGB : accentRGB;
-        ctx.strokeStyle = `rgba(${rgb}, ${n.glow * 0.3})`;
-        ctx.lineWidth = 1;
+        ctx.strokeStyle = `rgba(${rgb}, ${n.glow * 0.4})`;
+        ctx.lineWidth = 0.5;
         ctx.stroke();
       }
 
-      // Hash text on larger nodes
-      if (n.level < 3 && radius > 8) {
-        ctx.fillStyle = n.verified ? `rgba(${greenRGB}, 0.7)` : `rgba(240,240,245, 0.4)`;
-        ctx.font = `${Math.max(7, radius - 3)}px JetBrains Mono, monospace`;
+      // Hash text on root
+      if (n.level === 0) {
+        ctx.fillStyle = n.verified ? `rgba(${greenRGB}, 0.9)` : `rgba(240,240,245, 0.6)`;
+        ctx.font = `bold 10px JetBrains Mono, monospace`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(n.hash.slice(0, 4), n.x, n.y);
@@ -119,9 +147,11 @@ function drawMerkleTree(canvas) {
     }
 
     // Periodic verification wave (bottom-up)
-    if (Math.floor(t * 0.5) !== Math.floor((t - 0.016) * 0.5)) {
+    if (Math.floor(t * 1.2) !== Math.floor((t - 0.016) * 1.2)) {
       const idx = Math.floor(Math.random() * nodes.length);
-      propagateVerify(idx);
+      if (nodes[idx].level === 6) { // Only start from leaves
+        propagateVerify(idx);
+      }
     }
   }
 
@@ -132,12 +162,16 @@ function drawMerkleTree(canvas) {
     node.glow = 1;
     node.hash = genHash(8);
     if (node.parentIdx >= 0) {
-      setTimeout(() => propagateVerify(node.parentIdx), 300);
+      setTimeout(() => propagateVerify(node.parentIdx), 200);
     }
     // Update root hash display
     if (node.level === 0) {
-      const el = document.getElementById('merkle-root-hash');
-      if (el) el.textContent = 'root: 0x' + genHash(32);
+      const el = document.getElementById('evidence-root-hash');
+      if (el) {
+        const reportKeys = Object.keys(REPORTS);
+        const randomReport = REPORTS[reportKeys[Math.floor(Math.random() * reportKeys.length)]];
+        el.textContent = `ledger_root: ${randomReport.merkleRoot}`;
+      }
     }
   }
 
@@ -231,10 +265,11 @@ function initSealPulse() {
 }
 
 // ── Export ──
-export function initCertificationPortal() {
+export function initEvidenceLedger() {
   const canvas = document.getElementById('merkle-canvas');
-  if (canvas) drawMerkleTree(canvas);
+  if (canvas) drawEvidenceTree(canvas);
   initSagaPipeline();
   animateTrustMetrics();
   initSealPulse();
 }
+

@@ -21,7 +21,7 @@ const INTERVALS = [
 import { onTelemetryData } from '../services/telemetry.js';
 
 // ── Constants ──
-const NODE_COUNT     = 1000;
+const NODE_COUNT     = 100;
 const CELL_SIZE      = 60;
 const MAX_SPEED      = 0.6;
 const DAMPING        = 0.985;

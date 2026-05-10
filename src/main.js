@@ -7,14 +7,15 @@ import './style.css';
 import { renderThreatGrid } from './data/threats.js';
 import { renderLiveFeed } from './components/liveFeed.js';
 import { initASLSandbox } from './components/aslSandbox.js';
-import { initWaitlistForm } from './components/waitlist.js';
 import { initSovereignCouncil } from './components/sovereignCouncil.js';
-import { initCertificationPortal } from './components/certificationPortal.js';
+import { initEvidenceLedger } from './components/evidenceLedger.js';
 import { initLegionSwarm } from './components/legionSwarm.js';
 import { initArchitectSwarm } from './components/architectSwarm.js';
 import './css/architectSwarm.css';
-import { loadStripeConfig, initStripeCheckout } from './services/stripe.js';
 import { connectTelemetry } from './services/telemetry.js';
+import { initRouter as initAuditRouter } from './components/auditReport.js';
+import { initCommissionModal } from './components/commissionModal.js';
+import './css/commissionModal.css';
 
 import { 
   initNavScroll, 
@@ -40,8 +41,22 @@ import {
   initParticleGrid 
 } from './ui/canvas.js';
 
+import {
+  initAmbientOrbs,
+  initHeroTerminal,
+  initLiveThreatCounter,
+  initThreatRiskBars,
+  initScrollProgressBar,
+  initWarpReveal,
+} from './ui/sovereign.js';
+
 // ── Initialize ──
 document.addEventListener('DOMContentLoaded', () => {
+  // Sovereign — structural first
+  initAmbientOrbs();
+  initScrollProgressBar();
+
+  // Core components
   renderThreatGrid();
   initScrollReveal();
   animateCounters();
@@ -55,17 +70,23 @@ document.addEventListener('DOMContentLoaded', () => {
   initScoreBars();
   initLabMetrics();
   initTerminalAnimation();
-  initWaitlistForm();
   renderLiveFeed();
-  loadStripeConfig();
-  initStripeCheckout();
   initASLSandbox();
   initBackToTop();
   initTypingCursor();
   initFooterYear();
   initSovereignCouncil();
-  initCertificationPortal();
+  initEvidenceLedger();
   initArchitectSwarm();
   initLegionSwarm();
   connectTelemetry();
+  initAuditRouter();
+  initCommissionModal();
+
+  // Sovereign — visual polish (after all components mounted)
+  initHeroTerminal();
+  initLiveThreatCounter();
+  initThreatRiskBars();
+  initWarpReveal();
 });
+

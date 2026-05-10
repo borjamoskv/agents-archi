@@ -11,13 +11,57 @@
 .footer-social svg { width: 16px; height: 16px; fill: currentColor; }
 .footer-copy { font-size: 0.75rem; color: var(--text-tertiary); text-align: right; }
 
-/* ── Social Proof / Platform Logos ── */
-.social-proof { padding: var(--space-2xl) var(--space-xl); border-top: 1px solid var(--void-border); border-bottom: 1px solid var(--void-border); background: var(--void); }
-.social-proof-inner { max-width: 1200px; margin: 0 auto; text-align: center; }
-.social-proof-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-tertiary); margin-bottom: var(--space-lg); }
-.platform-logos { display: flex; justify-content: center; align-items: center; gap: var(--space-2xl); flex-wrap: wrap; }
-.platform-logo { font-size: 1rem; font-weight: 700; color: var(--text-tertiary); letter-spacing: 0.02em; opacity: 0.5; transition: opacity var(--duration-normal) var(--ease-out); -webkit-user-select: none; user-select: none; }
-.platform-logo:hover { opacity: 1; color: var(--text-secondary); }
+/* ── Social Proof / Platform Logos — Marquee ── */
+.social-proof { 
+  padding: var(--space-2xl) 0; 
+  border-top: 1px solid var(--void-border); 
+  border-bottom: 1px solid var(--void-border); 
+  background: var(--void); 
+  overflow: hidden;
+}
+.social-proof-inner { max-width: 100%; text-align: center; }
+.social-proof-label { 
+  font-size: 0.7rem; 
+  font-weight: 700; 
+  text-transform: uppercase; 
+  letter-spacing: 0.15em; 
+  color: var(--text-tertiary); 
+  margin-bottom: var(--space-lg); 
+}
+.platform-marquee-wrap {
+  position: relative;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+}
+.platform-logos { 
+  display: flex; 
+  gap: var(--space-2xl);
+  width: max-content;
+  animation: marquee-scroll 28s linear infinite;
+  align-items: center;
+}
+.platform-logos:hover { animation-play-state: paused; }
+.platform-logo { 
+  font-size: 0.95rem; 
+  font-weight: 700; 
+  color: var(--text-tertiary); 
+  letter-spacing: 0.04em; 
+  opacity: 0.45; 
+  transition: opacity var(--duration-normal) var(--ease-out), color var(--duration-normal) var(--ease-out);
+  -webkit-user-select: none; 
+  user-select: none;
+  white-space: nowrap;
+  padding: 0 var(--space-sm);
+}
+.platform-logo:hover { opacity: 1; color: var(--text-primary); }
+
+@keyframes marquee-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+
 
 /* ── Waitlist Form ── */
 .waitlist-form { display: flex; gap: var(--space-sm); max-width: 480px; margin: 0 auto var(--space-md); }

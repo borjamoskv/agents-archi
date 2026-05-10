@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOTD Prototype — CORTEX Industrial Noir</title>
+    <style>
+        /* 
+           AESTHETIC-FOUNDRY-Ω v8.2.0
+           Industrial Noir 2026 Mandate
+           #0A0A0A / #FF9F1C / Humanist Sans
+        */
+        
+        :root {
+            --bg-void: #0A0A0A;
+            --accent-primary: #FF9F1C;
+            --accent-secondary: #E52B2B;
+            --text-main: rgba(255, 255, 255, 0.95);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --border-light: rgba(255, 255, 255, 0.06);
+            --glass-bg: rgba(10, 10, 10, 0.85);
+            
+            font-family: 'Inter', 'Outfit', system-ui, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-main);
+            overflow-x: hidden;
+            overscroll-behavior: none;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* WebGL / Canvas Dominance */
+        #webgl-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* Spatial Container */
+        .scroll-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+        }
+
+        section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 8vw;
+            position: relative;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        /* Typography Hierarchy */
+        h1 {
+            font-size: clamp(48px, 8vw, 120px);
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            line-height: 0.9;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            /* Text Glow on primary */
+            text-shadow: 0 0 30px rgba(255, 159, 28, 0.15);
+        }
+
+        h2 {
+            font-size: clamp(32px, 4vw, 64px);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--text-muted);
+        }
+
+        p.body-text {
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.6;
+            max-width: 480px;
+            margin-top: 32px;
+            color: var(--text-muted);
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        /* Glassmorphism Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 24px 8vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .nav-logo {
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .pulse {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-primary);
+            animation: pulse-ring 2s infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(255, 159, 28, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 159, 28, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 159, 28, 0); }
+        }
+
+        /* Kinetic Typography Element */
+        .kinetic-wrapper {
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .kinetic-text {
+            display: inline-block;
+            transform: translateY(110%);
+            transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .is-visible .kinetic-text {
+            transform: translateY(0);
+        }
+
+        /* Brutalist UI Component */
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1px;
+            background: var(--border-light);
+            margin-top: 64px;
+        }
+
+        .data-cell {
+            background: var(--bg-void);
+            padding: 32px;
+            transition: background 0.4s ease;
+        }
+
+        .data-cell:hover {
+            background: rgba(255, 159, 28, 0.03);
+        }
+
+        .data-cell .value {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-top: 16px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- WebGL Background Simulation -->
+    <canvas id="webgl-canvas"></canvas>
+
+    <nav>
+        <div class="nav-logo">CORTEX.AUDIO</div>
+        <div class="nav-status">
+            <span class="pulse"></span>
+            C5-REAL ACTIVE
+        </div>
+    </nav>
+
+    <div class="scroll-container">
+        
+        <section id="hero" class="observer-target">
+            <span class="mono kinetic-wrapper"><span class="kinetic-text">Sovereign Sonics // v8.2.0</span></span>
+            <h1 class="kinetic-wrapper"><span class="kinetic-text">Industrial</span></h1>
+            <h1 class="kinetic-wrapper" style="color: var(--accent-primary);"><span class="kinetic-text" style="transition-delay: 0.1s;">Noir</span></h1>
+            <p class="body-text kinetic-wrapper"><span class="kinetic-text" style="transition-delay: 0.2s;">Spatial navigation protocol activated. Scroll to traverse the z-axis of the digital audio environment. Granular synthesis mapped to DOM coordinates.</span></p>
+        </section>
+
+        <section id="system" class="observer-target">
+            <span class="mono kinetic-wrapper"><span class="kinetic-text">02 // The System</span></span>
+            <h2 class="kinetic-wrapper"><span class="kinetic-text">Ametric Rhythm &</span></h2>
+            <h2 class="kinetic-wrapper"><span class="kinetic-text">Granular Noise</span></h2>
+            
+            <div class="data-grid">
+                <div class="data-cell observer-target">
+                    <span class="mono">Exergy Threshold</span>
+                    <div class="value">0.98</div>
+                </div>
+                <div class="data-cell observer-target">
+                    <span class="mono">BPM Mapping</span>
+                    <div class="value">120Hz</div>
+                </div>
+                <div class="data-cell observer-target">
+                    <span class="mono">Spatial Vector</span>
+                    <div class="value">Z-Index</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="footer" class="observer-target">
+            <h1 class="kinetic-wrapper"><span class="kinetic-text">Silence</span></h1>
+            <p class="body-text kinetic-wrapper"><span class="kinetic-text">"Art is the closest thing to silence that language can achieve." - S. Sontag</span></p>
+        </section>
+
+    </div>
+
+    <script>
+        // --- 1. SOTD Spatial Scroll Observer (Scroll Reveal) ---
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.observer-target').forEach(el => {
+            observer.observe(el);
+            // Initialize kinetic state
+            el.classList.remove('is-visible');
+        });
+
+        // Trigger first section immediately
+        setTimeout(() => {
+            document.getElementById('hero').classList.add('is-visible');
+        }, 100);
+
+        // --- 2. WebGL / Canvas Noise Simulation (Awwwards SOTD Pattern) ---
+        const canvas = document.getElementById('webgl-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height;
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // High-exergy granular noise generator
+        function drawNoise() {
+            const imageData = ctx.createImageData(width, height);
+            const buffer32 = new Uint32Array(imageData.data.buffer);
+            const len = buffer32.length;
+            
+            for (let i = 0; i < len; i++) {
+                if (Math.random() < 0.05) {
+                    // Injecting var(--accent-primary) noise points #FF9F1C -> rgba(255, 159, 28)
+                    buffer32[i] = 0x221C9FFF; // ABGR format
+                } else if (Math.random() < 0.1) {
+                    buffer32[i] = 0x11FFFFFF; // Faint white
+                } else {
+                    buffer32[i] = 0x00000000; // Transparent void
+                }
+            }
+            
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        // Kinetic Frame Loop mapping to 120Hz
+        let lastTime = 0;
+        function loop(time) {
+            // Update noise every 50ms to simulate granular texture without overloading GPU
+            if (time - lastTime > 50) {
+                drawNoise();
+                lastTime = time;
+            }
+            
+            // Map scroll depth to canvas opacity (Spatial Navigation)
+            const scrollY = window.scrollY;
+            const maxScroll = document.body.scrollHeight - window.innerHeight;
+            const scrollRatio = scrollY / maxScroll;
+            canvas.style.opacity = 0.3 + (scrollRatio * 0.5);
+
+            requestAnimationFrame(loop);
+        }
+        requestAnimationFrame(loop);
+    </script>
+</body>
+</html>

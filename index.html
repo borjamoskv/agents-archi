@@ -3,19 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>agents.archi — The Architecture of Agent Security</title>
-    <meta name="description" content="The first Agent Security Authority. Formally verify autonomous agent behavior before the first catastrophic failure." />
+    <title>agents.archi — Sovereign Audit Ledger</title>
+    <meta name="description" content="Portfolio of Proof: Sovereign audits and formal verification for autonomous agent ecosystems. Verifiable evidence for the next generation of on-chain operations." />
     <meta name="theme-color" content="#0A0A0A" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <!-- Open Graph -->
-    <meta property="og:title" content="agents.archi — The Architecture of Agent Security" />
-    <meta property="og:description" content="The first Agent Security Authority. Formally verify autonomous agent behavior before the first catastrophic failure." />
+    <meta property="og:title" content="agents.archi — Sovereign Audit Ledger" />
+    <meta property="og:description" content="Portfolio of Proof: Sovereign audits and formal verification for autonomous agents. Trust is computed, not assumed." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://agents.archi" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@borjamoskv" />
-    <meta name="twitter:title" content="agents.archi — Agent Security" />
-    <meta name="twitter:description" content="Formally verify autonomous agent behavior. 10 attack vectors. Z3 SMT proofs." />
+    <meta name="twitter:title" content="agents.archi — Portfolio of Proof" />
+    <meta name="twitter:description" content="Sovereign audits for autonomous agents. Verifiable Merkle proofs for high-exergy operations." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -52,15 +52,14 @@
           <span class="nav-status-badge"><span class="status-pulse"></span> Live</span>
         </a>
         <div class="nav-links" id="nav-links">
-          <a href="#threat-vectors" class="nav-link" id="nav-taxonomy">Taxonomy</a>
-          <a href="#solution" class="nav-link" id="nav-solution">Solution</a>
-          <a href="#track-record" class="nav-link" id="nav-track">Track Record</a>
-          <a href="#certification" class="nav-link" id="nav-cert">Trust</a>
-          <a href="#threat-feed" class="nav-link" id="nav-feed">Live Feed</a>
-          <a href="#pricing" class="nav-link" id="nav-pricing-link">Pricing</a>
+          <a href="#threat-vectors" class="nav-link" id="nav-taxonomy">Landscape</a>
+          <a href="#solution" class="nav-link" id="nav-solution">Methodology</a>
+          <a href="#track-record" class="nav-link" id="nav-track">Portfolio</a>
+          <a href="#certification" class="nav-link" id="nav-cert">Ledger</a>
+          <a href="#threat-feed" class="nav-link" id="nav-feed">Threats</a>
           <a href="#architect-swarm" class="nav-link" id="nav-swarm">Swarm</a>
           <a href="#sovereign-council" class="nav-link" id="nav-council">Council</a>
-          <a href="#contact" class="nav-cta" id="nav-contact">Get Audited</a>
+          <a href="#contact" class="nav-cta" id="nav-contact">Initiate Audit</a>
         </div>
         <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
           <span class="bar"></span>
@@ -80,18 +79,18 @@
       <div class="hero-content">
         <div class="hero-badge" id="hero-badge">
           <span class="badge-pulse"></span>
-          <span class="badge-text">Agent Security <span class="glitch-text" data-text="Authority">Authority</span></span>
+          <span class="badge-text">Sovereign Audit <span class="glitch-text" data-text="Ledger">Ledger</span></span>
         </div>
         <h1 id="hero-title">
-          The Architecture of<br />
-          <span class="hero-accent glitch-text" data-text="Agent Security">Agent Security</span>
+          Portfolio of<br />
+          <span class="hero-accent glitch-text" data-text="Proof">Proof</span>
         </h1>
         <p class="hero-sub" id="hero-sub">
-          The first <strong>Agent Security Authority</strong>. Formally verify, monitor, and certify autonomous agents with Z3 SMT logic. <strong>Trust is computed, not assumed.</strong>
+          The sovereign signature of <strong>Borja Moskv</strong>. Verifiable forensic evidence for the agentic frontier, high-exergy bounties, and critical infrastructure. <strong>We don't sell platforms; we provide proofs.</strong>
         </p>
         <div class="hero-actions">
-          <a href="#threat-vectors" class="btn btn-primary" id="hero-cta-explore">Explore Threat Taxonomy</a>
-          <a href="#contact" class="btn btn-ghost" id="hero-cta-audit">Request Audit →</a>
+          <a href="#track-record" class="btn btn-primary" id="hero-cta-explore">Explore Portfolio of Proof</a>
+          <a href="#certification" class="btn btn-ghost" id="hero-cta-audit">View Evidence Ledger →</a>
         </div>
         <div class="hero-stats" id="hero-stats">
           <div class="stat">
@@ -108,15 +107,35 @@
           </div>
         </div>
       </div>
+
+      <!-- Hero Terminal — floating chrome (bottom-left) -->
+      <div class="hero-terminal" id="hero-terminal" aria-hidden="true">
+        <div class="hero-terminal-bar">
+          <span class="terminal-dot r"></span>
+          <span class="terminal-dot y"></span>
+          <span class="terminal-dot g"></span>
+          <span class="hero-terminal-title">cortex-audit — zsh</span>
+        </div>
+        <div class="hero-terminal-body" id="hero-terminal-body"></div>
+      </div>
+
+      <!-- Live Threat Counter — floating chrome (bottom-right) -->
+      <div class="hero-live-counter" id="hero-live-counter" aria-hidden="true">
+        <span class="hero-live-counter-dot"></span>
+        <span class="hero-live-counter-label">CVEs Tracked Live</span>
+        <span class="hero-live-counter-value" id="hero-live-count">847</span>
+      </div>
     </section>
+
+
 
     <!-- Problem — Threat Vectors -->
     <section id="threat-vectors" class="section section-dark">
       <div class="section-inner">
         <div class="section-header">
-          <span class="section-tag">The Problem</span>
-          <h2 id="threat-title">10 Attack Vectors.<br /><span class="text-accent">8 Have No Solution.</span></h2>
-          <p class="section-desc">Every company deploying autonomous agents is exposed to attack surfaces that no existing security tool addresses.</p>
+          <span class="section-tag">Audit Context</span>
+          <h2 id="threat-title">The Landscape.<br /><span class="text-accent">Critical Vulnerability Surface.</span></h2>
+          <p class="section-desc">Mapping the critical failures of the agentic frontier. Forensic analysis of the vectors that bypass legacy security substrates.</p>
         </div>
         <div class="threat-grid" id="threat-grid">
           <!-- Threat cards injected by JS -->
@@ -128,9 +147,9 @@
     <section id="solution" class="section section-gradient">
       <div class="section-inner">
         <div class="section-header">
-          <span class="section-tag">The Solution</span>
-          <h2 id="solution-title">Specify. Verify. Certify.</h2>
-          <p class="section-desc">A formal verification pipeline purpose-built for autonomous agents.</p>
+          <span class="section-tag">The Methodology</span>
+          <h2 id="solution-title">Specify. Verify. Commmit.</h2>
+          <p class="section-desc">A formal verification pipeline for sovereign agents. Trust is computed via Z3 SMT logic.</p>
         </div>
         <div class="pillars" id="pillars">
           <div class="pillar" id="pillar-specify">
@@ -197,7 +216,7 @@
               </svg>
             </div>
             <h3>Certify</h3>
-            <p>Receive an <strong>agents.archi Security Scorecard</strong> — a cryptographically signed certificate of your agent's threat model coverage and verification status.</p>
+            <p>Crystallize the finding into a <strong>Sovereign Audit Proof</strong> — a cryptographically signed artifact of the evidence chain and formal verification status.</p>
             <div class="scorecard-preview">
               <div class="score-bar">
                 <span class="score-label">Threat Coverage</span>
@@ -224,69 +243,69 @@
     <section id="track-record" class="section section-dark">
       <div class="section-inner">
         <div class="section-header">
-          <span class="section-tag">Track Record</span>
-          <h2 id="track-title">Adversarial Mindset,<br /><span class="text-accent">Proven Results.</span></h2>
-          <p class="section-desc">Security audit findings submitted to leading bounty platforms.</p>
+          <span class="section-tag">Portfolio of Proof</span>
+          <h2 id="track-title">Adversarial Architecture,<br /><span class="text-accent">Verifiable Results.</span></h2>
+          <p class="section-desc">High-fidelity evidence of our sovereign auditing capabilities.</p>
         </div>
         <div class="bounty-grid" id="bounty-grid">
-          <div class="bounty-card" id="bounty-k2">
+          <div class="bounty-card" id="bounty-firedancer-funk">
             <div class="bounty-severity critical">Critical</div>
-            <h4>K2 Lending</h4>
-            <p class="bounty-vuln">Close Factor Bypass</p>
-            <p class="bounty-desc">Iterative liquidation drains 100% of collateral through O(n) batched calls, bypassing the 50% close factor restriction.</p>
+            <h4>Firedancer fd_funk</h4>
+            <p class="bounty-vuln">Consensus Ghosting</p>
+            <p class="bounty-desc">Race condition in txn_publish_one allows readers to query ROOT state during the migration window, causing bank hash divergence.</p>
             <div class="bounty-meta">
-              <span class="bounty-platform">Code4rena</span>
-              <span class="bounty-method">Z3 Formal Proof</span>
+              <span class="bounty-id">OUROBOROS-FD-FUNK-01</span>
+              <a href="/audit/firedancer-funk-01" class="bounty-link">View Proof →</a>
             </div>
           </div>
-          <div class="bounty-card" id="bounty-bitflow">
+          <div class="bounty-card" id="bounty-firedancer-vm">
             <div class="bounty-severity critical">Critical</div>
-            <h4>BitFlow DLMM</h4>
-            <p class="bounty-vuln">Zero-Share Truncation</p>
-            <p class="bounty-desc">Arithmetic truncation in LP share calculation allows first depositor to steal subsequent deposits via share inflation.</p>
+            <h4>Firedancer VM</h4>
+            <p class="bounty-vuln">Sandbox Bypass / OOB</p>
+            <p class="bounty-desc">OOB region index in FD_VADDR_TO_REGION leaks host pointers, enabling ASLR bypass and arbitrary host memory access.</p>
             <div class="bounty-meta">
-              <span class="bounty-platform">Immunefi</span>
-              <span class="bounty-method">Anvil-Lang + Clarinet PoC</span>
+              <span class="bounty-id">OUROBOROS-FD-VM-01</span>
+              <a href="/audit/firedancer-vm-sandbox" class="bounty-link">View Proof →</a>
             </div>
           </div>
-          <div class="bounty-card" id="bounty-folks">
-            <div class="bounty-severity high">High</div>
-            <h4>Folks Finance</h4>
-            <p class="bounty-vuln">NTT Bridge Decimal Mismatch</p>
-            <p class="bounty-desc">Cross-chain decimal normalization flaw enables minting inflation through untrim transfer amount logic error.</p>
-            <div class="bounty-meta">
-              <span class="bounty-platform">Immunefi</span>
-              <span class="bounty-method">Integration Test PoC</span>
-            </div>
-          </div>
-          <div class="bounty-card" id="bounty-firedancer">
-            <div class="bounty-severity critical">Critical</div>
-            <h4>Firedancer V1</h4>
-            <p class="bounty-vuln">VM Sandbox Bypass</p>
-            <p class="bounty-desc">Out-of-bounds region index in FD_VADDR_TO_REGION leaks host pointers, enabling ASLR bypass and arbitrary memory R/W.</p>
-            <div class="bounty-meta">
-              <span class="bounty-platform">Immunefi</span>
-              <span class="bounty-method">C-Forensics + Fuzzer</span>
-            </div>
-          </div>
-          <div class="bounty-card" id="bounty-exactly">
+          <div class="bounty-card" id="bounty-exactly-bypass">
             <div class="bounty-severity critical">Critical</div>
             <h4>Exactly Protocol</h4>
             <p class="bounty-vuln">VerifiedMarket Bypass</p>
-            <p class="bounty-desc">Revoked delegates retain borrowing and withdrawal capabilities through unchecked ERC4626 allowance after firewall revocation.</p>
+            <p class="bounty-desc">Revoked delegates retain borrowing capabilities through unchecked ERC4626 allowance after firewall revocation.</p>
             <div class="bounty-meta">
-              <span class="bounty-platform">Immunefi</span>
-              <span class="bounty-method">Foundry PoC</span>
+              <span class="bounty-id">OUROBOROS-EXACTLY-01</span>
+              <a href="/audit/exactly-verified-market" class="bounty-link">View Proof →</a>
             </div>
           </div>
-          <div class="bounty-card" id="bounty-hats">
-            <div class="bounty-severity critical">Critical</div>
-            <h4>HATVaults V2</h4>
-            <p class="bounty-vuln">Reentrancy Drain</p>
-            <p class="bounty-desc">_sendRewards() executes before LP token burn, enabling ERC-777 callback re-entry to drain full vault via repeated reward calc.</p>
+          <div class="bounty-card" id="bounty-exactly-oracle">
+            <div class="bounty-severity high">High</div>
+            <h4>Exactly Protocol</h4>
+            <p class="bounty-vuln">Stale Oracle L2</p>
+            <p class="bounty-desc">Staleness check neglect and lack of L2 sequencer uptime validation allows price manipulation during network lag.</p>
             <div class="bounty-meta">
-              <span class="bounty-platform">Immunefi</span>
-              <span class="bounty-method">Bytecode Deconvolution</span>
+              <span class="bounty-id">OUROBOROS-EXACTLY-02</span>
+              <a href="/audit/exactly-stale-oracle" class="bounty-link">View Proof →</a>
+            </div>
+          </div>
+          <div class="bounty-card" id="bounty-bitflow-fee">
+            <div class="bounty-severity high">High</div>
+            <h4>BitFlow DLMM</h4>
+            <p class="bounty-vuln">Fee Evasion MEV</p>
+            <p class="bounty-desc">Integer truncation in Clarity allows bypassing 100% of swap fees via micro-token fold-loop routing.</p>
+            <div class="bounty-meta">
+              <span class="bounty-id">OUROBOROS-BITFLOW-02</span>
+              <a href="/audit/bitflow-fee-evasion" class="bounty-link">View Proof →</a>
+            </div>
+          </div>
+          <div class="bounty-card" id="bounty-insurace">
+            <div class="bounty-severity high">High</div>
+            <h4>InsurAce</h4>
+            <p class="bounty-vuln">Permissionless Harvest</p>
+            <p class="bounty-desc">Public reward distribution control allows attackers to disrupt yield cycles and front-run legitimate harvests.</p>
+            <div class="bounty-meta">
+              <span class="bounty-id">OUROBOROS-INSURACE-01</span>
+              <a href="/audit/insurace-harvest" class="bounty-link">View Proof →</a>
             </div>
           </div>
         </div>
@@ -297,23 +316,37 @@
     <div class="social-proof" id="social-proof">
       <div class="social-proof-inner">
         <p class="social-proof-label">Vulnerabilities Submitted To</p>
-        <div class="platform-logos">
-          <span class="platform-logo">Immunefi</span>
-          <span class="platform-logo">Code4rena</span>
-          <span class="platform-logo">Sherlock</span>
-          <span class="platform-logo">Cantina</span>
-          <span class="platform-logo">HackerOne</span>
+        <div class="platform-marquee-wrap">
+          <div class="platform-logos">
+            <!-- Set 1 -->
+            <span class="platform-logo">⬡ Immunefi</span>
+            <span class="platform-logo">◈ Code4rena</span>
+            <span class="platform-logo">▲ Sherlock</span>
+            <span class="platform-logo">◆ Cantina</span>
+            <span class="platform-logo">● HackerOne</span>
+            <span class="platform-logo">◉ Hats Finance</span>
+            <span class="platform-logo">▸ Spearbit</span>
+            <!-- Set 2 — duplicate for seamless loop -->
+            <span class="platform-logo">⬡ Immunefi</span>
+            <span class="platform-logo">◈ Code4rena</span>
+            <span class="platform-logo">▲ Sherlock</span>
+            <span class="platform-logo">◆ Cantina</span>
+            <span class="platform-logo">● HackerOne</span>
+            <span class="platform-logo">◉ Hats Finance</span>
+            <span class="platform-logo">▸ Spearbit</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Institutional Certification Portal -->
+
+    <!-- Sovereign Ledger -->
     <section id="certification" class="section section-certification">
       <div class="section-inner">
         <div class="section-header">
-          <span class="section-tag">Cryptographic Trust Infrastructure</span>
-          <h2 id="cert-title">Every Decision.<br /><span class="text-accent">Cryptographically Sealed.</span></h2>
-          <p class="section-desc">Your agents handle capital, data, and decisions. Our verification pipeline ensures every state mutation is validated, signed, and immutable — from proposal to persistence.</p>
+          <span class="section-tag">Sovereign Ledger</span>
+          <h2 id="cert-title">Verification Chain.<br /><span class="text-accent">C5-REAL Proof.</span></h2>
+          <p class="section-desc">The cryptographic backbone of our audits. Every finding is linked to an immutable evidence chain.</p>
         </div>
 
         <div class="cert-grid">
@@ -331,8 +364,8 @@
               <div class="merkle-fade"></div>
             </div>
             <div class="merkle-footer">
-              <span class="merkle-hash" id="merkle-root-hash">root: 0x3a7f2c1b9e4d6a8f5c0b2e7d1a3f9c6b</span>
-              <span class="merkle-depth">Depth: 5 · 31 Nodes</span>
+              <span class="merkle-hash" id="evidence-root-hash">root: 0x3a7f2c1b9e4d6a8f5c0b2e7d1a3f9c6b</span>
+              <span class="merkle-depth">Depth: 7 · 127 Nodes</span>
             </div>
           </div>
 
@@ -428,7 +461,7 @@
             <div class="cert-seal-ring"></div>
             <div class="cert-seal-core">⬡</div>
           </div>
-          <div class="cert-card-title">Agent Security Certificate</div>
+          <div class="cert-card-title">Sovereign Audit Proof</div>
           <div class="cert-card-sub">Cryptographically Signed Verification Report</div>
           <div class="cert-fields">
             <div class="cert-field">
@@ -453,7 +486,7 @@
             </div>
             <div class="cert-field">
               <span class="cert-field-label">Issued By</span>
-              <span class="cert-field-value">agents.archi Authority</span>
+              <span class="cert-field-value">agents.archi Sovereign Ledger</span>
             </div>
           </div>
           <div class="cert-divider"></div>
@@ -523,9 +556,9 @@
     <section id="threat-feed" class="section section-feed">
       <div class="section-inner">
         <div class="section-header">
-          <span class="section-tag">Live Feed</span>
-          <h2 id="live-threat-feed-title">Live Threat Intelligence <span class="badge-simulation">[C4-SIMULACIÓN]</span><br /><span class="text-accent">From the Wild.</span></h2>
-          <p class="section-desc">CVEs and incidents pulled live from NVD, Microsoft MSRC, and the agentic security landscape. Updated May 2026.</p>
+          <span class="section-tag">Adversarial Intel</span>
+          <h2 id="live-threat-feed-title">High-Exergy Signals <span class="badge-simulation">[C5-REAL]</span><br /><span class="text-accent">From the Wild.</span></h2>
+          <p class="section-desc">Real-time telemetry and zero-day tracking from the agentic security landscape.</p>
         </div>
         <div class="feed-grid" id="feed-grid">
           <div class="feed-card feed-critical" id="feed-cve-25592">
@@ -630,70 +663,61 @@
       </div>
     </section>
 
-    <!-- Pricing -->
-    <section id="pricing" class="section section-dark">
+    <!-- Contact / Commission -->
+    <section id="contact" class="section section-dark">
       <div class="section-inner">
         <div class="section-header">
-          <span class="section-tag">Pricing</span>
-          <h2 id="pricing-title">Simple Scaling.<br /><span class="text-accent">Sovereign Performance.</span></h2>
-          <p class="section-desc">Choose the verification level your swarm requires.</p>
+          <span class="section-tag">Audit Protocol Alpha</span>
+          <h2 id="contact-title">Commission Forensic<br /><span class="text-accent">Verification.</span></h2>
+          <p class="section-desc">agents.archi does not have clients; it has cases. Every finding is a high-exergy strike against entropy, crystallized into the Sovereign Ledger for the world to verify.</p>
         </div>
-        <div class="pricing-grid">
-          <div class="plan-card">
-            <div class="plan-header">
-              <h3>Community</h3>
-              <div class="plan-price">$0<small>/forever</small></div>
-            </div>
-            <ul class="plan-features">
-              <li>10 Threat Vector Mapping</li>
-              <li>Local Proof Execution</li>
-              <li>Basic ASL Support</li>
-              <li>Community Discord</li>
-            </ul>
-            <a href="https://github.com/borjamoskv/cortex-persist" class="btn btn-ghost plan-btn">View on GitHub</a>
-          </div>
-          <div class="plan-card featured">
-            <div class="plan-badge">Most Popular</div>
-            <div class="plan-header">
-              <h3>Pro Agent</h3>
-              <div class="plan-price" id="price-pro">$29<small>/month</small></div>
-            </div>
-            <ul class="plan-features">
-              <li>Unlimited SMT Proofs</li>
-              <li>Priority Support</li>
-              <li>Signed Certificates</li>
-              <li>Telemetry Bridge</li>
-            </ul>
-            <button class="btn btn-primary plan-btn" data-plan="pro">Subscribe Now</button>
-          </div>
-          <div class="plan-card">
-            <div class="plan-header">
-              <h3>Swarm Elite</h3>
-              <div class="plan-price" id="price-team">$99<small>/month</small></div>
-            </div>
-            <ul class="plan-features">
-              <li>Byzantine Consensus (WBFT)</li>
-              <li>Custom ASL Invariants</li>
-              <li>Dedicated Auditor</li>
-              <li>Direct Engineering Sync</li>
-            </ul>
-            <button class="btn btn-ghost plan-btn" data-plan="team">Scale Swarm</button>
-          </div>
+        <div class="contact-card">
+          <p>Submit a target or codebase for adversarial review. Only high-impact surfaces will be prioritized for verification.</p>
+          <button id="btn-commission" class="btn btn-primary">Initiate Forensic Analysis</button>
         </div>
       </div>
     </section>
 
     <!-- Architect's Swarm — Full Helper Roster -->
     <section id="architect-swarm" class="section section-swarm">
+      <canvas class="swarm-canvas" id="swarm-canvas" aria-hidden="true"></canvas>
       <div class="section-inner">
         <div class="section-header">
           <span class="section-tag">⬡ The Architect's Swarm</span>
-          <h2 id="swarm-title">21 Sovereign Helpers.<br /><span class="text-accent">8 Domains. 1 Architect.</span></h2>
-          <p class="section-desc">Every agent in Antigravity's roster — from apex orchestration to specialist strike units. Filter by domain to inspect capabilities.</p>
+          <h2 id="swarm-title">100 Sovereign Helpers.<br /><span class="text-accent">Sovereign Swarm Intelligence.</span></h2>
+          <p class="section-desc">Antigravity's unified roster. 100 autonomous units managing context, verifying proofs, and enforcing the Nine Laws in hyper-parallel.</p>
           <div class="swarm-header-meta">
-            <span class="swarm-count" id="swarm-count">0/21 ACTIVE</span>
+            <span class="swarm-count" id="swarm-count">0/100 ACTIVE</span>
           </div>
         </div>
+
+        <!-- Global Swarm Dashboard -->
+        <div class="swarm-dashboard" id="swarm-dashboard">
+          <div class="dash-metric">
+            <span class="dash-label">TOTAL MEMORY</span>
+            <span class="dash-value" id="dash-memory">0%</span>
+            <div class="dash-progress"><div class="dash-bar" id="bar-memory" style="width: 0%"></div></div>
+          </div>
+          <div class="dash-metric">
+            <span class="dash-label">SWARM SYNC</span>
+            <span class="dash-value" id="dash-sync">0%</span>
+            <div class="dash-progress"><div class="dash-bar" id="bar-sync" style="width: 0%"></div></div>
+          </div>
+          <div class="dash-metric">
+            <span class="dash-label">SYSTEM STRESS</span>
+            <span class="dash-value" id="dash-stress">0%</span>
+            <div class="dash-progress"><div class="dash-bar bar-danger" id="bar-stress" style="width: 0%"></div></div>
+          </div>
+          <div class="dash-metric">
+            <span class="dash-label">CRYSTALLIZATION RATE</span>
+            <span class="dash-value" id="dash-rate">0.0<small>hz</small></span>
+            <div class="swarm-dashboard-actions">
+              <button class="btn-swarm-opt" id="btn-swarm-opt">SWARM_OPTIMIZATION_Ω</button>
+              <button class="btn-swarm-audit" id="btn-swarm-audit">SOVEREIGN_AUDIT_λ</button>
+            </div>
+          </div>
+        </div>
+
         <div class="swarm-filters" id="swarm-filters"></div>
         <div class="swarm-grid" id="swarm-grid"></div>
       </div>
@@ -707,9 +731,9 @@
       </div>
       <div class="section-inner">
         <div class="section-header">
-          <span class="section-tag council-tag">⬡ LEGIØN-1 — 1000 NODES LIVE</span>
+          <span class="section-tag council-tag">⬡ LEGIØN-1 — 100 NODES LIVE</span>
           <h2 id="council-title">Sovereign Agent Council<br /><span class="text-accent">Reunion Protocol Active</span></h2>
-          <p class="section-desc">9 commanders. 1000 autonomous nodes converging. Harmonic Homeostasis Ω₁₆ active. All bound by the Nine Laws.</p>
+          <p class="section-desc">9 commanders. 100 autonomous nodes converging. Harmonic Homeostasis Ω₁₆ active. All bound by the Nine Laws.</p>
         </div>
         <div class="council-arena">
           <!-- Agent Grid -->
@@ -733,7 +757,7 @@
         <div class="council-metrics" id="council-metrics">
           <div class="council-metric">
             <span class="metric-label">Active Nodes</span>
-            <span class="metric-value" id="metric-nodes">0/1000</span>
+            <span class="metric-value" id="metric-nodes">0/100</span>
           </div>
           <div class="council-metric">
             <span class="metric-label">Consensus</span>
@@ -749,7 +773,7 @@
           </div>
           <div class="council-metric">
             <span class="metric-label">Reality Level</span>
-            <span class="metric-value" id="metric-reality">C4-SIMULACIÓN</span>
+            <span class="metric-value" id="metric-reality">C5-HYBRID</span>
           </div>
         </div>
         <!-- Genesis Synthesis Oscilloscope -->
@@ -770,7 +794,7 @@
             </span>
             <span class="osc-metric">
               <span class="osc-metric-label">Active Nodes</span>
-              <span class="osc-metric-value" id="legion-node-count">0 / 1000</span>
+              <span class="osc-metric-value" id="legion-node-count">0 / 100</span>
             </span>
             <span class="osc-metric">
               <span class="osc-metric-label">Connections</span>
@@ -781,28 +805,7 @@
       </div>
     </section>
 
-    <!-- Contact -->
-    <section id="contact" class="section section-cta">
-      <div class="cta-glow"></div>
-      <div class="section-inner">
-        <div class="cta-content">
-          <h2 id="cta-title">Your agent handles money, data, or decisions?</h2>
-          <p class="cta-desc">The first catastrophic agent failure hasn't happened yet.<br />Be verified before it does.</p>
-          <form class="waitlist-form" id="waitlist-form">
-            <input type="email" class="waitlist-input" id="waitlist-email" placeholder="your@email.com" required aria-label="Email address" />
-            <button type="submit" class="waitlist-submit" id="waitlist-submit">Get Early Access</button>
-          </form>
-          <p class="cta-note">Or reach out directly: <a href="mailto:borja@moskv.com" id="cta-email">borja@moskv.com</a> · <a href="https://x.com/borjamoskv" target="_blank" rel="noopener" id="cta-twitter">@borjamoskv</a></p>
-          <div class="cta-trust">
-            <span class="cta-trust-item">6 Critical findings</span>
-            <span class="cta-trust-sep">·</span>
-            <span class="cta-trust-item">4 Platforms</span>
-            <span class="cta-trust-sep">·</span>
-            <span class="cta-trust-item">Z3 Formal Proofs</span>
-          </div>
-        </div>
-      </div>
-    </section>
+
 
     <!-- Footer -->
     <footer class="footer" id="footer">
@@ -823,29 +826,7 @@
       </div>
     </footer>
 
-    <!-- Checkout Modal -->
-    <div class="modal-overlay" id="checkout-modal">
-      <div class="modal-container">
-        <div class="modal-header">
-          <div class="modal-title">Secure Subscription</div>
-          <button class="modal-close" id="modal-close">&times;</button>
-        </div>
-        <div class="modal-body">
-          <div class="checkout-summary">
-            <div class="summary-plan" id="summary-plan-name">Pro Agent</div>
-            <div class="summary-price" id="summary-plan-price">$29</div>
-          </div>
-          <div class="checkout-form-container" id="checkout-form-container">
-            <input type="email" class="checkout-input" id="checkout-email" placeholder="Email Address" required />
-            <button class="btn btn-primary btn-full" id="checkout-submit-btn">Pay Securely</button>
-          </div>
-          <div id="stripe-element-container"></div>
-        </div>
-        <div class="modal-footer">
-          <span class="secure-icon">🔒</span> Secured by CORTEX Audit Chain
-        </div>
-      </div>
-    </div>
+
 
     <script type="module" src="/src/main.js"></script>
   </body>
