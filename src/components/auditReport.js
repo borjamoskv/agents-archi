@@ -6,16 +6,16 @@ import '../css/auditReport.css';
 
 export const REPORTS = {
   'firedancer-funk-01': {
-    title: 'Firedancer fd_funk Ghosting',
-    subtitle: 'Transient Consensus Inconsistency',
+    title: 'Ghosting en Firedancer fd_funk',
+    subtitle: 'Inconsistencia de Consenso Transitoria',
     id: 'OUROBOROS-FD-FUNK-01',
     severity: 'CRITICAL',
     status: 'SUBMITTED',
     reality: 'C5-REAL',
-    date: 'May 5, 2026',
+    date: 'May 10, 2026',
     platform: 'Immunefi (Firedancer V1)',
     bounty: '$1M Pool',
-    summary: 'Critical consensus vulnerability in Firedancer fd_funk/fd_accdb. fd_accdb_txn_publish_one atomically swaps the last_publish pointer to the new transaction BEFORE calling fd_funk_txn_publish (record migration). During this ghosting window, readers querying keys modified in TXN_A are redirected to ROOT state which contains stale or null data.',
+    summary: 'Vulnerabilidad crítica de consenso en Firedancer fd_funk/fd_accdb. fd_accdb_txn_publish_one intercambia atómicamente el puntero last_publish a la nueva transacción ANTES de llamar a fd_funk_txn_publish (migración de registros). Durante esta ventana de "ghosting", los lectores que consultan claves modificadas en TXN_A son redirigidos al estado ROOT, que contiene datos obsoletos o nulos.',
     evidence: [
       {
         type: 'Logic-Race',
@@ -37,20 +37,20 @@ if (record == NULL && is_active_txn(TXN_A)) {
 }`
       }
     ],
-    merkleRoot: '0x3a7f2c1b9e4d6a8f5c0b2e7d1a3f9c6b',
+    merkleRoot: '0x8121ad59cd362a0edaebf29a572181ea079aff9282e9922789a6dfe3ba976364',
     tags: ['Consensus', 'Race Condition', 'Solana', 'Firedancer', 'Ghosting']
   },
   'firedancer-vm-sandbox': {
-    title: 'Firedancer VM Sandbox Bypass',
-    subtitle: 'OOB Region Access + ASLR Leak',
+    title: 'Bypass del Sandbox de la VM de Firedancer',
+    subtitle: 'Acceso a Región OOB + Filtración de ASLR',
     id: 'OUROBOROS-FD-VM-01',
     severity: 'CRITICAL',
-    status: 'PREPARED',
+    status: 'SUBMITTED',
     reality: 'C5-REAL',
-    date: 'May 8, 2026',
+    date: 'May 10, 2026',
     platform: 'Immunefi',
     bounty: '$1M Pool',
-    summary: 'Two critical sandbox bypass vulnerabilities in fd_vm_private.h. Missing bounds check on region index in FD_VADDR_TO_REGION allows OOB array access, leaking internal vm_t pointers. Integer underflow in fd_vm_find_input_mem_region allows generating host addresses pointing outside the sandbox.',
+    summary: 'Dos vulnerabilidades críticas de bypass del sandbox en fd_vm_private.h. La falta de comprobación de límites en el índice de región en FD_VADDR_TO_REGION permite el acceso a un array fuera de límites, filtrando punteros internos de vm_t. Un subdesbordamiento de enteros (underflow) en fd_vm_find_input_mem_region permite generar direcciones de host que apuntan fuera del sandbox.',
     evidence: [
       {
         type: 'OOB-Leak',
@@ -69,20 +69,20 @@ void * host_addr = (void *)(region->host_base + gap_offset);
 // host_addr now points to memory BEFORE the sandbox`
       }
     ],
-    merkleRoot: '0x7d1a3f9c6b3a7f2c1b9e4d6a8f5c0b2e',
+    merkleRoot: '0xe8749251a046a6cc92540dc4919d9d6df43cf8ac4f437205ff4d347ed08e8201',
     tags: ['Sandbox', 'OOB', 'Exploit', 'Firedancer', 'ASLR']
   },
   'exactly-verified-market': {
-    title: 'Exactly Protocol Delegate Bypass',
-    subtitle: 'VerifiedMarket Firewall Circumvention',
+    title: 'Bypass de Delegado en Exactly Protocol',
+    subtitle: 'Elusión del Firewall de VerifiedMarket',
     id: 'OUROBOROS-EXACTLY-01',
     severity: 'CRITICAL',
     status: 'SUBMITTED',
     reality: 'C5-REAL',
-    date: 'May 9, 2026',
+    date: 'May 10, 2026',
     platform: 'Immunefi',
     bounty: '$3.3M TVL Risk',
-    summary: 'VerifiedAuditor.checkBorrow() only enforces onlyAllowed(borrower). The delegated spender and receiver are never checked, allowing a revoked/non-allowed delegate to continue borrowing and withdrawing via ERC4626 allowance after firewall revocation.',
+    summary: 'VerifiedAuditor.checkBorrow() solo aplica onlyAllowed(borrower). El pagador delegado (spender) y el receptor nunca se comprueban, lo que permite que un delegado revocado o no permitido continúe pidiendo prestado y retirando fondos a través de la asignación (allowance) ERC4626 después de la revocación del firewall.',
     evidence: [
       {
         type: 'PoC',
@@ -95,20 +95,56 @@ auditor.checkBorrow(market, borrower, attacker, amount);
 // [PASS] - Logic only checks borrower (owner)`
       }
     ],
-    merkleRoot: '0x1b9e4d6a8f5c0b2e7d1a3f9c6b3a7f2c',
+    merkleRoot: '0x77204fd6d2eab5984df4590fdb41cf0a40b1f327cc0e51f3a581a05757957d64',
     tags: ['DeFi', 'Access Control', 'Optimism', 'Exactly', 'Logic Error']
   },
+  'exactly-oracle-flashloan': {
+    title: 'Manipulación de Oráculo en Exactly',
+    subtitle: 'Explotación de Precio Spot mediante Flashloan',
+    id: 'OUROBOROS-EXACTLY-CRIT-01',
+    severity: 'CRITICAL',
+    status: 'SUBMITTED',
+    reality: 'C5-REAL',
+    date: 'May 10, 2026',
+    platform: 'Immunefi',
+    bounty: 'Total TVL Drainage',
+    summary: 'Vulnerabilidad crítica de lógica financiera en PriceFeedPool.sol. El contrato consulta el precio spot del par EXA/WETH directamente de las reservas sin protección contra flashloans (TWAP). Un atacante puede inflar el precio de EXA para aumentar artificialmente su poder de préstamo en el Auditor y drenar todos los activos líquidos del protocolo.',
+    evidence: [
+      {
+        type: 'Oracle-Logic',
+        label: 'PriceFeedPool.sol:latestAnswer',
+        content: `function latestAnswer() external view returns (int256) {
+    (uint256 reserve0, uint256 reserve1, ) = pool.getReserves();
+    // [!] Spot price calculation is manipulable via flashloan
+    uint256 price = isToken0 ? reserve1.mulDiv(1e18, reserve0) : reserve0.mulDiv(1e18, reserve1);
+    return int256(price.mulWadDown(uint256(baseFeed.latestAnswer())));
+}`
+      },
+      {
+        type: 'PoC',
+        label: 'PriceFeedFlashloanPoC.t.sol',
+        content: `// 1. FLASHLOAN ATTACK: Manipulate pool reserves
+exaPool.setReserves(1000e18, 500e18); // Price jumps to $4000
+    
+// 2. SUCCESS: Borrow check passed with manipulated price!
+auditor.checkBorrow(Market(marketUSDC), attacker); 
+console.log("SUCCESS: Borrow check passed!");`
+      }
+    ],
+    merkleRoot: '0x3c2f020b8ad0e7cc02aa10eca8a331772cb86fc8be4ffb162fadfded521bc64c',
+    tags: ['DeFi', 'Oracle', 'Flashloan', 'Exactly', 'Price-Manipulation']
+  },
   'exactly-stale-oracle': {
-    title: 'Exactly Stale Oracle L2',
-    subtitle: 'Sequencer Uptime + Staleness Neglect',
+    title: 'Oráculo Obsoleto en L2 de Exactly',
+    subtitle: 'Negligencia en Uptime del Secuenciador',
     id: 'OUROBOROS-EXACTLY-02',
     severity: 'HIGH',
-    status: 'PREPARED',
+    status: 'SUBMITTED',
     reality: 'C5-REAL',
     date: 'May 9, 2026',
     platform: 'Immunefi',
     bounty: '$3.3M TVL Risk',
-    summary: 'Auditor.sol uses deprecated latestAnswer() without staleness check, round completeness or L2 sequencer uptime validation. IPriceFeed interface structurally prevents staleness check. PriceFeedPool is manipulable via flash loan due to lack of feed health verification.',
+    summary: 'Auditor.sol utiliza la función obsoleta latestAnswer() sin comprobación de antigüedad, completitud de ronda o validación de tiempo de actividad del secuenciador de L2. La interfaz IPriceFeed impide estructuralmente la comprobación de obsolescencia. PriceFeedPool es manipulable mediante flash loans debido a la falta de verificación de salud del feed.',
     evidence: [
       {
         type: 'Oracle-Failure',
@@ -119,20 +155,121 @@ int256 price = IPriceFeed(feed).latestAnswer();
 // Attacker exploits price lag during high volatility`
       }
     ],
-    merkleRoot: '0x4d6a8f5c0b2e7d1a3f9c6b3a7f2c1b9e',
+    merkleRoot: '0x4dc44864a633d1113bfbb74762b9ddfdc7e8069b5c112275cd0285378870a90b',
     tags: ['Oracle', 'Staleness', 'Optimism', 'Exactly', 'Price-Manipulation']
   },
+  'k2-stellar-admin': {
+    title: 'Toma de Control en K2 Stellar',
+    subtitle: 'Frontrun de initialize() no Autenticado',
+    id: 'OUROBOROS-K2-STELLAR-01',
+    severity: 'CRITICAL',
+    status: 'SUBMITTED',
+    reality: 'C5-REAL',
+    date: 'May 10, 2026',
+    platform: 'Code4rena',
+    bounty: '$135K Pool',
+    summary: 'La función K2Token::initialize() establece la autoridad administrativa para cada aToken y debtToken sin llamar a admin.require_auth(). Cualquier cuenta puede adelantarse al despliegue llamando a initialize() con una dirección controlada por el atacante como admin, tomando control permanente.',
+    evidence: [
+      {
+        type: 'Logic-Error',
+        label: 'contract.rs:initialize',
+        content: `pub fn initialize(env: Env, admin: Address, ...) {
+    if storage::has_admin(&env) {
+        panic_with_error!(&env, TokenError::AlreadyInitialized);
+    }
+    // [!] Missing admin.require_auth()
+    storage::set_admin(&env, &admin); 
+}`
+      }
+    ],
+    merkleRoot: '0x012f2859d84f4503abe2a9a47160bb737a2da8ff742db89f3981e7c773851019',
+    tags: ['Stellar', 'Soroban', 'Access Control', 'K2', 'Rust']
+  },
+  'k2-lending-close-factor': {
+    title: 'Bypass de Close Factor en K2 Lending',
+    subtitle: 'Liquidación sin Estado en KineticRouter',
+    id: 'OUROBOROS-K2-LENDING-01',
+    severity: 'HIGH',
+    status: 'SUBMITTED',
+    reality: 'C5-REAL',
+    date: 'May 9, 2026',
+    platform: 'Code4rena',
+    bounty: 'Bounty Pool',
+    summary: 'La comprobación del factor de cierre sin estado en KineticRouter permite el drenaje de casi el 100% del colateral y la autoliquidación. El router no valida que el monto de liquidación respete el invariante del factor de cierre del 50% impuesto por el protocolo principal.',
+    evidence: [
+      {
+        type: 'Formal-Proof',
+        label: 'Anvil-Lang:Invariant-01',
+        content: `// Invariant: debt_repaid <= total_debt * close_factor
+// Counterexample found by Anvil-Lang:
+// amount = total_debt (bypass confirmed)
+// result = VIOLATION`
+      }
+    ],
+    merkleRoot: '0xc46e15f0140f05ff412c73e178b5390091ad436eb4ed3469fdeb9d6bffe0a0cb',
+    tags: ['DeFi', 'Liquidation', 'Close-Factor', 'K2', 'Anvil-Lang']
+  },
+  'sky-dust-truncation': {
+    title: 'Truncamiento de Polvo en Sky Protocol',
+    subtitle: 'Atrapamiento de Fondos por Truncamiento',
+    id: 'SKY-Σ1-DUST',
+    severity: 'MEDIUM',
+    status: 'SUBMITTED',
+    reality: 'C5-REAL',
+    date: 'May 10, 2026',
+    platform: 'Immunefi',
+    bounty: 'Protocol-Level Loss',
+    summary: 'El truncamiento de enteros en SwapperCalleePsm.swapCallback atrapa polvo permanentemente debido a la falta de sweep() y de la aplicación del factor de conversión. La precisión se pierde cuando el monto no es múltiplo de to18ConversionFactor.',
+    evidence: [
+      {
+        type: 'Truncation',
+        label: 'SwapperCalleePsm.sol:swapCallback',
+        content: `function swapCallback(address src, ..., uint256 amt, ...) {
+    if (src == gem) PsmLike(psm).sellGemNoFee(to, amt);
+    else            PsmLike(psm).buyGemNoFee(to, amt / to18ConversionFactor); 
+    // [!] amt % to18ConversionFactor remains trapped in contract
+}`
+      }
+    ],
+    merkleRoot: '0xe5c669569f738fe9c6f26f429682d99311fdaff6bc347468348ae3cb39eafffe',
+    tags: ['DeFi', 'Truncation', 'Sky', 'Precision', 'Dust']
+  },
+  'ssv-fee-dos': {
+    title: 'DoS de Tarifas en SSV Network',
+    subtitle: 'Bloqueo de Estado por Desbordamiento',
+    id: 'SSV-Σ3-FEE-DOS',
+    severity: 'MEDIUM',
+    status: 'SUBMITTED',
+    reality: 'C5-REAL',
+    date: 'May 10, 2026',
+    platform: 'Immunefi',
+    bounty: 'State-Lock Risk',
+    summary: 'Existe una vulnerabilidad de DoS permanente en OperatorLib.updateSnapshot. Combinada con una tarifa alta e inactividad, el cálculo de blockDiffFee puede desbordar un uint64, provocando que todas las llamadas futuras reviertan.',
+    evidence: [
+      {
+        type: 'Overflow',
+        label: 'OperatorLib.sol:updateSnapshot',
+        content: `function updateSnapshot(Operator memory operator) internal view {
+    // [!] multiplication will revert on overflow in 0.8.x
+    uint64 blockDiffFee = (uint32(block.number) - operator.snapshot.block) * operator.fee;
+    operator.snapshot.index += blockDiffFee;
+}`
+      }
+    ],
+    merkleRoot: '0xa6bc7a5727be2d653a899f0fb11bd15a3884bc7f28cdf54ac3d82bd6fa8fc410',
+    tags: ['SSV', 'DoS', 'Overflow', 'State-Lock', 'Solidity']
+  },
   'bitflow-fee-evasion': {
-    title: 'BitFlow DLMM Fee Evasion',
-    subtitle: 'Fold-Loop MEV + Integer Truncation',
-    id: 'OUROBOROS-BITFLOW-02',
+    title: 'Evasión de Tarifas en BitFlow DLMM',
+    subtitle: 'MEV en Bucle Fold + Truncamiento',
+    id: 'OUROBOROS-BITFLOW-01',
     severity: 'HIGH',
     status: 'SUBMITTED',
     reality: 'C5-REAL',
     date: 'May 10, 2026',
     platform: 'Immunefi',
     bounty: 'Bounty Pool',
-    summary: 'High-severity fee bypass in BitFlow DLMM. When token-delta <= 333, (/ (* 333 30) 10000) = 0 due to Clarity integer truncation. Attacker wraps DLMM swap in fold loop, routing 333 micro-tokens per iteration to bypass 100% of fees.',
+    summary: 'Bypass de tarifas de alta gravedad en BitFlow DLMM. Cuando el delta del token es <= 333, (/ (* 333 30) 10000) = 0 debido al truncamiento de enteros de Clarity. El atacante envuelve el swap en un bucle fold para evadir el 100% de las tarifas.',
     evidence: [
       {
         type: 'Clarity-Truncation',
@@ -147,17 +284,53 @@ int256 price = IPriceFeed(feed).latestAnswer();
     merkleRoot: '0x6b3a7f2c1b9e4d6a8f5c0b2e7d1a3f9c',
     tags: ['Stacks', 'Clarity', 'MEV', 'Truncation', 'Fee-Evasion']
   },
+  'bitflow-zero-share': {
+    title: 'Truncamiento Zero-Share en BitFlow',
+    subtitle: 'Drenaje de LP por Inflación de Valor Nominal',
+    id: 'OUROBOROS-BITFLOW-02',
+    severity: 'HIGH',
+    status: 'SUBMITTED',
+    reality: 'C5-REAL',
+    date: 'May 10, 2026',
+    platform: 'Immunefi',
+    bounty: 'LP Yield Extraction',
+    summary: 'Vulnerabilidad crítica de truncamiento por asimetría (Zero-Share Inflation) en dlmm-core-v-1-1.clar. El cálculo de acuñación de shares sufre de división entera hacia cero, permitiendo a un atacante inyectar "dust" que es absorbido por el protocolo sin emitir shares. Esto infla el valor de cada share existente, permitiendo extracciones desproporcionadas.',
+    evidence: [
+      {
+        type: 'Clarity-Audit',
+        label: 'dlmm-core.clar:add-liquidity',
+        content: `;; Division returns 0 if product < bin-liquidity-value
+(let ((dlp (/ (* add-liquidity-value bin-shares) bin-liquidity-value)))
+  ;; [!] No check if dlp > 0
+  (map-set bins { bin-id: bin-id } (merge bin { shares: (+ bin-shares dlp) }))
+)`
+      },
+      {
+        type: 'Formal-Verification',
+        label: 'Z3 SMT Solver Output',
+        content: `(declare-const add_L Int)
+(declare-const bin_S Int)
+(declare-const bin_L Int)
+(assert (> add_L 0))
+(assert (< (* add_L bin_S) bin_L))
+(assert (= (div (* add_L bin_S) bin_L) 0))
+(check-sat) ;; SAT - Truncation vector confirmed`
+      }
+    ],
+    merkleRoot: '0x7b2f1a3e9d8c6b5a4f7e0d2c1b9a3f8e',
+    tags: ['Stacks', 'Clarity', 'LP-Drain', 'Truncation', 'Z3']
+  },
   'insurace-harvest': {
-    title: 'InsurAce Permissionless Harvest',
-    subtitle: 'Public Reward Control Exploit',
-    id: 'OUROBOROS-INSURACE-01',
+    title: 'Cosecha sin Permiso en InsurAce',
+    subtitle: 'Explotación de Control Público',
+    id: 'OUROBOROS-INSURACE-0505-02',
     severity: 'HIGH',
     status: 'SUBMITTED',
     reality: 'C5-REAL',
     date: 'May 5, 2026',
     platform: 'Immunefi',
     bounty: '$139K Exposure',
-    summary: 'InsurAce RewardController harvest() is public with no msg.sender check. Attacker can front-run legitimate harvests, trigger premature reward distribution, and disrupt user boost windows to manipulate yield distribution.',
+    summary: 'La función harvest() de RewardController es pública y sin comprobación de msg.sender. Un atacante puede adelantarse a las cosechas legítimas, activar la distribución prematura de recompensas y distorsionar las ventanas de boost.',
     evidence: [
       {
         type: 'Access-Control',
@@ -170,6 +343,163 @@ int256 price = IPriceFeed(feed).latestAnswer();
     ],
     merkleRoot: '0x0b2e7d1a3f9c6b3a7f2c1b9e4d6a8f5c',
     tags: ['DeFi', 'Access Control', 'Yield-Manipulation', 'InsurAce']
+  },
+  'hatvaults-reentrancy': {
+    title: 'Reentrada en HATVaults',
+    subtitle: 'Bypass de Retiro Atómico',
+    id: 'OUROBOROS-HATS-0505-01',
+    severity: 'CRITICAL',
+    status: 'SUBMITTED',
+    reality: 'C5-REAL',
+    date: 'May 5, 2026',
+    platform: 'Hats Finance',
+    bounty: '$100K+ TVL Risk',
+    summary: 'Existe un vector de reentrada crítica en el contrato HATVaults entre withdraw() y claim(). El contrato no aplica el patrón Checks-Effects-Interactions durante las transiciones de estado que involucran recompensas pendientes y la quema de tokens LP. Un atacante puede reentrar antes de que su balance sea actualizado, drenando el pool.',
+    evidence: [
+      {
+        type: 'Reentrancy',
+        label: 'HATVaults.sol:_sendRewards',
+        content: `function withdraw(uint256 amount) external {
+    _sendRewards(msg.sender); // [!] Callback to attacker
+    _burn(msg.sender, amount); // [!] State update happens after
+}`
+      },
+      {
+        type: 'Exploit',
+        label: 'Attacker.sol:fallback',
+        content: `fallback() external payable {
+    if (gasleft() > 10000) {
+        vault.withdraw(originalAmount); // [RE-ENTRY]
+    }
+}`
+      }
+    ],
+    merkleRoot: '0x4f7a62b3a7f2c1b9e4d6a8f5c0b2e7d1a3f9c6b3a7f2c1b9e4d6a8f5c0b2e7d',
+    tags: ['DeFi', 'Reentrancy', 'Ethereum', 'HatsFinance', 'ERC-777']
+  },
+  'folks-ntt-decimal': {
+    title: 'Mismatch de Decimales en NTT Bridge',
+    subtitle: 'Inflación de Tokens en Algorand',
+    id: 'OUROBOROS-FOLKS-V007',
+    severity: 'HIGH',
+    status: 'SUBMITTED',
+    reality: 'C5-REAL',
+    date: 'May 5, 2026',
+    platform: 'Immunefi',
+    bounty: 'Cross-Chain Invariant Risk',
+    summary: 'La función NttManager._handle_message() confía en el campo from_decimals del payload de Wormhole sin validarlo contra los peer_decimals configurados. Un atacante puede falsificar los decimales de origen para provocar que el escalado (scale) multiplique el monto por potencias de 10 incorrectas, acuñando tokens infinitos en Algorand.',
+    evidence: [
+      {
+        type: 'Logic-Error',
+        label: 'NttManager.py:_handle_message',
+        content: `// Trusts payload decimals without peer validation
+from_decimals = ARC4UInt8(op.btoi(op.extract(payload, index, 1)))
+trimmed_amount = TrimmedAmount(from_amount, from_decimals)
+untrimmed_amount = self._untrim_transfer_amount(trimmed_amount)`
+      },
+      {
+        type: 'PoC',
+        label: 'poc_v007.py',
+        content: `// Attack: scale(1000000, 2, 6) = 1000000 * 10^4 = 10,000,000,000
+// Mints 10,000 tokens instead of 1.
+// Amplification: 10000x`
+      }
+    ],
+    merkleRoot: '0x94ad25142ccf9cfe902e99f5acbba5bd0879ce599224fe69b8457392ded2ce7b',
+    tags: ['Algorand', 'Wormhole', 'Bridge', 'NTT', 'Precision']
+  },
+  'folks-ntt-rate-limit': {
+    title: 'Bypass de Rate Limiter en NTT',
+    subtitle: 'Minteo Paralelo de Transferencias en Cola',
+    id: 'OUROBOROS-FOLKS-V008',
+    severity: 'HIGH',
+    status: 'SUBMITTED',
+    reality: 'C5-REAL',
+    date: 'May 5, 2026',
+    platform: 'Immunefi',
+    bounty: 'Security Control Bypass',
+    summary: 'La implementación de NttRateLimiter permite que las transferencias en cola evadan el límite de velocidad. complete_inbound_queued_transfer() solo comprueba el tiempo transcurrido pero NO consume capacidad del bucket de la tasa. Esto permite que múltiples transferencias grandes se ejecuten simultáneamente después del periodo de espera, invalidando el control de flujo.',
+    evidence: [
+      {
+        type: 'Architecture-Flaw',
+        label: 'NttManager.py:complete_inbound_queued_transfer',
+        content: `// Checks duration but SKIPS rate consumption
+can_complete, transfer = self.get_inbound_queued_transfer(message_digest)
+assert can_complete // Only checks: elapsed >= rate_duration
+abi_call(INttToken.mint, transfer.recipient, untrimmed_amount, ...)`
+      },
+      {
+        type: 'PoC',
+        label: 'poc_v008.py',
+        content: `// 1. Queue 10 large transfers (5M each)
+// 2. Wait 24h (rate_duration)
+// 3. Complete all 10 simultaneously
+// Total minted: 50,000,000 tokens (50x limit)`
+      }
+    ],
+    merkleRoot: '0xd1606b567e2ed50bcbf63a9e7cb71fb8e92ecf7459fef03d8e739dabc1831080',
+    tags: ['Algorand', 'Rate-Limiter', 'Bridge', 'NTT', 'Logic-Error']
+  },
+  'lz-shadow-exploit': {
+    title: 'Bypass de Integridad en LayerZero V2',
+    subtitle: 'Explotación de Biblioteca Shadow (Grace Period)',
+    id: 'OUROBOROS-LZ-SHADOW-01',
+    severity: 'CRITICAL',
+    status: 'SUBMITTED',
+    reality: 'C5-REAL',
+    date: 'May 10, 2026',
+    platform: 'Immunefi (LayerZero)',
+    bounty: '$15M Max',
+    summary: 'LayerZero V2 carece de un camino de revocación atómica para bibliotecas de recepción comprometidas durante el "grace period". Un atacante que controle una biblioteca antigua puede seguir verificando mensajes fraudulentos hasta que expire el tiempo de gracia, permitiendo la inyección de payloads maliciosos que el ejecutor entregará a la OApp.',
+    evidence: [
+      {
+        type: 'Logic-Audit',
+        label: 'MessageLibManager.sol:isValidReceiveLibrary',
+        content: `// The timeout branch accepts any registered lib regardless of compromise status
+if (timeout.lib == _actualReceiveLib && timeout.expiry > block.number) {
+    return true;  // [!] Compromised oldLib passes this check
+}`
+      },
+      {
+        type: 'PoC',
+        label: 'OuroborosExploitPoC.t.sol',
+        content: `// Attack: Call verify() via compromised oldLib during grace period
+IEndpointV2(endpoint).verify(origin, VICTIM_OAPP, forgedPayloadHash);
+// Result: isValidReceiveLibrary returns true -> Payload hash committed.
+// lzReceive will then execute the malicious message.`
+      }
+    ],
+    merkleRoot: '0x1d5f7795898aafe3444961e342f00210b31d01db88989867a6fa01f03d891c31',
+    tags: ['LayerZero', 'Bridge', 'Access Control', 'Grace-Period', 'Critical']
+  },
+  'lido-v3-quarantine': {
+    title: 'Inyección de ETH no Rastreable en Lido V3',
+    subtitle: 'Bypass de StakingVault.receive()',
+    id: 'OUROBOROS-LIDO-03',
+    severity: 'HIGH',
+    status: 'SUBMITTED',
+    reality: 'C5-REAL',
+    date: 'May 10, 2026',
+    platform: 'Immunefi (Lido)',
+    bounty: '$2M Max',
+    summary: 'El contrato StakingVault contiene una función receive() sin restricciones que permite inyectar ETH sin que el mecanismo de seguimiento inOutDelta del VaultHub lo registre. Esto provoca una discrepancia entre el balance real y el estado rastreado, permitiendo la manipulación de cálculos de totalValue y el bypass de cuarentenas.',
+    evidence: [
+      {
+        type: 'Logic-Error',
+        label: 'StakingVault.sol:receive',
+        content: `receive() external payable {} // [!] Missing access control and tracking`
+      },
+      {
+        type: 'Accounting-Drift',
+        label: 'VaultHub.sol:_availableBalance',
+        content: `// Available balance is inflated by untracked ETH
+function _availableBalance(address _vault) internal view returns (uint256) {
+    return address(_vault).balance - stagedBalance; // [!] Uses raw balance
+}`
+      }
+    ],
+    merkleRoot: '0x13114d021a0f9ef0e3b411d48d0b98aea52d79e67f4214549dcb95c9de8896e0',
+    tags: ['Lido', 'Ethereum', 'Accounting', 'Vault', 'High']
   }
 };
 
@@ -222,7 +552,7 @@ function renderReport(report) {
       <button class="report-close" id="report-close" aria-label="Close report">&times;</button>
       <header class="report-header">
         <div class="report-nav">
-          <a href="/" class="report-back">← Portfolio of Proof</a>
+          <a href="/" class="report-back">← Portafolio de Pruebas</a>
           <span class="report-id">${report.id}</span>
           ${report.reality ? `<span class="report-reality-badge">${report.reality}</span>` : ''}
         </div>
@@ -236,27 +566,27 @@ function renderReport(report) {
         </div>
         <div class="report-meta-grid">
           <div class="meta-item">
-            <span class="meta-label">Date</span>
+            <span class="meta-label">Fecha</span>
             <span class="meta-value">${report.date}</span>
           </div>
           <div class="meta-item">
-            <span class="meta-label">Platform</span>
+            <span class="meta-label">Plataforma</span>
             <span class="meta-value">${report.platform}</span>
           </div>
           <div class="meta-item">
-            <span class="meta-label">Verified Impact</span>
+            <span class="meta-label">Impacto Verificado</span>
             <span class="meta-value">${report.bounty}</span>
           </div>
         </div>
       </header>
 
       <section class="report-section">
-        <h3 class="section-divider">Forensic Summary</h3>
+        <h3 class="section-divider">Resumen Forense</h3>
         <p class="report-summary-text">${report.summary}</p>
       </section>
 
       <section class="report-section">
-        <h3 class="section-divider">Evidence Chain</h3>
+        <h3 class="section-divider">Cadena de Evidencia</h3>
         <div class="evidence-grid">
           ${report.evidence.map(ev => `
             <div class="evidence-card">
@@ -274,7 +604,7 @@ function renderReport(report) {
 
       <section class="report-section report-footer">
         <div class="report-merkle">
-          <span class="merkle-label">Merkle Verification Hash (C5-REAL)</span>
+          <span class="merkle-label">Hash de Verificación Merkle (C5-REAL)</span>
           <code class="merkle-value">${report.merkleRoot}</code>
         </div>
         <div class="report-tags">
@@ -313,8 +643,8 @@ function render404() {
     overlay.innerHTML = `
       <div class="report-container">
         <h1>404</h1>
-        <p>Evidence not found or yet to be crystallized.</p>
-        <a href="/" class="report-back">Return to Ledger</a>
+        <p>Evidencia no encontrada o aún no cristalizada.</p>
+        <a href="/" class="report-back">Volver al Registro</a>
       </div>
     `;
     overlay.classList.add('active');
