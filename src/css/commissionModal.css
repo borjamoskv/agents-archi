@@ -24,15 +24,17 @@
 }
 
 .commission-container {
-  background: var(--bg-darker);
-  border: 1px solid var(--border-color);
+  background: var(--void-elevated);
+  border: 1px solid var(--void-border);
   width: 100%;
   max-width: 600px;
+  max-height: min(92vh, 820px);
   position: relative;
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
   transform: translateY(20px) scale(0.98);
   transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   padding: 40px;
+  overflow-y: auto;
 }
 
 .commission-overlay.active .commission-container {
@@ -45,7 +47,7 @@
   right: 20px;
   background: none;
   border: none;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-size: 2rem;
   cursor: pointer;
   line-height: 1;
@@ -53,7 +55,7 @@
 }
 
 .commission-close:hover {
-  color: var(--text-main);
+  color: var(--text-primary);
 }
 
 .commission-header {
@@ -65,7 +67,7 @@
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.7rem;
   padding: 2px 8px;
-  background: var(--accent-main);
+  background: var(--accent);
   color: #fff;
   letter-spacing: 0.1em;
   margin-bottom: 10px;
@@ -74,11 +76,11 @@
 .commission-header h2 {
   font-size: 2rem;
   margin: 0 0 10px 0;
-  color: var(--text-main);
+  color: var(--text-primary);
 }
 
 .commission-header p {
-  color: var(--text-muted);
+  color: var(--text-secondary);
   margin: 0;
   font-size: 0.95rem;
 }
@@ -98,7 +100,7 @@
 .form-group label {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.75rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -107,9 +109,9 @@
 .form-group select,
 .form-group textarea {
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--void-border);
   padding: 12px 16px;
-  color: var(--text-main);
+  color: var(--text-primary);
   font-family: inherit;
   font-size: 1rem;
   transition: border-color 0.3s, background 0.3s;
@@ -119,7 +121,7 @@
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: var(--accent-main);
+  border-color: var(--accent);
   background: rgba(255, 255, 255, 0.05);
 }
 
@@ -143,14 +145,14 @@
 
 .meta-label {
   font-size: 0.7rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   text-transform: uppercase;
 }
 
 .meta-value {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.9rem;
-  color: var(--accent-light);
+  color: var(--accent-bright);
 }
 
 .submission-result {
@@ -163,7 +165,7 @@
 
 .result-icon {
   font-size: 3rem;
-  color: var(--accent-main);
+  color: var(--accent);
   margin-bottom: 20px;
   animation: pulse 2s infinite;
 }
@@ -179,10 +181,43 @@
   padding: 12px 20px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.8rem;
-  color: var(--text-muted);
-  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  border: 1px solid var(--void-border);
   margin: 20px 0 30px 0;
   word-break: break-all;
+}
+
+.request-summary {
+  width: 100%;
+  white-space: pre-wrap;
+  text-align: left;
+  color: var(--text-secondary);
+  background: var(--void);
+  border: 1px solid var(--void-border);
+  padding: 14px 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  margin-bottom: 22px;
+}
+
+.result-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--void-border);
+  color: var(--text-secondary);
+}
+
+.btn-outline:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+  box-shadow: 0 0 24px var(--accent-glow);
 }
 
 @media (max-width: 600px) {
@@ -193,7 +228,9 @@
     flex-direction: column;
     align-items: flex-start;
   }
-  .form-footer button {
+  .form-footer button,
+  .result-actions .btn {
     width: 100%;
+    justify-content: center;
   }
 }
