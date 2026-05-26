@@ -7,12 +7,11 @@ export async function renderLiveFeed() {
   if (!grid) return;
 
   try {
-    const response = await fetch('/ouroboros.jsonl');
+    const response = await fetch('/_facts.json');
     if (!response.ok) throw new Error('Ouroboros feed failed, falling back to static');
     
-    const text = await response.text();
-    const lines = text.split('\n').filter(l => l.trim().length > 0);
-    const threats = lines.map(l => JSON.parse(l)).reverse().slice(0, 4).map((t, i) => {
+    const data = await response.json();
+    const threats = data.reverse().slice(0, 12).map((t, i) => {
       // Mapping Ouroboros schema to the visual feed schema
       return {
         id: t.id || `OB-${t.target_id || i}`,
