@@ -100,11 +100,11 @@
             <span class="stat-label">Clases de Vectores de Ataque</span>
           </div>
           <div class="stat">
-            <span class="stat-value" data-count="6">0</span>
+            <span class="stat-value" data-count="8">0</span>
             <span class="stat-label">Hallazgos Críticos</span>
           </div>
           <div class="stat">
-            <span class="stat-value" data-count="4">0</span>
+            <span class="stat-value" data-count="7">0</span>
             <span class="stat-label">Plataformas Auditadas</span>
           </div>
         </div>
@@ -357,6 +357,76 @@
             <div class="bounty-meta">
               <span class="bounty-id">OUROBOROS-INSURACE-01</span>
               <a href="/audit/insurace-harvest" class="bounty-link">Ver Prueba →</a>
+            </div>
+          </div>
+          <div class="bounty-card" id="bounty-k2-lending">
+            <div class="bounty-severity critical">Crítico</div>
+            <h4>K2 Lending</h4>
+            <p class="bounty-vuln">Close Factor Bypass & Auto-Liquidación</p>
+            <p class="bounty-desc">Invocación directa de <code>KineticRouter</code> permite evadir el close factor y auto-liquidarse, capturando el 100% del colateral del prestatario en una sola transacción sin restricción de fracción.</p>
+            <div class="bounty-meta">
+              <span class="bounty-id">OUROBOROS-K2-LENDING-01</span>
+              <a href="/audit/k2-lending-close-factor" class="bounty-link">Ver Prueba →</a>
+            </div>
+          </div>
+          <div class="bounty-card" id="bounty-k2-stellar">
+            <div class="bounty-severity critical">Crítico</div>
+            <h4>K2 Stellar Token</h4>
+            <p class="bounty-vuln">Takeover de Admin via initialize()</p>
+            <p class="bounty-desc">Función <code>initialize()</code> no autenticada permite a cualquier atacante reclamar el rol de administrador del token, otorgando control total sobre minting, pausing y upgradeability del contrato.</p>
+            <div class="bounty-meta">
+              <span class="bounty-id">OUROBOROS-K2-STELLAR-01</span>
+              <a href="/audit/k2-stellar-takeover" class="bounty-link">Ver Prueba →</a>
+            </div>
+          </div>
+          <div class="bounty-card" id="bounty-hatvaults">
+            <div class="bounty-severity critical">Crítico</div>
+            <h4>HATVaults V2</h4>
+            <p class="bounty-vuln">Reentrancia withdraw() ↔ claim()</p>
+            <p class="bounty-desc">Reentrancia entre <code>withdraw()</code> y <code>claim()</code> permite drenar fondos del vault: el atacante inicia un retiro y, durante el callback, reclama recompensas antes de que el estado de balance se actualice.</p>
+            <div class="bounty-meta">
+              <span class="bounty-id">OUROBOROS-HATS-01</span>
+              <a href="/audit/hatvaults-reentrancy" class="bounty-link">Ver Prueba →</a>
+            </div>
+          </div>
+          <div class="bounty-card" id="bounty-folks-ntt-decimal">
+            <div class="bounty-severity high">Alta</div>
+            <h4>Folks Finance NTT</h4>
+            <p class="bounty-vuln">Inflación de Tokens via Decimales</p>
+            <p class="bounty-desc">Discrepancia de decimales en el bridge Wormhole NTT permite inflación de tokens: un atacante envía tokens con 6 decimales desde la cadena origen y recibe el equivalente interpretado como 18 decimales en destino.</p>
+            <div class="bounty-meta">
+              <span class="bounty-id">OUROBOROS-FOLKS-V007</span>
+              <a href="/audit/folks-ntt-decimal" class="bounty-link">Ver Prueba →</a>
+            </div>
+          </div>
+          <div class="bounty-card" id="bounty-folks-ntt-ratelimit">
+            <div class="bounty-severity high">Alta</div>
+            <h4>Folks Finance NTT</h4>
+            <p class="bounty-vuln">Bypass de Rate Limiter</p>
+            <p class="bounty-desc">Completación paralela de colas en el NTT Manager evade el rate limiter: múltiples transfers se completan simultáneamente sin que el acumulador de tasa los contabilice, permitiendo transferencias ilimitadas.</p>
+            <div class="bounty-meta">
+              <span class="bounty-id">OUROBOROS-FOLKS-V008</span>
+              <a href="/audit/folks-ntt-ratelimit" class="bounty-link">Ver Prueba →</a>
+            </div>
+          </div>
+          <div class="bounty-card" id="bounty-sky-dust">
+            <div class="bounty-severity medium">Media</div>
+            <h4>Sky Protocol</h4>
+            <p class="bounty-vuln">Truncamiento de Dust en buyGemNoFee</p>
+            <p class="bounty-desc">Truncamiento de enteros en <code>buyGemNoFee</code> atrapa dust permanentemente en <code>SwapperCalleePsm</code>. El redondeo hacia abajo en cada swap acumula tokens irrecuperables en el contrato.</p>
+            <div class="bounty-meta">
+              <span class="bounty-id">OUROBOROS-SKY-DUST-01</span>
+              <a href="/audit/sky-dust-truncation" class="bounty-link">Ver Prueba →</a>
+            </div>
+          </div>
+          <div class="bounty-card" id="bounty-ssv-fee-dos">
+            <div class="bounty-severity medium">Media</div>
+            <h4>SSV Network</h4>
+            <p class="bounty-vuln">DoS via Fee Overflow</p>
+            <p class="bounty-desc">Overflow aritmético en <code>OperatorLib.updateSnapshot</code> provoca denegación de servicio: operadores legítimos no pueden actualizar sus comisiones, bloqueando la operación normal del cluster de validadores.</p>
+            <div class="bounty-meta">
+              <span class="bounty-id">OUROBOROS-SSV-FEE-01</span>
+              <a href="/audit/ssv-fee-dos" class="bounty-link">Ver Prueba →</a>
             </div>
           </div>
         </div>
