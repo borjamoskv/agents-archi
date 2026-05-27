@@ -40,7 +40,19 @@
       ]
     }
     </script>
-  </head>
+  
+<style>
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+</head>
+
   <body>
     <a href="#hero" class="skip-to-content">Saltar al contenido</a>
     <!-- Navigation -->
@@ -933,23 +945,20 @@
 
 
     <!-- Footer -->
-    <footer class="footer" id="footer">
-      <div class="footer-inner">
-        <div class="footer-brand">
-          <span class="footer-logo"><span class="logo-hex">⬡</span> agents.archi</span>
-          <span class="footer-tagline">Seguridad Forense para Sistemas Autónomos</span>
-        </div>
-        <div class="footer-social">
-          <a href="https://x.com/borjamoskv" target="_blank" rel="noopener" aria-label="X / Twitter">
-            <svg viewBox="0 0 19 19"><use href="/icons.svg#x-icon"/></svg>
-          </a>
-          <a href="https://github.com/borjamoskv" target="_blank" rel="noopener" aria-label="GitHub">
-            <svg viewBox="0 0 19 19"><use href="/icons.svg#github-icon"/></svg>
-          </a>
-        </div>
-        <span class="footer-copy">© <span id="footer-year">2026</span> agents.archi — Todos los derechos reservados</span>
-      </div>
-    </footer>
+    
+<!-- SOVEREIGN HOLISTIC FOOTER -->
+<footer class="mt-32 border-t border-white/5 pt-12 pb-12 flex flex-col md:flex-row justify-between items-center gap-8 px-6 max-w-7xl mx-auto w-full">
+    <div class="text-xs font-mono text-cortex-muted">
+        © 2026 CORTEX PERSIST FOUNDATION. ALL RIGHTS PERSISTED.
+    </div>
+    <div class="flex flex-wrap gap-6 text-[10px] font-mono uppercase tracking-[0.2em] text-white/40">
+        <a href="https://cortexpersist.com" class="hover:text-cortex-accent transition-colors">CORTEX.COM</a>
+        <a href="https://cortexpersist.dev" class="hover:text-cortex-accent transition-colors">CORTEX.DEV</a>
+        <a href="https://cortexpersist.org" class="hover:text-cortex-accent transition-colors">CORTEX.ORG</a>
+        <a href="https://agents.archi" class="hover:text-cortex-accent transition-colors">AGENTS.ARCHI</a>
+    </div>
+</footer>
+
 
 
 
