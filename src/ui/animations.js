@@ -77,20 +77,20 @@ export function initLabMetrics() {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         let val = 0;
-        const target = 1242;
+        const target = 399647;
         const tick = () => {
-          val += Math.floor(Math.random() * 50) + 20;
+          val += Math.floor(Math.random() * 8000) + 4000;
           if (val >= target) {
             throughputEl.replaceChildren();
-            throughputEl.appendChild(document.createTextNode('1.2k '));
+            throughputEl.appendChild(document.createTextNode('399k '));
             const u = document.createElement('small');
-            u.textContent = 'inv/sec';
+            u.textContent = 'agts/sec';
             throughputEl.appendChild(u);
           } else {
             throughputEl.replaceChildren();
             throughputEl.appendChild(document.createTextNode(`${(val / 1000).toFixed(1)}k `));
             const u = document.createElement('small');
-            u.textContent = 'inv/sec';
+            u.textContent = 'agts/sec';
             throughputEl.appendChild(u);
             requestAnimationFrame(tick);
           }
