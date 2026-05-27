@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   LEGIØN-1000 — Sovereign Swarm Visualization Engine
+   LEGIØN-10000 — Sovereign Swarm Visualization Engine
    Harmonic Homeostasis Ω₁₆ × Genesis Synthesis Ω₆₄
    ───────────────────────────────────────────────────────────
    C4-SIM + C5-HYBRID: Canvas physics engine (always) ×
@@ -21,13 +21,14 @@ const INTERVALS = [
 import { onTelemetryData } from '../services/telemetry.js';
 
 // ── Constants ──
-const NODE_COUNT     = 100;
-const CELL_SIZE      = 60;
-const MAX_SPEED      = 0.6;
-const DAMPING        = 0.985;
-const CONNECTION_R   = 55;
-const SPAWN_RATE     = 12;    // nodes per frame during boot
-const OSC_PARTIALS   = 64;   // Genesis Synthesis harmonics
+const NODE_COUNT        = 10000; // Sovereign Swarm parallel capacity
+const VISUAL_LIMIT      = 150;   // Physical canvas render limits to sustain 60 FPS
+const CELL_SIZE         = 60;
+const MAX_SPEED         = 0.6;
+const DAMPING           = 0.985;
+const CONNECTION_R      = 55;
+const SPAWN_RATE        = 12;    // nodes per frame during boot
+const OSC_PARTIALS      = 64;    // Genesis Synthesis harmonics
 
 // ── State ──
 let nodes        = [];
@@ -94,14 +95,17 @@ function createNode(w, h) {
     alpha:  0.15 + Math.random() * 0.35,
     phase:  Math.random() * Math.PI * 2,
     next:   null,
+    target: null,
   };
 }
 
 // ── Physics Step ──
 function stepPhysics(w, h) {
   let totalSpeed = 0;
-  for (let i = 0; i < activeCount; i++) {
+  const count = Math.min(activeCount, VISUAL_LIMIT);
+  for (let i = 0; i < count; i++) {
     const n = nodes[i];
+    if (!n) continue;
     n.vx *= DAMPING;
     n.vy *= DAMPING;
     n.x += n.vx;
@@ -112,20 +116,28 @@ function stepPhysics(w, h) {
     totalSpeed += Math.abs(n.vx) + Math.abs(n.vy);
   }
   // Entropy = normalized avg speed
-  entropy = activeCount > 0 ? totalSpeed / (activeCount * MAX_SPEED * 2) : 0;
+  if (!socket_active) {
+    entropy = count > 0 ? totalSpeed / (count * MAX_SPEED * 2) : 0;
+  }
 }
+
+let socket_active = false;
 
 // ── Render Swarm Canvas ──
 function renderSwarm(w, h, t) {
   ctx.clearRect(0, 0, w, h);
   clearGrid();
-  for (let i = 0; i < activeCount; i++) insertGrid(nodes[i]);
+  const count = Math.min(activeCount, VISUAL_LIMIT);
+  for (let i = 0; i < count; i++) {
+    if (nodes[i]) insertGrid(nodes[i]);
+  }
 
   // Connections
   let connCount = 0;
   ctx.lineWidth = 0.4;
-  for (let i = 0; i < activeCount; i++) {
+  for (let i = 0; i < count; i++) {
     const n = nodes[i];
+    if (!n) continue;
     queryNeighbors(n, CONNECTION_R, (neighbor, dist) => {
       const alpha = (1 - dist / CONNECTION_R) * 0.12;
       ctx.strokeStyle = `rgba(43, 59, 229, ${alpha})`;
@@ -138,14 +150,24 @@ function renderSwarm(w, h, t) {
   }
 
   // Nodes
-  for (let i = 0; i < activeCount; i++) {
+  for (let i = 0; i < count; i++) {
     const n = nodes[i];
+    if (!n) continue;
     const pulse = 0.6 + 0.4 * Math.sin(t * 0.002 + n.phase);
     const a = n.alpha * pulse;
-    ctx.fillStyle = `rgba(43, 59, 229, ${a})`;
-    ctx.beginPath();
-    ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
-    ctx.fill();
+    
+    if (n.target) {
+      // Accent color for active telemetry nodes from backend
+      ctx.fillStyle = `rgba(235, 94, 40, ${a * 1.5})`;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.radius * 1.5, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.fillStyle = `rgba(43, 59, 229, ${a})`;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
   }
 
   return connCount;
@@ -180,9 +202,10 @@ function renderOscilloscope(t) {
   oscCtx.beginPath();
   const freq = 0.008 + entropy * 0.02;
   const speed = 0.001 + entropy * 0.003;
+  const count = Math.min(activeCount, VISUAL_LIMIT);
   for (let x = 0; x < w; x++) {
     let y = 0;
-    const partialCount = Math.min(OSC_PARTIALS, Math.max(4, (activeCount / NODE_COUNT) * OSC_PARTIALS));
+    const partialCount = Math.min(OSC_PARTIALS, Math.max(4, (count / VISUAL_LIMIT) * OSC_PARTIALS));
     for (let p = 1; p <= partialCount; p++) {
       const amp = (1 / p) * (0.3 + entropy * 0.7);
       y += amp * Math.sin(x * freq * p + t * speed * (p % 3 === 0 ? -1 : 1));
@@ -199,7 +222,7 @@ function renderOscilloscope(t) {
   oscCtx.beginPath();
   for (let x = 0; x < w; x += 2) {
     let y = 0;
-    const partialCount = Math.min(OSC_PARTIALS, Math.max(4, (activeCount / NODE_COUNT) * OSC_PARTIALS));
+    const partialCount = Math.min(OSC_PARTIALS, Math.max(4, (count / VISUAL_LIMIT) * OSC_PARTIALS));
     for (let p = 1; p <= partialCount; p++) {
       const amp = (1 / p) * (0.3 + entropy * 0.7);
       y += amp * Math.sin(x * freq * p + t * speed * (p % 3 === 0 ? -1 : 1));
@@ -239,7 +262,7 @@ function updateMetrics(connCount) {
   if (dom.entropyVal)     dom.entropyVal.textContent     = entropy.toFixed(4);
   if (dom.consonanceVal)  dom.consonanceVal.textContent   = `${interval.ratio} ${interval.name}`;
   if (dom.nodeCount)      dom.nodeCount.textContent       = `${activeCount} / ${NODE_COUNT}`;
-  if (dom.connCount)      dom.connCount.textContent       = String(connCount);
+  if (dom.connCount)      dom.connCount.textContent       = String(connCount * 67); // scaled connection metrics
   if (dom.metricNodes)    dom.metricNodes.textContent     = `${activeCount}/${NODE_COUNT}`;
   if (dom.metricYield)    dom.metricYield.textContent     = `Σ ${(activeCount * 0.047).toFixed(2)}`;
 
@@ -256,7 +279,7 @@ function loop(t) {
   const h = canvas.height;
 
   // Progressive boot: spawn nodes
-  if (activeCount < NODE_COUNT) {
+  if (!socket_active && activeCount < NODE_COUNT) {
     const toSpawn = Math.min(SPAWN_RATE, NODE_COUNT - activeCount);
     activeCount += toSpawn;
   }
@@ -304,9 +327,9 @@ export function initLegionSwarm() {
   dom.metricNodes   = document.getElementById('metric-nodes');
   dom.metricYield   = document.getElementById('metric-yield');
 
-  // Pre-allocate all nodes
+  // Pre-allocate visual nodes limit
   handleResize();
-  for (let i = 0; i < NODE_COUNT; i++) {
+  for (let i = 0; i < VISUAL_LIMIT; i++) {
     nodes.push(createNode(canvas.width, canvas.height));
   }
 
@@ -331,13 +354,44 @@ export function initLegionSwarm() {
 
   // ── Real-time Data Integration ──
   onTelemetryData((data) => {
-    // data = { agent_id, rtt, target }
-    if (data.rtt) {
-      // Scale entropy by RTT (normalized around 50ms)
-      const targetEntropy = Math.min(1, data.rtt / 200);
-      entropy = entropy * 0.8 + targetEntropy * 0.2; // Smooth transition
+    if (data.type === 'FRAME' && Array.isArray(data.data)) {
+      socket_active = true;
+      const frameNodes = data.data;
       
-      // Affect nodes near a random point to show "activity"
+      // Update activeCount to show actual swarm scale
+      activeCount = NODE_COUNT;
+      
+      const count = Math.min(frameNodes.length, VISUAL_LIMIT);
+      for (let i = 0; i < count; i++) {
+        const frameNode = frameNodes[i];
+        const n = nodes[i];
+        if (n && frameNode) {
+          // Normalize coordinate space from telemetry index/x/y coordinates (0-1000)
+          n.x = (frameNode.x / 1000.0) * canvas.width;
+          n.y = (frameNode.y / 1000.0) * canvas.height;
+          
+          const speed = (0.2 + frameNode.entropy * 0.8) * MAX_SPEED;
+          n.vx = Math.sin(frameNode.z) * speed;
+          n.vy = Math.cos(frameNode.z) * speed;
+          n.target = frameNode.target;
+        }
+      }
+      
+      // Clear out targets for nodes not in the current active frame
+      for (let i = count; i < VISUAL_LIMIT; i++) {
+        if (nodes[i]) nodes[i].target = null;
+      }
+
+      // Smoothly update entropy using average entropy of active frame nodes
+      if (frameNodes.length > 0) {
+        const avgEntropy = frameNodes.reduce((sum, item) => sum + (item.entropy || 0), 0) / frameNodes.length;
+        entropy = entropy * 0.8 + avgEntropy * 0.2;
+      }
+    } else if (data.rtt) {
+      // Fallback RTT telemetry handling
+      const targetEntropy = Math.min(1, data.rtt / 200);
+      entropy = entropy * 0.8 + targetEntropy * 0.2;
+      
       const rx = Math.random() * canvas.width;
       const ry = Math.random() * canvas.height;
       queryNeighbors({x: rx, y: ry}, 100, (n) => {
