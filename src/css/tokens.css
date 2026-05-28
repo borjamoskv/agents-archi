@@ -4,19 +4,29 @@
 
 /* ── Tokens ── */
 :root {
-  /* Core palette */
-  --void: #0A0A0A;
-  --void-elevated: #111114;
-  --void-surface: #18181C;
-  --void-card: #1E1E24;
-  --void-border: #2A2A32;
-  --void-hover: #32323C;
+  /* Core palette - Industrial Noir 2026 Ω */
+  --void: #050505;
+  --void-elevated: #0A0A0C;
+  --void-surface: #121216;
+  --void-card: #18181D;
+  --void-border: #23232A;
+  --void-hover: #2B2B36;
 
-  /* Accent — Electric Indigo */
+  /* Glassmorphism primitives */
+  --glass-bg: rgba(10, 10, 12, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --glass-blur: blur(32px);
+
+  /* Accent — Hyper-Indigo */
   --accent: #2B3BE5;
-  --accent-bright: #4D5BF7;
-  --accent-glow: rgba(43, 59, 229, 0.25);
-  --accent-subtle: rgba(43, 59, 229, 0.08);
+  --accent-bright: #5C6BFB;
+  --accent-neon: #707FFC;
+  --accent-glow: rgba(43, 59, 229, 0.45);
+  --accent-subtle: rgba(43, 59, 229, 0.12);
+  
+  /* Cyber Forensic Elements */
+  --matrix-green: #00FF66;
+  --matrix-green-glow: rgba(0, 255, 102, 0.3);
 
   /* Severity */
   --critical: #FF3B5C;
