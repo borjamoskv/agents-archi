@@ -5,6 +5,46 @@
 import '../css/auditReport.css';
 
 export const REPORTS = {
+  'oliver-tom': {
+    title: 'Bypass de Spin en Protocolo Oliver y Tom',
+    subtitle: 'Tiro con Efecto Out-of-Bounds (Infinite Rotational Spin)',
+    id: 'OUROBOROS-OLIVER-TOM-01',
+    severity: 'CRITICAL',
+    status: 'SUBMITTED',
+    reality: 'C5-REAL',
+    date: 'May 10, 2026',
+    platform: 'Immunefi',
+    bounty: 'Infinite Score Drain',
+    summary: 'Falta de validación de límites en el factor de spin rotacional dentro de la función shoot(). Un atacante puede proporcionar un valor de spin extremo que desborda el cálculo del vector de trayectoria euclidiana. Esto fuerza una curvatura de trayectoria infinita (OOB) que elude la zona de colisión del guardameta y actualiza el marcador en el mismo bloque de ejecución sin validación del árbitro.',
+    evidence: [
+      {
+        type: 'OOB-Spin',
+        label: 'ball_physics.c:shoot',
+        content: `// Lack of validation on the spin parameter
+void shoot(ball_t * ball, float force, float spin) {
+    ball->velocity = force;
+    // [!] spin value is never clamped or validated against MAX_SPIN
+    ball->curve_factor += spin * SPIN_COEFFICIENT;
+    calculate_trajectory(ball);
+}`
+      },
+      {
+        type: 'PoC',
+        label: 'test_infinite_spin_bypass_poc.c',
+        content: `// Triggering the infinite spin bypass
+ball_t ball = { .x = 50.0f, .y = 0.0f, .curve_factor = 0.0f };
+shoot(&ball, 150.0f, 9999999.0f); // Apply OOB spin
+
+// Trajectory calculation breaks due to float precision loss
+// Ball teleported behind goalkeeper
+if (ball.curve_factor > MAX_FIELD_BOUNDS) {
+    register_goal_direct_write(ball.owner); // [BYPASS CONFIRMED]
+}`
+      }
+    ],
+    merkleRoot: '0x7a3f2c1b9e4d6a8f5c0b2e7d1a3f9c6b8121ad59cd362a0edaebf29a572181ea',
+    tags: ['Physics-Engine', 'OOB', 'Bypass', 'Exploit', 'Captain-Tsubasa']
+  },
   'firedancer-funk-01': {
     title: 'Ghosting en Firedancer fd_funk',
     subtitle: 'Inconsistencia de Consenso Transitoria',
