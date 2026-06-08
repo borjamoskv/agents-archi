@@ -18,11 +18,16 @@
   --glass-blur: blur(32px);
 
   /* Accent — Hyper-Indigo */
-  --accent: #2B3BE5;
-  --accent-bright: #5C6BFB;
-  --accent-neon: #707FFC;
-  --accent-glow: rgba(43, 59, 229, 0.45);
-  --accent-subtle: rgba(43, 59, 229, 0.12);
+  --accent: #2535F2;
+  --accent-bright: #5164FF;
+  --accent-neon: #7585FF;
+  --accent-glow: rgba(37, 53, 242, 0.45);
+  --accent-subtle: rgba(37, 53, 242, 0.08);
+
+  /* Secondary Accent — Cyber Cyan */
+  --secondary: #00F2FF;
+  --secondary-glow: rgba(0, 242, 255, 0.35);
+  --secondary-subtle: rgba(0, 242, 255, 0.08);
   
   /* Cyber Forensic Elements */
   --matrix-green: #00FF66;
