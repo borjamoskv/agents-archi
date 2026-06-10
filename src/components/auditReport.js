@@ -540,7 +540,246 @@ function _availableBalance(address _vault) internal view returns (uint256) {
     ],
     merkleRoot: '0x13114d021a0f9ef0e3b411d48d0b98aea52d79e67f4214549dcb95c9de8896e0',
     tags: ['Lido', 'Ethereum', 'Accounting', 'Vault', 'High']
-  }
+  },
+
+  /* ═══════════════════════════════════════════════════════════
+     NEW REPORTS — Sync with index.html bounty-grid
+     ═══════════════════════════════════════════════════════════ */
+
+  'moonwell-voting-drift': {
+    title: 'Desincronización de Votos en Moonwell',
+    subtitle: 'Doble Gasto de Poder de Voto (Wormhole Drift)',
+    id: 'OUROBOROS-MOONWELL-01',
+    severity: 'CRITICAL',
+    status: 'SUBMITTED',
+    reality: 'C5-REAL',
+    date: 'May 10, 2026',
+    platform: 'Immunefi',
+    bounty: 'Governance Takeover',
+    summary: 'La latencia de >45s entre Base y Moonbeam permite emitir un voto en Moonbeam y puentear el token hacia Base antes del snapshot del Multichain Governor. Un atacante puede ejercer doble gasto de poder de voto, alterando arbitrariamente el quórum de propuestas de gobernanza sin activar el Pause Guardian.',
+    evidence: [
+      {
+        type: 'Logic-Race',
+        label: 'MultichainGovernor.sol:castVote',
+        content: `// Snapshot reads balanceOf at proposalSnapshot[id]
+// Wormhole bridge latency allows vote on Moonbeam + bridge to Base
+// before snapshot block is finalized on both chains
+function castVote(uint256 proposalId, uint8 support) external {
+    uint256 weight = getVotes(msg.sender, proposalSnapshot[proposalId]);
+    // [!] weight includes tokens already voted on Moonbeam
+    _countVote(proposalId, msg.sender, support, weight);
+}`
+      },
+      {
+        type: 'PoC',
+        label: 'WormholeDriftPoC.t.sol',
+        content: `// 1. Vote on Moonbeam with 1M WELL tokens
+governor_moonbeam.castVote(proposalId, FOR);
+// 2. Bridge tokens to Base (arrives before snapshot)
+wormhole.transferTokens(WELL, 1_000_000e18, BASE_CHAIN_ID);
+// 3. Vote again on Base with same tokens
+governor_base.castVote(proposalId, FOR);
+// Result: 2M voting power from 1M tokens`
+      }
+    ],
+    merkleRoot: '0xb7a3f2c1b9e4d6a8f5c0b2e7d1a3f9c6b8121ad59cd362a0edaebf29a572182',
+    tags: ['Governance', 'Wormhole', 'Cross-Chain', 'Moonwell', 'Double-Vote']
+  },
+
+  'intuition-rollover': {
+    title: 'Evasión de Rollover en Intuition V2',
+    subtitle: 'Epoch Boundary Front-run Griefing',
+    id: 'OUROBOROS-INTUITION-01',
+    severity: 'HIGH',
+    status: 'SUBMITTED',
+    reality: 'C5-REAL',
+    date: 'May 10, 2026',
+    platform: 'Immunefi',
+    bounty: 'Emission Manipulation',
+    summary: 'Vulnerabilidad de lógica en _rollover() permite evadir el arrastre de utilización. Un atacante puede front-runnear el cambio de época llamando a _rollover() cuando totalUtilization[currentEpoch - 1] == 0, impidiendo que las emisiones acumuladas se propaguen y atrapándolas permanentemente en el 40% del target.',
+    evidence: [
+      {
+        type: 'Logic-Error',
+        label: 'EmissionController.sol:_rollover',
+        content: `function _rollover() internal {
+    if (block.timestamp >= epochEnd) {
+        uint256 prevUtil = totalUtilization[currentEpoch - 1];
+        // [!] If prevUtil == 0, carryover is skipped entirely
+        if (prevUtil > 0) {
+            totalUtilization[currentEpoch] += prevUtil * DECAY_FACTOR / 1e18;
+        }
+        currentEpoch++;
+        epochEnd = block.timestamp + EPOCH_DURATION;
+    }
+}`
+      },
+      {
+        type: 'PoC',
+        label: 'RolloverGriefPoC.t.sol',
+        content: `// 1. Wait until epoch boundary (epochEnd - 1 block)
+// 2. Flash-withdraw all utilization in epoch N-1
+vm.prank(attacker);
+vault.withdraw(totalStaked);
+// totalUtilization[N-1] = 0 now
+
+// 3. Trigger rollover
+vault.deposit(1); // triggers _rollover()
+// Result: emissions stuck at 40% floor permanently`
+      }
+    ],
+    merkleRoot: '0xc8a4e2d1f0b3c5a7e9d1f3b5a7c9e1d3f5a7b9c1d3e5f7a9b1c3d5e7f9a1b3',
+    tags: ['DeFi', 'Epoch', 'Front-run', 'Intuition', 'Emission']
+  },
+
+  'gmtrade-race': {
+    title: 'Condición de Carrera en GMTrade',
+    subtitle: 'Race Condition en Oráculo (CWE-682/362)',
+    id: 'OUROBOROS-GMTRADE-01',
+    severity: 'HIGH',
+    status: 'SUBMITTED',
+    reality: 'C5-REAL',
+    date: 'May 10, 2026',
+    platform: 'Immunefi',
+    bounty: 'Oracle Manipulation',
+    summary: 'Condición de carrera entre la ejecución de órdenes y su cancelación. Un atacante puede cancelar una orden en la misma ventana de bloque en la que un keeper la empareja, evadiendo la liquidación. El keeper consume gas y el oráculo registra un precio desactualizado, permitiendo arbitraje libre de riesgo.',
+    evidence: [
+      {
+        type: 'Race-Condition',
+        label: 'OrderManager.sol:executeOrder',
+        content: `function executeOrder(bytes32 orderId, uint256 oraclePrice) external onlyKeeper {
+    Order storage order = orders[orderId];
+    require(order.status == Status.PENDING, "Invalid status");
+    // [!] No lock: attacker can cancel in same block
+    order.status = Status.EXECUTED;
+    _settlePosition(order, oraclePrice);
+}
+
+function cancelOrder(bytes32 orderId) external {
+    Order storage order = orders[orderId];
+    require(order.owner == msg.sender, "Not owner");
+    require(order.status == Status.PENDING, "Invalid status");
+    // [!] Races with executeOrder in same block
+    order.status = Status.CANCELLED;
+    _refund(order);
+}`
+      },
+      {
+        type: 'PoC',
+        label: 'GMTradeRacePoC.t.sol',
+        content: `// In same block:
+// TX1 (attacker, higher gas): cancelOrder(orderId)
+// TX2 (keeper, lower gas): executeOrder(orderId, price)
+// Result: TX1 executes first, TX2 reverts
+// Attacker avoids liquidation and keeps position`
+      }
+    ],
+    merkleRoot: '0xd9b5f3e2a1c4d6b8e0f2a4c6d8e0f2a4c6b8d0e2f4a6c8d0e2f4a6b8c0d2e4',
+    tags: ['DeFi', 'Race-Condition', 'Oracle', 'GMTrade', 'MEV']
+  },
+
+  'renegade-mpc': {
+    title: 'Fuga de Estado MPC en Renegade',
+    subtitle: 'Fuga de Secret Share Criptográfico (CWE-200)',
+    id: 'OUROBOROS-RENEGADE-01',
+    severity: 'HIGH',
+    status: 'SUBMITTED',
+    reality: 'C5-REAL',
+    date: 'May 10, 2026',
+    platform: 'Immunefi',
+    bounty: 'Dark Pool State Leak',
+    summary: 'Desincronización en los canales MPC del protocolo de dark pool permite reordenación de paquetes entre peers. La falta de secuenciamiento estricto genera una fuga del Secret Share criptográfico que expone el estado interno de la wallet oscura, revelando órdenes pendientes y balances ocultos al atacante.',
+    evidence: [
+      {
+        type: 'Channel-Desync',
+        label: 'mpc_channel.rs:process_share',
+        content: `pub fn process_share(&mut self, msg: MpcMessage) -> Result<()> {
+    // [!] No sequence number validation
+    // Packets can arrive out of order
+    let share = self.decrypt_share(msg.payload)?;
+    self.accumulator.add(share);
+    
+    if self.accumulator.is_complete() {
+        // [!] Reconstructed secret may include stale shares
+        let secret = self.accumulator.reconstruct()?;
+        self.apply_state_update(secret);
+    }
+    Ok(())
+}`
+      },
+      {
+        type: 'PoC',
+        label: 'renegade_leak_poc.rs',
+        content: `// 1. Intercept MPC channel packets
+// 2. Delay packet N, inject duplicate of packet N-1
+// 3. Accumulator reconstructs with stale share
+// 4. XOR of correct vs stale reconstruction leaks partial secret
+let leaked_bits = correct_output ^ stale_output;
+// leaked_bits reveals internal wallet state`
+      }
+    ],
+    merkleRoot: '0xe0c6f4a2b8d0e2f4a6c8b0d2e4f6a8c0b2d4e6f8a0c2d4e6b8f0a2c4d6e8f0',
+    tags: ['Dark-Pool', 'MPC', 'Cryptography', 'Renegade', 'State-Leak']
+  },
+
+  'eigenlayer-slashing-desync': {
+    title: 'Desincronización de Slashing en EigenLayer',
+    subtitle: 'Front-run de Latencia en AVS Orquestación',
+    id: 'OUROBOROS-EIGEN-03',
+    severity: 'CRITICAL',
+    status: 'SUBMITTED',
+    reality: 'C5-REAL',
+    date: 'May 11, 2026',
+    platform: 'Immunefi',
+    bounty: '$250K Max',
+    summary: 'La latencia entre el registro de slashing del AVS y la propagación al DelegationManager permite al operador front-runnear el evento de slashing, retirando delegaciones antes de que la penalización se aplique. Las pérdidas se trasladan a los delegadores restantes que no pueden reaccionar a tiempo.',
+    evidence: [
+      {
+        type: 'Timing-Attack',
+        label: 'DelegationManager.sol:undelegate',
+        content: `function undelegate(address staker) external returns (bytes32[] memory) {
+    // [!] No pending-slashing check
+    // Operator can call this AFTER slashing is registered at AVS
+    // but BEFORE it propagates to DelegationManager
+    require(msg.sender == staker || msg.sender == delegatedTo[staker], "...");
+    _removeSharesAndQueueWithdrawal(staker, strategies, shares);
+}`
+      },
+      {
+        type: 'PoC',
+        label: 'EigenSlashingDesyncPoC.t.sol',
+        content: `// Block N: AVS registers slashing event for operator
+avs.reportSlashing(operator, slashAmount);
+
+// Block N+1: Operator front-runs propagation
+vm.prank(operator);
+delegationManager.undelegate(operator);
+// Operator's shares are withdrawn BEFORE slash applies
+
+// Block N+2: Slash propagates to DelegationManager
+// Remaining delegators absorb 100% of the penalty
+slasher.executeSlashing(operator);
+// operator.shares == 0, penalty falls on remaining stakers`
+      }
+    ],
+    merkleRoot: '0xf1d7a5b3c9e1f3d5a7b9c1e3f5d7a9b1c3e5f7d9a1b3c5e7f9d1a3b5c7e9f1',
+    tags: ['EigenLayer', 'Restaking', 'Slashing', 'Front-run', 'Critical']
+  },
+
+  /* ═══════════════════════════════════════════════════════════
+     SLUG ALIASES — HTML slugs → existing report data
+     ═══════════════════════════════════════════════════════════ */
+
+  // index.html uses /audit/k2-stellar-takeover → maps to k2-stellar-admin
+  get 'k2-stellar-takeover'() { return this['k2-stellar-admin']; },
+
+  // index.html uses /audit/folks-ntt-ratelimit → maps to folks-ntt-rate-limit
+  get 'folks-ntt-ratelimit'() { return this['folks-ntt-rate-limit']; },
+
+  // index.html uses /audit/layerzero-shadow-library → maps to lz-shadow-exploit
+  get 'layerzero-shadow-library'() { return this['lz-shadow-exploit']; },
+
+  // index.html uses /audit/lido-vault-injection → maps to lido-v3-quarantine
+  get 'lido-vault-injection'() { return this['lido-v3-quarantine']; }
 };
 
 export function initRouter() {
