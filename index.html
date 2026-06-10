@@ -113,11 +113,11 @@
             <span class="stat-label">Clases de Vectores de Ataque</span>
           </div>
           <div class="stat">
-            <span class="stat-value" data-count="8">0</span>
+            <span class="stat-value" data-count="11">0</span>
             <span class="stat-label">Hallazgos Críticos</span>
           </div>
           <div class="stat">
-            <span class="stat-value" data-count="7">0</span>
+            <span class="stat-value" data-count="10">0</span>
             <span class="stat-label">Plataformas Auditadas</span>
           </div>
         </div>
@@ -440,6 +440,36 @@
             <div class="bounty-meta">
               <span class="bounty-id">OUROBOROS-SSV-FEE-01</span>
               <a href="/audit/ssv-fee-dos" class="bounty-link">Ver Prueba →</a>
+            </div>
+          </div>
+          <div class="bounty-card" id="bounty-layerzero-shadow">
+            <div class="bounty-severity critical">Crítico</div>
+            <h4>LayerZero V2</h4>
+            <p class="bounty-vuln">Bypass de Integridad de Shadow Library</p>
+            <p class="bounty-desc">Durante el período de gracia de migración de LzV2, un atacante puede inyectar una Shadow Library maliciosa que pasa la verificación de integridad, interceptando y manipulando mensajes cross-chain antes de que el nuevo endpoint los procese.</p>
+            <div class="bounty-meta">
+              <span class="bounty-id">OUROBOROS-LZ-SHADOW-01</span>
+              <a href="/audit/layerzero-shadow-library" class="bounty-link">Ver Prueba →</a>
+            </div>
+          </div>
+          <div class="bounty-card" id="bounty-lido-vault">
+            <div class="bounty-severity high">Alta</div>
+            <h4>Lido V3</h4>
+            <p class="bounty-vuln">Inyección de ETH sin Rastrear en StakingVault</p>
+            <p class="bounty-desc">ETH enviado directamente al <code>StakingVault</code> via <code>selfdestruct</code> o coinbase bypassa la contabilidad de cuarentena. El balance del vault crece sin registro, permitiendo al operador reclamar rewards inflados y evadir los controles de slashing.</p>
+            <div class="bounty-meta">
+              <span class="bounty-id">OUROBOROS-LIDO-03</span>
+              <a href="/audit/lido-vault-injection" class="bounty-link">Ver Prueba →</a>
+            </div>
+          </div>
+          <div class="bounty-card" id="bounty-eigenlayer-slashing">
+            <div class="bounty-severity critical">Crítico</div>
+            <h4>EigenLayer</h4>
+            <p class="bounty-vuln">Desincronización de Slashing via Front-run de Latencia</p>
+            <p class="bounty-desc">La latencia entre el registro de slashing del AVS y la propagación al <code>DelegationManager</code> permite al operador front-runnear el evento de slashing, retirando delegaciones antes de que la penalización se aplique y trasladando las pérdidas a los delegadores restantes.</p>
+            <div class="bounty-meta">
+              <span class="bounty-id">OUROBOROS-EIGEN-03</span>
+              <a href="/audit/eigenlayer-slashing-desync" class="bounty-link">Ver Prueba →</a>
             </div>
           </div>
           <div class="bounty-card" id="bounty-oliver-tom">
