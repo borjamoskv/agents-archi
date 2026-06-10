@@ -16,6 +16,7 @@ import { connectTelemetry } from './services/telemetry.js';
 import { initRouter as initAuditRouter } from './components/auditReport.js';
 import { initCommissionModal } from './components/commissionModal.js';
 import './css/commissionModal.css';
+import { initBountyFilters } from './components/bountyFilters.js';
 
 import { 
   initNavScroll, 
@@ -82,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
   connectTelemetry();
   initAuditRouter();
   initCommissionModal();
+  initBountyFilters();
 
   // Sovereign — visual polish (after all components mounted)
   initHeroTerminal();
