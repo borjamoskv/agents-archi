@@ -55,7 +55,7 @@
 
   <body>
     <div class="grain-overlay" aria-hidden="true"></div>
-    <a href="#hero" class="skip-to-content">Saltar al contenido</a>
+    <a href="#main-content" class="skip-to-content">Saltar al contenido</a>
     <!-- Navigation -->
     <nav id="nav-main" class="nav">
       <div class="nav-inner">
@@ -84,6 +84,7 @@
     </nav>
 
     <!-- Hero -->
+    <main id="main-content">
     <section id="hero" class="hero">
       <canvas class="hero-canvas" id="hero-canvas" aria-hidden="true"></canvas>
       <div class="hero-grid-bg"></div>
@@ -1001,6 +1002,7 @@
 
 
 
+    </main>
     <!-- Footer -->
     <footer class="footer">
       <div class="footer-inner">
@@ -1033,6 +1035,11 @@
 
 
 
+
+    <!-- Back to Top -->
+    <button id="back-to-top" class="back-to-top" aria-label="Volver arriba">
+      ↑
+    </button>
 
     <script type="module" src="/src/main.js"></script>
   </body>
