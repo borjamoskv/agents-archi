@@ -23,21 +23,29 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Payment service not configured' });
   }
 
-  const priceIdPro  = process.env.PRICE_ID_PRO;
-  const priceIdTeam = process.env.PRICE_ID_TEAM;
-  if (!priceIdPro || !priceIdTeam) {
-    console.error('[stripe] PRICE_ID_PRO / PRICE_ID_TEAM not set');
+  const priceIdSprint = process.env.PRICE_ID_SPRINT;
+  const priceIdCouncil = process.env.PRICE_ID_COUNCIL;
+  const priceIdCert = process.env.PRICE_ID_CERT;
+  if (!priceIdSprint || !priceIdCouncil || !priceIdCert) {
+    console.error('[stripe] PRICE_ID_SPRINT / COUNCIL / CERT not set');
     return res.status(500).json({ error: 'Product catalog not configured' });
   }
 
   // ── Body parsing ──────────────────────────────────────────
-  const { priceId, email } = req.body || {};
+  const { plan, email } = req.body || {};
 
   // ── Input validation ──────────────────────────────────────
-  const allowedPrices = [priceIdPro, priceIdTeam];
-  if (!priceId || !allowedPrices.includes(priceId)) {
-    return res.status(400).json({ error: 'Invalid price ID' });
+  const validPlans = {
+    sprint: priceIdSprint,
+    council: priceIdCouncil,
+    cert: priceIdCert
+  };
+
+  if (!plan || !validPlans[plan]) {
+    return res.status(400).json({ error: 'Invalid plan selected' });
   }
+
+  const priceId = validPlans[plan];
 
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return res.status(400).json({ error: 'Invalid email address' });
@@ -48,9 +56,11 @@ export default async function handler(req, res) {
     const stripe = new Stripe(secretKey, { apiVersion: '2024-06-20' });
 
     const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://agents.archi';
+    
+    const mode = priceId === priceIdCouncil ? 'subscription' : 'payment';
 
     const session = await stripe.checkout.sessions.create({
-      mode: 'subscription',
+      mode: mode,
       customer_email: email || undefined,
       line_items: [{ price: priceId, quantity: 1 }],
       allow_promotion_codes: true,

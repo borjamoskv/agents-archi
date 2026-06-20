@@ -854,7 +854,67 @@
       </div>
     </section>
 
-    <!-- Contacto / Solicitud -->
+    <!-- Pricing -->
+    <section id="pricing" class="section section-dark">
+      <div class="section-inner">
+        <div class="section-header">
+          <span class="section-tag">Engagement Models</span>
+          <h2>Alineamiento Termodinámico</h2>
+          <p class="section-desc">Despliegue de capital cognitivo sin fricción. Sin comisiones ocultas, sin intermediarios. Facturación C5-REAL directa al Kernel.</p>
+        </div>
+
+        <div class="pricing-grid">
+          <!-- Sprint Card -->
+          <div class="plan-card">
+            <div class="plan-header">
+              <h3>Sprint Adversarial</h3>
+              <div class="plan-price">€25k<small>/ sprint</small></div>
+            </div>
+            <ul class="plan-features">
+              <li>2-week deep dive adversarial audit.</li>
+              <li>Prompt Injection & Sandbox Escapes</li>
+              <li>Logic Gate & Memory Confinement Tests</li>
+              <li>C5-REAL Forensic Report</li>
+              <li>Cryptographic Proof Pack</li>
+            </ul>
+            <button class="btn btn-primary btn-full plan-btn" data-plan="sprint">Iniciar Sprint</button>
+          </div>
+
+          <!-- Council Card -->
+          <div class="plan-card featured">
+            <div class="plan-badge">Most Popular</div>
+            <div class="plan-header">
+              <h3>Sovereign Council</h3>
+              <div class="plan-price">€8k<small>/ month</small></div>
+            </div>
+            <ul class="plan-features">
+              <li>Continuous Autonomous Red Teaming</li>
+              <li>Weekly Threat Feed Synthesis</li>
+              <li>Priority Emergency Triage</li>
+              <li>Dedicated Signal Node</li>
+            </ul>
+            <button class="btn btn-accent btn-full plan-btn" data-plan="council">Suscribirse</button>
+          </div>
+
+          <!-- Cert Card -->
+          <div class="plan-card">
+            <div class="plan-header">
+              <h3>Pre-deploy Cert</h3>
+              <div class="plan-price">€15k<small>/ cert</small></div>
+            </div>
+            <ul class="plan-features">
+              <li>EU AI Act / DORA Regulatory readiness</li>
+              <li>Full Stack System Hardening</li>
+              <li>Immutable Verification Badge</li>
+              <li>Zero-Knowledge Compliance</li>
+            </ul>
+            <button class="btn btn-primary btn-full plan-btn" data-plan="cert">Obtener Certificado</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Formulario de Contacto (C4-Simulated) -->
     <section id="contact" class="section section-dark">
       <div class="section-inner">
         <div class="section-header">
@@ -1036,11 +1096,35 @@
 
 
 
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="modal-overlay">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h4 class="modal-title">Confirmar Transacción</h4>
+          <button class="modal-close" aria-label="Cerrar">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="checkout-summary">
+            <span class="summary-plan" id="checkout-plan-name">...</span>
+            <span class="summary-price" id="checkout-plan-price">...</span>
+          </div>
+          <input type="email" id="checkout-email" class="checkout-input" placeholder="Operador Email (Opcional)" />
+          <button id="btn-checkout-confirm" class="btn btn-accent btn-full">
+            <span class="btn-text">Proceder al Pago</span>
+          </button>
+        </div>
+        <div class="modal-footer">
+          <span class="secure-icon">🔒</span> Stripe C5-REAL Encrypted Checkout
+        </div>
+      </div>
+    </div>
+
     <!-- Back to Top -->
     <button id="back-to-top" class="back-to-top" aria-label="Volver arriba">
       ↑
     </button>
 
     <script type="module" src="/src/main.js"></script>
+    <script type="module" src="/src/components/pricingCheckout.js"></script>
   </body>
 </html>
