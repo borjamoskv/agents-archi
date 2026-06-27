@@ -17,6 +17,7 @@ import { initRouter as initAuditRouter } from './components/auditReport.js';
 import { initCommissionModal } from './components/commissionModal.js';
 import './css/commissionModal.css';
 import { initBountyFilters } from './components/bountyFilters.js';
+import { initNexusGraph } from './components/nexusGraph.js';
 
 import { 
   initNavScroll, 
@@ -84,6 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initAuditRouter();
   initCommissionModal();
   initBountyFilters();
+  initNexusGraph();
 
   // Sovereign — visual polish (after all components mounted)
   initHeroTerminal();
